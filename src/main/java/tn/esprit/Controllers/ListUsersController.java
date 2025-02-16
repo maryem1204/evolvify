@@ -9,15 +9,16 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;  // ✅ Ajout de l'importation manquante
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Services.UtilisateurService;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ListUsersController {
@@ -44,12 +45,23 @@ public class ListUsersController {
     private TableColumn<Utilisateur, Integer> colCongeRestant;
     @FXML
     private TableColumn<Utilisateur, Integer> colTtRestants;
-
     @FXML
-    private TextField searchField; // Ajout du champ de recherche
+    private TableColumn<Utilisateur, Void> colActions;
+    @FXML
+    private TextField searchField;
 
     private ObservableList<Utilisateur> users = FXCollections.observableArrayList();
     private ObservableList<Utilisateur> filteredUsers = FXCollections.observableArrayList();
+
+    private static ListUsersController instance;
+
+    public ListUsersController() {
+        instance = this;
+    }
+
+    public static ListUsersController getInstance() {
+        return instance;
+    }
 
     @FXML
     public void initialize() {
@@ -62,6 +74,8 @@ public class ListUsersController {
                 user.setProfilePhoto(profilePhoto);
                 users.add(user);
             }
+
+            employeeTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
             colProfile.setCellValueFactory(new PropertyValueFactory<>("profilePhotoImageView"));
             colFirstName.setCellValueFactory(new PropertyValueFactory<>("firstname"));
@@ -76,32 +90,42 @@ public class ListUsersController {
 
             employeeTable.setItems(users);
 
-            // Initialiser la liste filtrée avec tous les utilisateurs
-            filteredUsers.setAll(users);
+            // 🔹 Ajustement dynamique des colonnes
+            colProfile.prefWidthProperty().bind(employeeTable.widthProperty().multiply(0.10));
+            colFirstName.prefWidthProperty().bind(employeeTable.widthProperty().multiply(0.12));
+            colLastName.prefWidthProperty().bind(employeeTable.widthProperty().multiply(0.12));
+            colEmail.prefWidthProperty().bind(employeeTable.widthProperty().multiply(0.18));
+            colBirthday.prefWidthProperty().bind(employeeTable.widthProperty().multiply(0.10));
+            colJoiningDate.prefWidthProperty().bind(employeeTable.widthProperty().multiply(0.10));
+            colRole.prefWidthProperty().bind(employeeTable.widthProperty().multiply(0.08));
+            colNumTel.prefWidthProperty().bind(employeeTable.widthProperty().multiply(0.08));
+            colCongeRestant.prefWidthProperty().bind(employeeTable.widthProperty().multiply(0.06));
+            colTtRestants.prefWidthProperty().bind(employeeTable.widthProperty().multiply(0.06));
+            colActions.prefWidthProperty().bind(employeeTable.widthProperty().multiply(0.10));
 
-            // Ajouter un listener au champ de recherche
-            searchField.textProperty().addListener((observable, oldValue, newValue) -> filterUsers(newValue));
+            addActionsColumn();
+
+            searchField.textProperty().addListener((observable, oldValue, newValue) -> handleSearch());
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    // 🔍 Méthode appelée par le champ de recherche dans le FXML
+    // ✅ Correction de la méthode handleSearch() et ajout de filterUsers()
     @FXML
     private void handleSearch() {
         String keyword = searchField.getText();
         filterUsers(keyword);
     }
 
-    // 🔎 Méthode pour filtrer les utilisateurs
     private void filterUsers(String keyword) {
         if (keyword == null || keyword.trim().isEmpty()) {
             employeeTable.setItems(users);
             return;
         }
 
-        final String searchKeyword = keyword.toLowerCase();
+        String searchKeyword = keyword.toLowerCase();
 
         List<Utilisateur> filteredList = users.stream()
                 .filter(user -> user.getFirstname().toLowerCase().contains(searchKeyword)
@@ -113,37 +137,105 @@ public class ListUsersController {
         employeeTable.setItems(filteredUsers);
     }
 
-    @FXML
-    private void showAddEmployeePopup() {
+    private void addActionsColumn() {
+        colActions.setCellFactory(param -> new TableCell<Utilisateur, Void>() {
+            private final Button btnEdit = new Button("Modifier");
+            private final Button btnDelete = new Button("Supprimer");
+            private final HBox hbox = new HBox(10, btnEdit, btnDelete);
+
+            {
+                btnEdit.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
+                btnDelete.setStyle("-fx-background-color: #f44336; -fx-text-fill: white;");
+
+                btnEdit.setOnAction(event -> {
+                    Utilisateur user = getTableView().getItems().get(getIndex());
+                    showEditPopup(user);
+                });
+
+                btnDelete.setOnAction(event -> {
+                    Utilisateur user = getTableView().getItems().get(getIndex());
+                    confirmDelete(user);
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(hbox);
+                }
+            }
+        });
+    }
+
+    private void showEditPopup(Utilisateur user) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ajouterUser.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/editUser.fxml"));
             Parent root = loader.load();
 
-            Stage popupStage = new Stage();
-            popupStage.initModality(Modality.APPLICATION_MODAL);
-            popupStage.initStyle(StageStyle.UNDECORATED);
-            popupStage.setTitle("Ajouter Employé");
+            // 🔹 Récupérer le contrôleur du formulaire d'édition
+            EditUserController controller = loader.getController();
+            controller.setUserData(user);
+            controller.setListUsersController(this); // ✅ Passer la référence de ListUsersController
 
-            Scene scene = new Scene(root);
-            popupStage.setScene(scene);
+            // 🔹 Afficher la fenêtre de modification
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Modifier Utilisateur");
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
 
-            popupStage.showAndWait();
-
-            // Mettre à jour la liste après l'ajout d'un employé
-            refreshUserList();
+            // ✅ La mise à jour de la liste est maintenant gérée dans `handleEditSubmit()`
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    // 🔄 Méthode pour recharger la liste après un ajout
-    private void refreshUserList() {
-        users.clear();
+    private void confirmDelete(Utilisateur user) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText("Supprimer cet utilisateur ?");
+        alert.setContentText(user.getFirstname() + " " + user.getLastname());
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            try {
+                new UtilisateurService().delete(user);  // ✅ Correction de l'appel de delete()
+                refreshUserList();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @FXML
+    private void showAddEmployeePopup() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ajouterUser.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Ajouter un Employé");
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+
+            refreshUserList(); // Mettre à jour la liste après l'ajout
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void refreshUserList() {
         try {
             UtilisateurService userService = new UtilisateurService();
             List<Utilisateur> userList = userService.showAll();
 
+            users.clear();
             for (Utilisateur user : userList) {
                 byte[] profilePhoto = userService.getProfilePhoto(user.getId_employe());
                 user.setProfilePhoto(profilePhoto);
@@ -151,9 +243,9 @@ public class ListUsersController {
             }
 
             employeeTable.setItems(users);
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 }

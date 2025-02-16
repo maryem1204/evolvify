@@ -1,10 +1,11 @@
 package tn.esprit.Controllers;
 
 import javafx.animation.PauseTransition;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import tn.esprit.Entities.Role;
@@ -15,7 +16,8 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AjouterUserController {
+public class EditUserController {
+
     @FXML
     private TextField firstNameField, lastNameField, emailField;
     @FXML
@@ -29,27 +31,62 @@ public class AjouterUserController {
     @FXML
     private Button closeButton, submitButton;
 
+    private Utilisateur currentUser;
     private final UtilisateurService utilisateurService = new UtilisateurService();
     private final Map<String, Role> roleMap = new HashMap<>();
 
+    private ListUsersController listUsersController;
+
+    public void setListUsersController(ListUsersController controller) {
+        this.listUsersController = controller;
+    }
+
+
     @FXML
     private void initialize() {
+        // 🔹 Associer les libellés de rôle aux valeurs de l'enum Role
         roleMap.put("Employé", Role.EMPLOYEE);
         roleMap.put("Responsable RH", Role.RESPONSABLE_RH);
         roleMap.put("Chef de projet", Role.CHEF_PROJET);
         roleComboBox.getItems().addAll(roleMap.keySet());
-        roleComboBox.setValue("Employé");
 
+        // 🔹 Cacher les messages d'erreur et de succès au démarrage
         successMessageBox.setVisible(false);
         firstNameErrorLabel.setVisible(false);
         lastNameErrorLabel.setVisible(false);
         emailErrorLabel.setVisible(false);
 
+        // 🔹 Ajout des validations en temps réel
         firstNameField.textProperty().addListener((observable, oldValue, newValue) -> validateFirstName());
         lastNameField.textProperty().addListener((observable, oldValue, newValue) -> validateLastName());
         emailField.textProperty().addListener((observable, oldValue, newValue) -> validateEmail());
 
         updateSubmitButtonState();
+    }
+
+    public void setUserData(Utilisateur user) {
+        if (user != null) {
+            this.currentUser = user;
+            firstNameField.setText(user.getFirstname());
+            lastNameField.setText(user.getLastname());
+            emailField.setText(user.getEmail());
+
+            // 🔹 Récupérer le libellé du rôle actuel pour éviter les erreurs
+            roleComboBox.setValue(getRoleLabel(user.getRole()));
+
+            validateFirstName();
+            validateLastName();
+            validateEmail();
+        }
+    }
+
+    private String getRoleLabel(Role role) {
+        for (Map.Entry<String, Role> entry : roleMap.entrySet()) {
+            if (entry.getValue() == role) {
+                return entry.getKey();
+            }
+        }
+        return "Employé"; // Valeur par défaut si non trouvée
     }
 
     private void validateFirstName() {
@@ -91,86 +128,62 @@ public class AjouterUserController {
     }
 
     @FXML
-    private void handleSubmit() {
-        if (submitButton.isDisabled()) {
+    private void handleEditSubmit() {
+        if (submitButton.isDisabled() || currentUser == null) {
             return;
         }
 
-        String firstName = firstNameField.getText().trim();
-        String lastName = lastNameField.getText().trim();
-        String email = emailField.getText().trim();
-        Role role = roleMap.get(roleComboBox.getValue());
+        // 🔹 Mise à jour des valeurs de l'utilisateur
+        currentUser.setFirstname(firstNameField.getText().trim());
+        currentUser.setLastname(lastNameField.getText().trim());
+        currentUser.setEmail(emailField.getText().trim());
 
-        Utilisateur newUser = new Utilisateur(firstName, lastName, email, "", null, null, null, role, 0, 0, null, "");
+        // 🔹 Vérifier et attribuer le rôle sélectionné
+        String selectedRole = roleComboBox.getValue();
+        if (selectedRole != null && roleMap.containsKey(selectedRole)) {
+            currentUser.setRole(roleMap.get(selectedRole));
+        }
 
         try {
-            int result = utilisateurService.add(newUser);
-            if (result > 0) {
-                showSuccessMessage("Employé ajouté avec succès !");
+            // 🔄 Mettre à jour l'utilisateur dans la base de données
+            utilisateurService.update(currentUser);
 
-                // 🔄 Mettre à jour la liste principale après l'ajout
-                ListUsersController.getInstance().refreshUserList();
+            // ✅ Afficher un message de succès
+            showSuccessMessage("Utilisateur modifié avec succès !");
 
-                // ✅ Fermer la fenêtre
-                ((Stage) submitButton.getScene().getWindow()).close();
-            }
+            // 🔄 Mettre à jour la liste principale après modification
+            ListUsersController.getInstance().refreshUserList();
+
+            // ✅ Fermer la fenêtre après modification
+            ((Stage) submitButton.getScene().getWindow()).close();
+
         } catch (SQLException e) {
             System.err.println("Erreur SQL : " + e.getMessage());
         }
     }
 
-
     private void showError(TextField field, Label label, String message) {
-        field.setStyle("-fx-border-color: red; -fx-border-width: 2px; -fx-border-insets: 0; -fx-padding: 2px;");
-        field.setFocusTraversable(false);
+        field.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
         label.setText(message);
-        label.setStyle("-fx-text-fill: red; -fx-font-weight: bold; -fx-border-color: transparent; -fx-background-color: transparent; -fx-padding: 3px;");
+        label.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
         label.setVisible(true);
     }
 
     private void showSuccess(TextField field, Label label, String message) {
-        field.setStyle("-fx-border-color: green; -fx-border-width: 2px; -fx-border-insets: 0; -fx-padding: 2px;");
-        field.setFocusTraversable(false);
+        field.setStyle("-fx-border-color: green; -fx-border-width: 2px;");
         label.setText(message);
-        label.setStyle("-fx-text-fill: green; -fx-font-weight: bold; -fx-border-color: transparent; -fx-background-color: transparent; -fx-padding: 3px;");
+        label.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
         label.setVisible(true);
     }
 
     private void showSuccessMessage(String message) {
         successMessageLabel.setText(message);
         successMessageBox.setVisible(true);
+
+        // 🔹 Cacher le message après 3 secondes
         PauseTransition delay = new PauseTransition(Duration.seconds(3));
         delay.setOnFinished(event -> successMessageBox.setVisible(false));
         delay.play();
-    }
-
-    @FXML
-    private void closeSuccessMessage() {
-        successMessageBox.setVisible(false);
-    }
-
-    private void resetForm() {
-        firstNameField.clear();
-        firstNameField.setStyle("");
-
-        lastNameField.clear();
-        lastNameField.setStyle("");
-
-        emailField.clear();
-        emailField.setStyle("");
-
-        roleComboBox.setValue("Employé");
-
-        firstNameErrorLabel.setText("");
-        firstNameErrorLabel.setVisible(false);
-
-        lastNameErrorLabel.setText("");
-        lastNameErrorLabel.setVisible(false);
-
-        emailErrorLabel.setText("");
-        emailErrorLabel.setVisible(false);
-
-        submitButton.setDisable(true);
     }
 
     @FXML
@@ -179,11 +192,7 @@ public class AjouterUserController {
     }
 
     @FXML
-    private Button closeSuccessButton;
-
-    @FXML
     private void handleCloseSuccessMessage() {
         successMessageBox.setVisible(false);
     }
-
 }

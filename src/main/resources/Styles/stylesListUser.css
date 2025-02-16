@@ -150,3 +150,18 @@ StackPane {
     -fx-fit-width: 40px;
     -fx-fit-height: 40px;
 }
+
+.floating-button {
+    -fx-background-color: #6200EA;
+    -fx-text-fill: white;
+    -fx-shape: "M20 10V20H10V10H5V20C5 21.1 5.9 22 7 22H23C24.1 22 25 21.1 25 20V10H20Z";
+    -fx-padding: 10px;
+    -fx-border-radius: 50%;
+    -fx-background-radius: 50%;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
+}
+
+.floating-button:hover {
+    -fx-background-color: #3700B3;
+}
+

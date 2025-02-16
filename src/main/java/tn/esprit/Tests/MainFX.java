@@ -12,7 +12,7 @@ public class MainFX extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/listUsers.fxml")); // Charge la liste
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/dashboard.fxml"));
             Parent root = loader.load();
             primaryStage.setTitle("Liste des Employés");
             primaryStage.setScene(new Scene(root));
