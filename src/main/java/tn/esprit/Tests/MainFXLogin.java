@@ -5,17 +5,16 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.io.IOException;
 
-public class MainFX extends Application {
+public class MainFXLogin extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/dashboard.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/loginUser.fxml"));
             Parent root = loader.load();
-            primaryStage.setTitle("Dashboard");
+            primaryStage.setTitle("Login");
             primaryStage.setResizable(false);
 
             //primaryStage.initStyle(StageStyle.UTILITY);

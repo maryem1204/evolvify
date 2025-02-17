@@ -4,50 +4,72 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 
 import java.io.IOException;
 
 public class Dashboard {
 
     @FXML
-    private Button gestcong, gestpro, gestran, gestrec, gestutiliser, logout;
+    private Button gestcong;
 
     @FXML
-    private AnchorPane gests; // Conteneur où la vue sera chargée
+    private Button gestpro;
 
     @FXML
-    private AnchorPane contentPane; // Zone où les vues seront chargées
+    private Button gestran;
 
     @FXML
-    private void initialize() {
-        loadListUsersView(); // Charge la liste des utilisateurs au démarrage
-    }
+    private Button gestrec;
 
-    private void loadListUsersView() {
-        loadView("/fxml/listUsers.fxml");
-    }
+    @FXML
+    private AnchorPane gests;
 
-    private void loadView(String fxmlPath) {
+    @FXML
+    private Button gestutiliser;
+
+    @FXML
+    private AnchorPane logo;
+
+    @FXML
+    private Button logout;
+
+    @FXML
+    private AnchorPane tableblanche;
+
+    @FXML
+    private Label logoutlabel;
+
+    // ✅ Méthode pour charger dynamiquement une vue dans `tableblanche`
+    private void loadView(String fxmlFile) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             Parent view = loader.load();
 
-            // Vérifie si contentPane est bien défini avant de modifier son contenu
-            if (contentPane != null) {
-                contentPane.getChildren().setAll(view); // Affichage dynamique
-            } else {
-                System.out.println("❌ Erreur : contentPane est null !");
-            }
+            tableblanche.getChildren().clear();
+            tableblanche.getChildren().add(view);
+
+            // ✅ Ajuster l'affichage pour qu'il occupe tout l'espace disponible
+            AnchorPane.setTopAnchor(view, 0.0);
+            AnchorPane.setBottomAnchor(view, 0.0);
+            AnchorPane.setLeftAnchor(view, 0.0);
+            AnchorPane.setRightAnchor(view, 0.0);
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("❌ Erreur lors du chargement de " + fxmlPath);
         }
     }
 
+    // ✅ Charger la vue par défaut au démarrage
     @FXML
-    private void goToGestionUtilisateur(ActionEvent event) {
+    private void initialize() {
+        loadView("/fxml/listUsers.fxml"); // Charge "Gestion Utilisateur" par défaut
+    }
+
+    // ✅ Gestion du clic sur "Gestion Utilisateur"
+    @FXML
+    private void handleGestionUtilisateur(ActionEvent event) {
         loadView("/fxml/listUsers.fxml");
     }
 
