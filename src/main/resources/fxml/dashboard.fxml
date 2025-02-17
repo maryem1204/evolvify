@@ -9,7 +9,9 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0"
+           prefWidth="1100.0" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="tn.esprit.Controllers.Dashboard">
 
    <children>
       <AnchorPane prefHeight="200.0" prefWidth="200.0">
@@ -55,7 +57,9 @@
                                     </ImageView>
                                  </graphic>
                               </Button>
-                              <Button fx:id="gestutiliser" layoutX="7.0" layoutY="49.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="202.0" styleClass="nav-btn" stylesheets="@/Styles/color.css" text="Gestion Utilisateur" textFill="#9e2a7d">
+                              <Button fx:id="gestutiliser" layoutX="7.0" layoutY="49.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="202.0"
+                                      styleClass="nav-btn" stylesheets="@/Styles/color.css" text="Gestion Utilisateur" textFill="#9e2a7d"
+                                       onAction="#handleGestionUtilisateur">
                                  <font>
                                     <Font size="14.0" />
                                  </font>

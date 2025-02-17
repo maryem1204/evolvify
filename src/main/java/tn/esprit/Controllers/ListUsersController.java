@@ -12,6 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;  // ✅ Ajout de l'importation manquante
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Services.UtilisateurService;
 
@@ -180,19 +181,18 @@ public class ListUsersController {
             controller.setUserData(user);
             controller.setListUsersController(this); // ✅ Passer la référence de ListUsersController
 
-            // 🔹 Afficher la fenêtre de modification
+            // 🔹 Afficher la fenêtre de modification sans barre de titre
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle("Modifier Utilisateur");
+            stage.initStyle(StageStyle.UNDECORATED); // ❌ Supprime toute la barre de titre
             stage.setScene(new Scene(root));
             stage.showAndWait();
-
-            // ✅ La mise à jour de la liste est maintenant gérée dans `handleEditSubmit()`
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
     private void confirmDelete(Utilisateur user) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -219,7 +219,7 @@ public class ListUsersController {
 
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle("Ajouter un Employé");
+            stage.initStyle(StageStyle.UNDECORATED);
             stage.setScene(new Scene(root));
             stage.showAndWait();
 
