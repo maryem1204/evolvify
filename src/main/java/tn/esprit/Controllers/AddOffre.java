@@ -73,6 +73,12 @@ public class AddOffre {
                     alert.setTitle("Success");
                     alert.setContentText("Offre ajoutée avec succès !");
                     alert.show();
+
+                    // Réinitialiser les champs du formulaire après l'ajout réussi
+                    titre.clear();
+                    description.clear();
+                    datepub.setValue(null);
+                    dateexp.setValue(null);
                 } else {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Error");

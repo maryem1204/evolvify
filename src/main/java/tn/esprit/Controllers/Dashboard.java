@@ -16,8 +16,10 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import tn.esprit.Entities.Offre;
 import tn.esprit.Services.OffreService;
+import tn.esprit.Utils.MyDataBase;
+
 import java.io.IOException;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -84,7 +86,7 @@ public class Dashboard {
     private ObservableList<Offre> offres = FXCollections.observableArrayList();
     @FXML
     private static final Logger logger = Logger.getLogger(Dashboard.class.getName());
-
+    private Connection cnx = MyDataBase.getInstance().getCnx();
 
     private final OffreService offreService = new OffreService();
     @FXML
@@ -113,7 +115,7 @@ public class Dashboard {
         addActionsColumn();
 
         // Charger les offres
-        loadOffres();
+        loadOffre();
     }
 
 
@@ -140,17 +142,32 @@ public class Dashboard {
 
 
     @FXML
-    void loadOffre() {
-        OffreService offreService = new OffreService();
-        try {
-            List<Offre> offreList = offreService.showAll();
-            offres.setAll(offreList);
-            tabledaffichage.setItems(offres);
+    private void loadOffre() {
+        ObservableList<Offre> offresList = FXCollections.observableArrayList();
+        System.out.println("hi");
+        String req = "SELECT `id_offre`, `titre`, `description`, `date_publication`, `date_expiration`, `status` FROM `offre`";
+        try (Statement st = cnx.createStatement();
+             ResultSet rs = st.executeQuery(req)) {
+            System.out.println("bonjour");
+            while (rs.next()) {
+                int idOffre = rs.getInt("id_offre"); // Important : on récupère l'ID même si on ne l'affiche pas
+                String titre = rs.getString("titre");
+                String description = rs.getString("description");
+                Date datePublication = rs.getDate("date_publication");
+                Date dateExpiration = rs.getDate("date_expiration");
+                Offre.Status status = Offre.Status.valueOf(rs.getString("status"));
+
+                Offre offre = new Offre(idOffre, titre, description, datePublication, dateExpiration, status);
+                offresList.add(offre);
+            }
+
+            tabledaffichage.setItems(offresList);
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erreur lors du chargement des offres", e);
-            afficherAlerte("Erreur", "Impossible de charger les offres");
+            e.printStackTrace();
         }
     }
+
+
 
 
 
@@ -173,6 +190,17 @@ public class Dashboard {
 
                 btnDelete.setOnAction(event -> {
                     Offre offre = getTableView().getItems().get(getIndex());
+                    Offre selectedOffre = tabledaffichage.getSelectionModel().getSelectedItem();
+
+                    if (selectedOffre == null) {
+                        System.out.println("Aucune offre sélectionnée !");
+                        afficherAlerte("Erreur", "Veuillez sélectionner une offre à supprimer.");
+                        return;
+                    }
+                    System.out.println("DEBUG - Offre sélectionnée: " + selectedOffre);
+                    System.out.println("Offre sélectionnée: ID=" + selectedOffre.getIdOffre() + ", Titre=" + selectedOffre.getTitre());
+
+
                     confirmDelete(offre);
                 });
             }
@@ -213,24 +241,36 @@ public class Dashboard {
     }
 
     private void confirmDelete(Offre offre) {
+
+        if (offre == null || offre.getIdOffre() <= 0) {
+            afficherAlerte("Erreur", "Aucune offre valide sélectionnée pour suppression.");
+            return;
+        }
+
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation de suppression");
         alert.setHeaderText(null);
-        alert.setContentText("Êtes-vous sûr de vouloir supprimer cet offre ?");
+        alert.setContentText("Êtes-vous sûr de vouloir supprimer cette offre ?");
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
-               OffreService os= new OffreService();
-                os.delete(offre);
-                loadOffre(); // Recharger les données après suppression
+                OffreService os = new OffreService();
+                int deletedRows = os.delete(offre);
+                if (deletedRows > 0) {
+                    loadOffre(); // Met à jour le TableView après suppression
+                    afficherAlerte("Succès", "Offre supprimée avec succès !");
+                } else {
+                    afficherAlerte("Erreur", "L'offre n'a pas pu être supprimée. Vérifiez son existence.");
+                }
             } catch (SQLException e) {
-                logger.log(Level.SEVERE, "Erreur lors de la suppression de l'offre", e.getMessage());
-
+                logger.log(Level.SEVERE, "Erreur lors de la suppression de l'offre", e);
                 afficherAlerte("Erreur", "Impossible de supprimer l'offre.");
             }
         }
     }
+
+
     @FXML
     private void afficherAlerte(String titre, String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);

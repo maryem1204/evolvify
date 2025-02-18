@@ -106,14 +106,21 @@ public class OffreService implements CRUD<Offre> {
 
     @Override
     public int delete(Offre offre) throws SQLException {
-        String req = "DELETE FROM `offre`  WHERE id = ?";
+        if (offre == null || offre.getIdOffre() <= 0) {
+            throw new IllegalArgumentException("L'offre à supprimer est invalide.");
+        }
 
-
+        String req = "DELETE FROM `offre` WHERE id_offre = ?";
         try (PreparedStatement pst = cnx.prepareStatement(req)) {
             pst.setInt(1, offre.getIdOffre());
-            return pst.executeUpdate();
+            int rowsDeleted = pst.executeUpdate();
+            System.out.println(rowsDeleted + " ligne(s) supprimée(s).");
+            return rowsDeleted;
         }
     }
+
+
+
 
 
 
