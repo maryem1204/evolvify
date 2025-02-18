@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="750.0" prefWidth="500.0" styleClass="backglist" stylesheets="@../java/tn/esprit/Styles/formulCond.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ListOffre">
+   <children>
+      <AnchorPane layoutX="23.0" layoutY="18.0" prefHeight="709.0" prefWidth="458.0" styleClass="white-bg" stylesheets="@../java/tn/esprit/Styles/color.css">
+         <children>
+            <Label layoutX="67.0" layoutY="44.0" text="Les Offres Disponible" textFill="#0047ab">
+               <font>
+                  <Font size="36.0" />
+               </font>
+            </Label>
+            <AnchorPane layoutX="26.0" layoutY="99.0" prefHeight="585.0" prefWidth="414.0">
+               <children>
+                  <ScrollBar layoutX="393.0" layoutY="1.0" orientation="VERTICAL" prefHeight="585.0" prefWidth="22.0" />
+                  <AnchorPane layoutX="12.0" layoutY="11.0" prefHeight="117.0" prefWidth="368.0" styleClass="white-bg" stylesheets="@../java/tn/esprit/Styles/color.css" />
+                  <AnchorPane layoutX="12.0" layoutY="160.0" prefHeight="117.0" prefWidth="368.0" styleClass="white-bg" stylesheets="@../java/tn/esprit/Styles/color.css" />
+                  <AnchorPane layoutX="12.0" layoutY="308.0" prefHeight="117.0" prefWidth="368.0" styleClass="white-bg" stylesheets="@../java/tn/esprit/Styles/color.css" />
+                  <AnchorPane layoutX="12.0" layoutY="446.0" prefHeight="117.0" prefWidth="368.0" styleClass="white-bg" stylesheets="@../java/tn/esprit/Styles/color.css" />
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
