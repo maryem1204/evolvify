@@ -7,6 +7,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import tn.esprit.Entities.Gender;
 import tn.esprit.Entities.Role;
 import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Services.UtilisateurService;
@@ -102,7 +103,7 @@ public class AjouterUserController {
         String email = emailField.getText().trim();
         Role role = roleMap.get(roleComboBox.getValue());
 
-        Utilisateur newUser = new Utilisateur(firstName, lastName, email, "", null, null, null, role, 0, 0, null, "");
+        Utilisateur newUser = new Utilisateur(firstName, lastName, email, "", null, null, null, role, 0, 0, null, "", Gender.HOMME);
 
         try {
             int result = utilisateurService.add(newUser);

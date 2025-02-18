@@ -10,7 +10,7 @@ import javafx.scene.control.Label;
 
 import java.io.IOException;
 
-public class Dashboard {
+public class DashboardController {
 
     @FXML
     private Button gestcong;

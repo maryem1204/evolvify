@@ -15,7 +15,7 @@ public class MainTest {
         MyDataBase db = MyDataBase.getInstance();
         UtilisateurService userService = new UtilisateurService();
 
-        try {
+        /*try {
             // ✅ Ajout d'utilisateurs avec les nouvelles règles
             Utilisateur user1 = new Utilisateur(
                     "John", "Doe", "john.doe@example.com", null, null, // Pas de password ni photo
@@ -68,6 +68,6 @@ public class MainTest {
         } catch (SQLException e) {
             System.err.println("Erreur SQL : " + e.getMessage());
             e.printStackTrace(); // ✅ Pour un meilleur débogage
-        }
+        }*/
     }
 }
