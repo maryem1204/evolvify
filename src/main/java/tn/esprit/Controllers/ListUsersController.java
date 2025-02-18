@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;  // ✅ Ajout de l'importation manquante
 import javafx.stage.Modality;
@@ -21,6 +22,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javafx.scene.input.MouseEvent;
+
 
 public class ListUsersController {
 
@@ -129,9 +132,11 @@ public class ListUsersController {
         String searchKeyword = keyword.toLowerCase();
 
         List<Utilisateur> filteredList = users.stream()
-                .filter(user -> user.getFirstname().toLowerCase().contains(searchKeyword)
-                        || user.getLastname().toLowerCase().contains(searchKeyword)
-                        || user.getEmail().toLowerCase().contains(searchKeyword))
+                .filter(utilisateur -> (utilisateur.getFirstname() + " " + utilisateur.getLastname()).toLowerCase().contains(searchKeyword)
+                        || utilisateur.getFirstname().toLowerCase().contains(searchKeyword)
+                        || utilisateur.getLastname().toLowerCase().contains(searchKeyword)
+                        || utilisateur.getEmail().contains(searchKeyword)
+                        || utilisateur.getRole().toString().toLowerCase().contains(searchKeyword))
                 .collect(Collectors.toList());
 
         filteredUsers.setAll(filteredList);
@@ -140,20 +145,30 @@ public class ListUsersController {
 
     private void addActionsColumn() {
         colActions.setCellFactory(param -> new TableCell<Utilisateur, Void>() {
-            private final Button btnEdit = new Button("Modifier");
-            private final Button btnDelete = new Button("Supprimer");
-            private final HBox hbox = new HBox(10, btnEdit, btnDelete);
+            private final ImageView editIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/editIcon.png")));
+            private final ImageView deleteIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/deleteIconn.png")));
+            private final HBox hbox = new HBox(10, editIcon, deleteIcon);
 
             {
-                btnEdit.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
-                btnDelete.setStyle("-fx-background-color: #f44336; -fx-text-fill: white;");
+                // Taille des icônes
+                editIcon.setFitWidth(20);
+                editIcon.setFitHeight(20);
+                deleteIcon.setFitWidth(20);
+                deleteIcon.setFitHeight(20);
 
-                btnEdit.setOnAction(event -> {
+                // Style au survol
+                editIcon.setOnMouseEntered(e -> editIcon.setOpacity(0.7));
+                editIcon.setOnMouseExited(e -> editIcon.setOpacity(1.0));
+                deleteIcon.setOnMouseEntered(e -> deleteIcon.setOpacity(0.7));
+                deleteIcon.setOnMouseExited(e -> deleteIcon.setOpacity(1.0));
+
+                // Actions des icônes
+                editIcon.setOnMouseClicked((MouseEvent event) -> {
                     Utilisateur user = getTableView().getItems().get(getIndex());
                     showEditPopup(user);
                 });
 
-                btnDelete.setOnAction(event -> {
+                deleteIcon.setOnMouseClicked((MouseEvent event) -> {
                     Utilisateur user = getTableView().getItems().get(getIndex());
                     confirmDelete(user);
                 });
