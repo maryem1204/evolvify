@@ -195,5 +195,23 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
         }
         return null;
     }
+    public String getEmployeNameById(int id) {
+        String req = "SELECT firstname, lastname FROM Users WHERE id_employe = ?";
+
+        try (PreparedStatement pst = cnx.prepareStatement(req)) {
+            pst.setInt(1, id);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("firstname") + " " + rs.getString("lastname");
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la récupération du nom de l'employé : " + e.getMessage());
+        }
+
+        return "Inconnu";  // Si l'ID n'existe pas, on retourne "Inconnu"
+    }
+
+
 
 }
