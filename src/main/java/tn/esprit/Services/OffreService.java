@@ -48,8 +48,9 @@ public class OffreService implements CRUD<Offre> {
         }
     }
     @Override
-    public List<Offre> showAll() throws SQLException{
+    public List<Offre> showAll() throws SQLException {
         List<Offre> offres = new ArrayList<>();
+
         String req = "SELECT titre, description, date_publication, date_expiration, status FROM Offre";
 
         try (Statement st = cnx.createStatement(); ResultSet rs = st.executeQuery(req)) {
@@ -67,12 +68,15 @@ public class OffreService implements CRUD<Offre> {
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Erreur lors de l'exécution de la requête SQL : " + e.getMessage());
+            throw e;  // Rejeter l'exception pour être géré dans le contrôleur
         }
+
         return offres;
     }
+
     @Override
     public int update(Offre offre) throws SQLException {
-        String req = "UPDATE offres SET titre = ?, description = ?, date_publication = ?, date_expiration = ?, status = ? WHERE id = ?";
+        String req = "UPDATE offre SET titre = ?, description = ?, date_publication = ?, date_expiration = ?, status = ? WHERE id_offre= ?";
 
         // Convertir java.util.Date en java.sql.Date
         java.sql.Date sqlDatePublication = new java.sql.Date(offre.getDatePublication().getTime());
@@ -88,7 +92,8 @@ public class OffreService implements CRUD<Offre> {
             ps.setDate(4, sqlDateExpiration);
             ps.setString(5, offre.getStatus().name());  // Convertir l'enum en chaîne de caractères
 
-
+            // Utiliser l'ID uniquement pour la condition WHERE
+            ps.setInt(6, offre.getIdOffre());  // Assure-toi que getId() retourne l'ID correct
             // Exécuter la mise à jour et récupérer le nombre de lignes affectées
             rowsAffected = ps.executeUpdate();
 

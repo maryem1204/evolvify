@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="750.0" prefWidth="500.0" styleClass="backglist" stylesheets="@../java/tn/esprit/Styles/formulCond.css" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.AddOffre">
+<AnchorPane prefHeight="750.0" prefWidth="500.0" styleClass="backglist" stylesheets="@../java/tn/esprit/Styles/formulCond.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.AddOffre">
    <children>
       <AnchorPane layoutX="8.0" layoutY="10.0" prefHeight="731.0" prefWidth="481.0" styleClass="white-bg" stylesheets="@../java/tn/esprit/Styles/color.css">
          <children>

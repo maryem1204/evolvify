@@ -28,50 +28,66 @@ public class ModifierOffre {
     private TextArea description;
 
     @FXML
-    private SplitMenuButton status;
+    private ChoiceBox<Offre.Status> status;
     @FXML
     private TextField titre;
 
     private  Offre offre;
-    public void setOffre(Offre offre) {
+
+    public void setOffre(Offre offre)
+    {
         if (offre != null) {
             this.offre = offre;
             titre.setText(offre.getTitre());
             description.setText(offre.getDescription());
-            datepub.setValue(offre.getDatePublication().toInstant()
+            /*datepub.setValue(offre.getDatePublication().toInstant()
                     .atZone(ZoneId.systemDefault()).toLocalDate());
 
             dateexp.setValue(offre.getDateExpiration().toInstant()
-                    .atZone(ZoneId.systemDefault()).toLocalDate());
+                    .atZone(ZoneId.systemDefault()).toLocalDate());*/
 
-            status.setText(offre.getStatus().toString());
+            status.setValue(offre.getStatus());
         } else {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Aucune offre sélectionnée.");
         }
     }
 
+
+    @FXML
+    private void initialize() {
+        // Remplir le ChoiceBox avec les valeurs de l'énumération Status
+        status.getItems().setAll(Offre.Status.values());  // Remplit le ChoiceBox avec toutes les valeurs de l'énumération
+    }
+
+
     @FXML
     private void handleModifier(ActionEvent event) {
         try {
+            // Vérifie si tous les champs sont remplis
             if (titre.getText().isEmpty() || description.getText().isEmpty() ||
                     datepub.getValue() == null || dateexp.getValue() == null ||
-                    status.getText().isEmpty()) {
+                    status.getValue() == null) {  // Utilisation de getValue() au lieu de getText()
                 showAlert(Alert.AlertType.WARNING, "Champ manquant", "Veuillez remplir tous les champs.");
                 return;
             }
 
+            // Récupère les valeurs du formulaire
             String titreValue = titre.getText();
             String descriptionValue = description.getText();
-            Date datePub = Date.valueOf(datepub.getValue());
-            Date dateExp = Date.valueOf(dateexp.getValue());
-            Offre.Status statusValue = Offre.Status.valueOf(status.getText().toUpperCase());
+            Date datePub = Date.valueOf(datepub.getValue());  // Conversion de LocalDate en java.sql.Date
+            Date dateExp = Date.valueOf(dateexp.getValue());  // Conversion de LocalDate en java.sql.Date
 
+            // Récupère la valeur sélectionnée dans le ChoiceBox
+            Offre.Status statusValue = status.getValue();  // Récupération directe de la valeur du ChoiceBox
+
+            // Mettre à jour l'offre
             offre.setTitre(titreValue);
             offre.setDescription(descriptionValue);
             offre.setDatePublication(datePub);
             offre.setDateExpiration(dateExp);
             offre.setStatus(statusValue);
 
+            // Mettre à jour l'offre dans la base de données
             OffreService crud = new OffreService();
             int result = crud.update(offre);
 
@@ -87,6 +103,7 @@ public class ModifierOffre {
             showAlert(Alert.AlertType.ERROR, "Erreur de format", "Le statut entré est invalide.");
         }
     }
+
     // Méthode pour afficher une alerte
     private void showAlert(Alert.AlertType alertType, String title, String content) {
         Alert alert = new Alert(alertType);

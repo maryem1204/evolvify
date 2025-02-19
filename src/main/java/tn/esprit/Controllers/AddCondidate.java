@@ -15,12 +15,16 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Services.CandidateService;
-
+import tn.esprit.Entities.ListOffre;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javafx.stage.FileChooser;
+import tn.esprit.Utils.MyDataBase;
+
 import java.nio.file.Files;
 import java.time.LocalDate;
 
@@ -126,7 +130,18 @@ public class AddCondidate {
             }
         }
     }
+    private Connection cnx = MyDataBase.getInstance().getCnx();
+    private int idOffre;  // Variable pour stocker l'ID de l'offre
 
+    // Méthode pour définir l'ID de l'offre
+    public void setIdOffre(int idOffre) {
+        System.out.println("setIdOffre() appelé, valeur : "+ idOffre);
+        this.idOffre = idOffre;
+    }
+    public int getIdOffre() {
+        System.out.println("getIdOffre() appelé, valeur : " + idOffre);
+        return idOffre;
+    }
     @FXML
     void add(ActionEvent event) throws IOException, SQLException {
         if (nomTextfield.getText().isEmpty() || prenomTextfield.getText().isEmpty() || emailTextfield.getText().isEmpty() || numtextfield.getText().isEmpty()
@@ -153,11 +168,17 @@ public class AddCondidate {
             try {
                 int rowsAffected = ps.add(condidate);
 
+                ListOffre lo = new ListOffre(condidate.getId_employe(), getIdOffre(), condidate.getJoiningDate());
+
                 if (rowsAffected > 0) {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Success");
-                    alert.setContentText("Candidat ajouté avec succès !");
-                    alert.show();
+                    if (lo == null) {
+                        System.out.println("Objet ListOffre (lo) est null !");
+                    } else {
+                        System.out.println("ID de l'offre à insérer : " + lo.getIdOffre());
+                    }
+
+                   addToListOffre(lo);
+
                 } else {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Error");
@@ -176,6 +197,45 @@ public class AddCondidate {
 
         }
     }
+    private void addToListOffre(ListOffre lo)
+    {
+        System.out.println("ID de l'offre utilisé : " + lo.getIdOffre());
+        System.out.println("ID du candidat utilisé : " + lo.getIdCondidate());
+
+        // Ajouter l'ID du candidat et de l'offre dans la table `listeoffre`
+     String queryInsertListOffre = "INSERT INTO `liste_offres`( `id_condidat`, `id_offre`, `date_postulation`) VALUES (?, ?,  ?)";
+     try (PreparedStatement stmt = cnx.prepareStatement(queryInsertListOffre)) {
+         stmt.setInt(1, lo.getIdCondidate());
+         stmt.setInt(2, getIdOffre());
+
+         stmt.setDate(3,  new Date(lo.getDatePostulation().getTime())); // La date de postulation est la même que la date de dépôt
+         try {
+             stmt.executeUpdate();
+             System.out.println("Insertion réussie !");
+         } catch (SQLException e) {
+             e.printStackTrace();
+             System.out.println("Erreur SQL : " + e.getMessage());
+         } catch (Exception e) {
+             e.printStackTrace();
+             System.out.println("Autre erreur : " + e.getMessage());
+         }
+         System.out.println("ID Candidat: " + lo.getIdCondidate());
+         System.out.println("ID Offre: " + lo.getIdOffre());
+         // Afficher un message de succès
+         Alert alertSuccess = new Alert(Alert.AlertType.INFORMATION);
+         alertSuccess.setTitle("Succès");
+         alertSuccess.setContentText("Candidat ajouté et candidature enregistrée avec succès !");
+         alertSuccess.show();
+
+
+     } catch (SQLException e) {
+         e.printStackTrace();
+         Alert alert = new Alert(Alert.AlertType.ERROR);
+         alert.setTitle("Erreur SQL");
+         alert.setContentText("Erreur lors de l'ajout du candidat dans listeoffre : " + e.getMessage());
+         alert.show();
+     }
+   }
 
 }
 

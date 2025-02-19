@@ -9,16 +9,23 @@ public class ListOffre {
         refuse
     }
     private int idListOffre;
-    private Utilisateur condidate; // User est une autre classe représentant la table `user`
-    private Offre offre; // Offre est une autre classe représentant la table `offre`
+    private int idcondidate; // User est une autre classe représentant la table `user`
+    private int idoffre; // Offre est une autre classe représentant la table `offre`
     private Status status; // Status est un enum que tu devras définir
     private Date datePostulation;
-
-    public ListOffre(int idListOffre, Utilisateur condidate, Offre offre, Status status, Date datePostulation) {
+    public ListOffre(){}
+    public ListOffre(int idListOffre, int idcondidate, Date datePostulation) {
         this.idListOffre = idListOffre;
-        this.condidate = condidate;
-        this.offre = offre;
+        this.idcondidate = idcondidate;
+        this.idoffre = idoffre;
         this.status = status;
+        this.datePostulation = datePostulation;
+    }
+    public ListOffre(int idcondidate, int idoffre, String s, Date datePostulation) {
+
+        this.idcondidate = idcondidate;
+        this.idoffre = idoffre;
+
         this.datePostulation = datePostulation;
     }
 
@@ -32,20 +39,20 @@ public class ListOffre {
         this.idListOffre = idListOffre;
     }
 
-    public Utilisateur getCondidate() {
-        return condidate;
+    public int getIdCondidate() {
+        return idcondidate;
     }
 
-    public void setCondidate(Utilisateur condidate) {
-        this.condidate = condidate;
+    public void setIdCondidate(int condidate) {
+        this.idcondidate = condidate;
     }
 
-    public Offre getOffre() {
-        return offre;
+    public int getIdOffre() {
+        return idoffre;
     }
 
-    public void setOffre(Offre offre) {
-        this.offre = offre;
+    public void setIdOffre(int offre) {
+        this.idoffre = offre;
     }
 
     public Status getStatus() {
@@ -62,5 +69,31 @@ public class ListOffre {
 
     public void setDatePostulation(Date datePostulation) {
         this.datePostulation = datePostulation;
+    }
+    private String nomCandidat;
+    private String prenomCandidat;
+    private String titreOffre;
+    public String getNomCandidat() {
+        return nomCandidat;
+    }
+
+    public void setNomCandidat(String nomCandidat) {
+        this.nomCandidat = nomCandidat;
+    }
+
+    public String getPrenomCandidat() {
+        return prenomCandidat;
+    }
+
+    public void setPrenomCandidat(String prenomCandidat) {
+        this.prenomCandidat = prenomCandidat;
+    }
+
+    public String getTitreOffre() {
+        return titreOffre;
+    }
+
+    public void setTitreOffre(String titreOffre) {
+        this.titreOffre = titreOffre;
     }
 }

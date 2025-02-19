@@ -20,6 +20,8 @@ import tn.esprit.Utils.MyDataBase;
 
 import java.io.IOException;
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -41,6 +43,8 @@ public class Dashboard {
     @FXML
     private TableColumn<Offre, String> coldatePub;
 
+    @FXML
+    private TableColumn<Offre, String> status;
 
     @FXML
     private Button gestcong;
@@ -69,8 +73,6 @@ public class Dashboard {
     @FXML
     private Label logoutlabel;
 
-    @FXML
-    private TableColumn<Offre, String> status;
 
     @FXML
     private AnchorPane tableblanche;
@@ -89,6 +91,8 @@ public class Dashboard {
     private Connection cnx = MyDataBase.getInstance().getCnx();
 
     private final OffreService offreService = new OffreService();
+
+    private Offre offre;  // L'offre qui sera modifiée
     @FXML
     private void loadOffres() {
         try {
@@ -119,10 +123,10 @@ public class Dashboard {
     }
 
 
-    @FXML
+    /*@FXML
     void loadOffres(ActionEvent event) {
-        loadOffres();
-    }
+        loadOffre();
+    }*/
     @FXML
     void handleAjouterOffre(ActionEvent event) throws IOException {
         // Charger le formulaire d'ajout d'offre (AddOffre.fxml)
@@ -138,17 +142,18 @@ public class Dashboard {
         newStage.setScene(scene);
         newStage.setTitle("Ajouter une Offre");
         newStage.show();
+
     }
 
 
     @FXML
     private void loadOffre() {
         ObservableList<Offre> offresList = FXCollections.observableArrayList();
-        System.out.println("hi");
+       // System.out.println("hi");
         String req = "SELECT `id_offre`, `titre`, `description`, `date_publication`, `date_expiration`, `status` FROM `offre`";
         try (Statement st = cnx.createStatement();
              ResultSet rs = st.executeQuery(req)) {
-            System.out.println("bonjour");
+            //System.out.println("bonjour");
             while (rs.next()) {
                 int idOffre = rs.getInt("id_offre"); // Important : on récupère l'ID même si on ne l'affiche pas
                 String titre = rs.getString("titre");
@@ -186,6 +191,7 @@ public class Dashboard {
                 btnEdit.setOnAction(event -> {
                     Offre offre = getTableView().getItems().get(getIndex());
                     showEditPopup(offre);
+                    reloadTableData();
                 });
 
                 btnDelete.setOnAction(event -> {
@@ -226,8 +232,14 @@ public class Dashboard {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ModifierOffre.fxml"));
             Parent root = loader.load();
             ModifierOffre controller = loader.getController();
-            controller.setOffre(offre);
-
+            Offre selectedData = tabledaffichage.getSelectionModel().getSelectedItem();
+            if (selectedData != null) {
+                controller.setOffre(offre);
+            }
+            else {
+                // Aucune ligne sélectionnée
+                System.out.println("Aucune ligne sélectionnée.");
+            }
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.setTitle("Modifier l'offre");
@@ -271,6 +283,13 @@ public class Dashboard {
     }
 
 
+    // Méthode pour afficher une alerte
+    private void showAlert(Alert.AlertType alertType, String title, String content) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
     @FXML
     private void afficherAlerte(String titre, String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -278,6 +297,39 @@ public class Dashboard {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void reloadTableData() {
+        // Créer une nouvelle ObservableList
+        ObservableList<Offre> offreList = FXCollections.observableArrayList();
+
+        // Créer une instance de OffreService
+        OffreService offreService = new OffreService();
+
+        try {
+            System.out.println("reload depart");
+            // Récupérer les offres actualisées depuis la base de données
+            List<Offre> offres = offreService.showAll(); // Récupérer les offres
+
+            if (offres != null && !offres.isEmpty()) {
+                // Ajouter les offres dans l'ObservableList
+                offreList.setAll(offres);
+            } else {
+                // Si aucune offre n'est trouvée, afficher une alerte
+                showAlert(Alert.AlertType.WARNING, "Aucune offre", "Aucune offre disponible.");
+            }
+        } catch (SQLException e) {
+            // Gérer l'exception en cas d'erreur lors de la récupération des données
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors du chargement des offres.");
+            e.printStackTrace();
+            return;
+        }
+
+        // Mettre à jour la TableView avec la nouvelle ObservableList
+        tabledaffichage.setItems(offreList);
+
+        // Forcer un rafraîchissement de la TableView
+        tabledaffichage.refresh();
     }
 
 

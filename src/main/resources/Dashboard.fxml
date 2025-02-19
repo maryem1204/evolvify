@@ -134,7 +134,7 @@
                         <AnchorPane fx:id="tableblanche" layoutX="14.0" layoutY="26.0" prefHeight="513.0" prefWidth="843.0" styleClass="white-bg" stylesheets="@../java/tn/esprit/Styles/color.css">
                            <children>
                               <TextField layoutX="32.0" layoutY="27.0" prefHeight="34.0" prefWidth="279.0" promptText="recherche" styleClass="shadow" />
-                              <TableView fx:id="tabledaffichage" layoutX="17.0" layoutY="86.0" prefHeight="221.0" prefWidth="794.0" styleClass="shadow">
+                              <TableView fx:id="tabledaffichage" layoutX="17.0" layoutY="86.0" prefHeight="312.0" prefWidth="794.0" styleClass="shadow">
                                 <columns>
 
                                   <TableColumn fx:id="colTitre" prefWidth="96.0" text="Titre" />

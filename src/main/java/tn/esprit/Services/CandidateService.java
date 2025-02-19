@@ -4,10 +4,7 @@ import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Utils.MyDataBase;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 
 
@@ -21,7 +18,7 @@ public class CandidateService implements CRUD<Utilisateur> {
         String req = "INSERT INTO `users`(`firstname`, `lastname`, `email`, `password`, `profilePhoto`, `birthdayDate`, `joiningDate`,  `tt_restants`, `conge_restant`, `uploaded_cv`, `num_tel`) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?)";
 
-        ps = cnx.prepareStatement(req);
+        ps = cnx.prepareStatement(req, PreparedStatement.RETURN_GENERATED_KEYS);
 
         ps.setString(1, user.getFirstname());
         ps.setString(2, user.getLastname());
@@ -40,8 +37,27 @@ public class CandidateService implements CRUD<Utilisateur> {
 
         // Exécuter la mise à jour et retourner le nombre de lignes insérées
         int rowsAffected = ps.executeUpdate();
-
+// Récupérer l'ID généré
+        if (rowsAffected > 0) {
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    int generatedId = rs.getInt(1);  // Récupérer l'ID généré
+                    user.setId_employe(generatedId);  // Mettre à jour l'objet Utilisateur avec l'ID généré
+                    System.out.println("ID du candidat généré : " + generatedId);
+                }
+            }
+        }
         return rowsAffected;
+    }
+    public int getLastInsertedId() throws SQLException {
+        String query = "SELECT LAST_INSERT_ID()";
+        try (PreparedStatement stmt = cnx.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1); // Récupérer le dernier ID inséré
+            }
+            return -1; // Retourner -1 si aucun ID n'est trouvé
+        }
     }
 
 

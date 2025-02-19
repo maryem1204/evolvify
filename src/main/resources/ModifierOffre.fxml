@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.SplitMenuButton?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -20,7 +19,7 @@
                </font>
             </Label>
             <DatePicker fx:id="datepub" layoutX="282.0" layoutY="326.0" styleClass="shadow-effect" />
-            <Button fx:id="buttonAdd" layoutX="198.0" layoutY="538.0" maxWidth="212.0" mnemonicParsing="false" prefHeight="59.0" prefWidth="168.0" styleClass="gradient-button" stylesheets="@../java/tn/esprit/Styles/color.css" text="Confirme">
+            <Button fx:id="buttonAdd" layoutX="198.0" layoutY="538.0" maxWidth="212.0" mnemonicParsing="false" onAction="#handleModifier" prefHeight="59.0" prefWidth="168.0" styleClass="gradient-button" stylesheets="@../java/tn/esprit/Styles/color.css" text="Confirme">
                <font>
                   <Font size="18.0" />
                </font>
@@ -48,13 +47,7 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <SplitMenuButton fx:id="status" layoutX="279.0" layoutY="456.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="174.0" text="choisir status">
-              <items>
-                <MenuItem mnemonicParsing="false" text="expire" />
-                <MenuItem mnemonicParsing="false" text="active" />
-                  <MenuItem mnemonicParsing="false" text="attend" />
-              </items>
-            </SplitMenuButton>
+            <ChoiceBox fx:id="status" layoutX="279.0" layoutY="456.0" prefHeight="25.0" prefWidth="174.0" styleClass="shadow-effect" stylesheets="@../java/tn/esprit/Styles/color.css" />
          </children>
       </AnchorPane>
    </children>
