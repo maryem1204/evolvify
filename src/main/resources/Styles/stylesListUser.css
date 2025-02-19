@@ -142,6 +142,7 @@ StackPane {
     -fx-text-fill: black;
 }
 
+
 /* Style des images dans la colonne Profil */
 .image-column {
     -fx-alignment: CENTER;
