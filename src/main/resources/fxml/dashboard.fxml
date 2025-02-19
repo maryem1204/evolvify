@@ -83,7 +83,8 @@
                                     </ImageView>
                                  </graphic>
                               </Button>
-                              <Button fx:id="gestpro" layoutX="6.0" layoutY="160.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="202.0" styleClass="nav-btn" stylesheets="@/Styles/color.css" text="Gestion Projet" textFill="#9e1470">
+                              <Button fx:id="gestpro" layoutX="6.0" layoutY="160.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="202.0" styleClass="nav-btn" stylesheets="@/Styles/color.css"
+                                      text="Gestion Projet" textFill="#9e1470" onAction="#handleGestionProjet" >
                                  <font>
                                     <Font size="14.0" />
                                  </font>

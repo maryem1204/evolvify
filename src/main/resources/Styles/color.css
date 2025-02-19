@@ -40,3 +40,28 @@
 #gests {
     -fx-background-color: linear-gradient(to bottom, #0F82E6, #0047AB);
 }
+
+.status-label {
+    -fx-background-radius: 15;
+    -fx-padding: 5;
+    -fx-alignment: center;
+    -fx-font-weight: bold;
+}
+
+/* Rouge pour Canceled */
+.status-label[canceled] {
+    -fx-background-color: #ff4d4d;
+    -fx-text-fill: white;
+}
+
+/* Jaune pour In Progress */
+.status-label[inprogress] {
+    -fx-background-color: #ffcc00;
+    -fx-text-fill: black;
+}
+
+/* Vert pour Completed */
+.status-label[completed] {
+    -fx-background-color: #33cc33;
+    -fx-text-fill: white;
+}

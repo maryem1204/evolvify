@@ -72,5 +72,9 @@ public class Dashboard {
     private void handleGestionUtilisateur(ActionEvent event) {
         loadView("/fxml/listUsers.fxml");
     }
+    @FXML
+    private void handleGestionProjet(ActionEvent event) {
+        loadView("/fxml/ListProjet.fxml");
+    }
 
 }

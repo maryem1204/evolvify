@@ -1,0 +1,93 @@
+/* Appliquer un fond blanc */
+.root {
+
+}
+
+/* Ajuster le header */
+HBox {
+    -fx-background-color: white;
+    -fx-padding: 10px;
+}
+
+/* Agrandir et styliser le tableau */
+.TableView {
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-background-color: white;
+    -fx-padding: 10;
+    -fx-border-color: #ccc;
+    -fx-border-width: 1px;
+}
+
+/* Ajuster l'en-tête du tableau */
+.table-view .column-header {
+    -fx-background-color: #4A90E2;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+/* Ajuster les cellules du tableau */
+.table-view .table-row-cell {
+    -fx-border-color: transparent transparent #ddd transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: #4A90E2;
+    -fx-text-fill: white;
+}
+
+.TextField {
+    -fx-background-radius: 5;
+    -fx-pref-width: 200;
+}
+.gradient-button {
+    -fx-background-color: linear-gradient(from 55% 0% to 100% 100%, #0055FF 0%, #0099FF 55%, #0055FF 90%);
+    -fx-text-fill: white;
+    -fx-padding: 10px 20px;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-border-color: transparent;
+    -fx-effect: dropshadow(three-pass-box, rgba(71, 184, 255, 0.5), 10, 0, 0, 5);
+}
+
+/* Effet au survol */
+.gradient-button:hover {
+    -fx-background-color: linear-gradient(from 55% 0% to 100% 100%, #0099FF 0%, #0055FF 55%, #0099FF 90%);
+}
+
+/* Effet quand le bouton est enfoncé */
+.gradient-button:pressed {
+    -fx-background-color: linear-gradient(from 55% 0% to 100% 100%, #0044CC 0%, #0077DD 55%, #0044CC 90%);
+    -fx-effect: dropshadow(three-pass-box, rgba(19, 95, 216, 0.35), 5, 0, 0, 3);
+}
+
+/* Barre de recherche */
+/* Barre de recherche */
+.search-bar {
+    -fx-background-color: #ffffff; /* Couleur de fond blanche (plus propre que gris) */
+    -fx-border-radius: 20px; /* Coins arrondis */
+    -fx-border-color: #ccc; /* Bordure légère */
+    -fx-border-width: 1px;
+    -fx-padding: 10px;
+    -fx-font-size: 14px;
+    -fx-pref-width: 350px; /* Largeur de la barre élargie */
+    -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.2), 3, 0, 0, 1); /* Ombre subtile */
+    -fx-background-insets: 0, 1;
+}
+
+/* Focus sur la barre de recherche */
+.search-bar:focused {
+    -fx-border-color: #4CAF50; /* Bordure verte lors du focus */
+}
+
+/* Transition douce pour la barre de recherche */
+.search-bar {
+    -fx-transition: all 0.3s ease;
+}
+
+
+

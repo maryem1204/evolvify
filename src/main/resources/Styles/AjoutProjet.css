@@ -1,0 +1,47 @@
+
+.label {
+    -fx-text-fill: black;
+}
+
+/* Styles pour les labels obligatoires dans le formulaire d'ajout */
+.required {
+    -fx-text-fill: red;
+}
+
+/* Styles pour les champs de texte dans le formulaire d'ajout */
+.text-field {
+    -fx-background-color: #f0f0f0;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+}
+
+/* Styles pour les ComboBox dans le formulaire d'ajout */
+.combo-box {
+    -fx-background-color: #f0f0f0;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+}
+
+
+/* Si tu veux des bordures ou des marges spécifiques pour le formulaire */
+.form-container {
+    -fx-padding: 20px;
+    -fx-spacing: 10px;
+    -fx-background-color: #f9f9f9;
+    -fx-border-radius: 10px;
+    -fx-border-color: #ccc;
+    -fx-border-width: 1px;
+}
+.gradient-button {
+    -fx-background-color: linear-gradient(from 55% 0% to 100% 100%, #0055FF 0%, #0099FF 55%, #0055FF 90%);
+    -fx-text-fill: white;
+    -fx-padding: 10px 20px;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-border-color: transparent;
+    -fx-effect: dropshadow(three-pass-box, rgba(71, 184, 255, 0.5), 10, 0, 0, 5);
+}
+
+
