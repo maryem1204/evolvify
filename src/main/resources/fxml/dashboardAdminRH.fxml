@@ -1,106 +1,113 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.chart.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-<?import javafx.scene.shape.*?>
 
-<?import java.lang.String?>
 <?import java.net.URL?>
-<AnchorPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="tn.esprit.Controllers.DashAdminRHController" stylesheets="@/Styles/style.css">
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Line?>
+
+<AnchorPane maxHeight="Infinity" maxWidth="Infinity" stylesheets="@/Styles/style.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.Controllers.DashAdminRHController">
     <stylesheets>
-        <URL value="@../Styles/style.css"/>
+        <URL value="@../Styles/style.css" />
     </stylesheets>
 
     <children>
-        <Pane prefWidth="1024" prefHeight="768" style="-fx-background-color: #f4f4f4;">
+        <AnchorPane minHeight="300" minWidth="500" prefHeight="300" prefWidth="800" >
 
-            <HBox spacing="20" layoutX="20" layoutY="20">
+            <HBox layoutX="20" layoutY="20" spacing="20">
                 <!-- Statistiques -->
-                <VBox prefWidth="220" prefHeight="200" styleClass="card">
-                    <Label text="Statistiques" styleClass="card-title"/>
-                    <PieChart fx:id="pieChart" prefWidth="200" prefHeight="160"/>
+                <VBox prefHeight="200" prefWidth="230" styleClass="card">
+                    <Label styleClass="card-title" text="Statistiques" />
+                    <PieChart fx:id="pieChart" prefHeight="160" prefWidth="200" />
                 </VBox>
 
                 <!-- Performance -->
-                <VBox prefWidth="330" prefHeight="200" styleClass="card">
-                    <Label text="Performance" styleClass="card-title"/>
-                    <BarChart fx:id="barChart" prefWidth="280" prefHeight="160">
+                <VBox prefHeight="200" prefWidth="330" styleClass="card">
+                    <Label styleClass="card-title" text="Performance" />
+                    <BarChart fx:id="barChart" prefHeight="160" prefWidth="280">
                         <xAxis>
-                            <CategoryAxis fx:id="categoryAxis"/>
+                            <CategoryAxis fx:id="categoryAxis" />
                         </xAxis>
                         <yAxis>
-                            <NumberAxis/>
+                            <NumberAxis />
                         </yAxis>
                     </BarChart>
                 </VBox>
 
                 <!-- Courbe -->
-                <VBox prefWidth="360" prefHeight="150" styleClass="card">
-                    <Label text="Courbe" styleClass="card-title"/>
-                    <LineChart fx:id="lineChart" prefWidth="280" prefHeight="160">
+                <VBox prefHeight="150" prefWidth="400" styleClass="card">
+                    <Label styleClass="card-title" text="Courbe" />
+                    <LineChart fx:id="lineChart" prefHeight="160" prefWidth="280">
                         <xAxis>
-                            <CategoryAxis fx:id="lineChartXAxis"/>
+                            <CategoryAxis fx:id="lineChartXAxis" />
                         </xAxis>
                         <yAxis>
-                            <NumberAxis/>
+                            <NumberAxis />
                         </yAxis>
                     </LineChart>
                 </VBox>
             </HBox>
 
             <!-- Effectifs -->
-            <VBox layoutX="20" layoutY="250" prefWidth="230" prefHeight="500" styleClass="card" spacing="50">
-                <Label text="Effectifs" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+            <VBox layoutX="20" layoutY="250" prefHeight="440" prefWidth="220" spacing="50" styleClass="card">
+                <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Effectifs" />
                 <Pane>
                     <VBox layoutX="10" layoutY="5" spacing="70">
-                        <Circle radius="8" fill="red"/>
-                        <Circle radius="8" fill="orange"/>
-                        <Circle radius="8" fill="#9e63f8"/>
-                        <Circle radius="8" fill="green"/>
-                        <Circle radius="8" fill="blue"/>
+                        <Circle fill="red" radius="8" />
+                        <Circle fill="orange" radius="8" />
+                        <Circle fill="#9e63f8" radius="8" />
+                        <Circle fill="green" radius="8" />
+                        <Circle fill="blue" radius="8" />
                     </VBox>
-                    <Line startX="20" startY="10" endX="20" endY="370" stroke="gray" strokeWidth="1"/>
+                    <Line endX="20" endY="370" startX="20" startY="10" stroke="gray" strokeWidth="1" />
                     <VBox layoutX="40" layoutY="0" spacing="60">
-                        <Label fx:id="labelHommes" style="-fx-text-fill: red; -fx-font-size: 16px; -fx-font-weight: bold;"/>
-                        <Label fx:id="labelFemmes" style="-fx-text-fill: orange; -fx-font-size: 16px; -fx-font-weight: bold;"/>
-                        <Label fx:id="labelTotalEmployes" style="-fx-text-fill: rgba(158,99,248,0.65); -fx-font-size: 16px; -fx-font-weight: bold;"/>
-                        <Label fx:id="labelCongesAcceptes" style="-fx-text-fill: green; -fx-font-size: 16px; -fx-font-weight: bold;"/>
-                        <Label fx:id="labelCandidats" style="-fx-text-fill: blue; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+                        <Label fx:id="labelHommes" style="-fx-text-fill: red; -fx-font-size: 16px; -fx-font-weight: bold;" />
+                        <Label fx:id="labelFemmes" style="-fx-text-fill: orange; -fx-font-size: 16px; -fx-font-weight: bold;" />
+                        <Label fx:id="labelTotalEmployes" style="-fx-text-fill: rgba(158,99,248,0.65); -fx-font-size: 16px; -fx-font-weight: bold;" />
+                        <Label fx:id="labelCongesAcceptes" style="-fx-text-fill: green; -fx-font-size: 16px; -fx-font-weight: bold;" />
+                        <Label fx:id="labelCandidats" style="-fx-text-fill: blue; -fx-font-size: 16px; -fx-font-weight: bold;" />
                     </VBox>
                 </Pane>
             </VBox>
-
             <!-- Liste des employés -->
-            <VBox layoutX="260" layoutY="250" prefWidth="720" prefHeight="270" styleClass="card">
-                <Label text="Liste des employés" styleClass="card-title"/>
-                <TextField fx:id="searchField" promptText="Rechercher..."/>
-                <TableView fx:id="employeeTable" prefWidth="680" prefHeight="200">
+            <VBox layoutX="260" layoutY="250" prefHeight="220" prefWidth="752" styleClass="card">
+                <Label styleClass="card-title" text="Liste des employés" />
+                <TextField fx:id="searchField" promptText="Rechercher..." />
+                <TableView fx:id="employeeTable" prefHeight="130" prefWidth="680">
                     <columns>
-                        <TableColumn text="Nom" fx:id="nameColumn"/>
-                        <TableColumn text="Numéro" fx:id="numberColumn"/>
-                        <TableColumn text="Date" fx:id="dateColumn"/>
-                        <TableColumn text="Statut" fx:id="statusColumn"/>
+                        <TableColumn fx:id="nameColumn" text="Nom" />
+                        <TableColumn fx:id="numberColumn" text="Numéro" />
+                        <TableColumn fx:id="dateColumn" text="Date" />
+                        <TableColumn fx:id="statusColumn" text="Statut" />
                     </columns>
                 </TableView>
             </VBox>
 
-
             <!-- Progression -->
-            <VBox fx:id="progressionBox" layoutX="260" layoutY="530" prefWidth="720" prefHeight="200" styleClass="card">
-                <Label text="Progression" styleClass="card-title"/>
-                <BarChart fx:id="progressChart" prefWidth="680" prefHeight="160">
+            <VBox fx:id="progressionBox" layoutX="260" layoutY="430" translateY="-30" prefHeight="140" prefWidth="752" styleClass="card">
+                <Label styleClass="card-title" text="Progression" />
+                <BarChart fx:id="progressChart" prefHeight="100" prefWidth="680">
                     <xAxis>
-                        <CategoryAxis fx:id="progressChartXAxis"/>
+                        <CategoryAxis fx:id="progressChartXAxis" />
                     </xAxis>
                     <yAxis>
-                        <NumberAxis/>
+                        <NumberAxis />
                     </yAxis>
                 </BarChart>
             </VBox>
 
-
-        </Pane>
+        </AnchorPane>
     </children>
 </AnchorPane>

@@ -22,7 +22,7 @@
 
 
 .searchBox {
-    -fx-background-color: #2f3640;
+    -fx-background-color: rgba(30, 155, 244, 0.65);
     -fx-background-radius: 25px;
     -fx-padding: 5px;
     -fx-spacing: 5px;
@@ -35,11 +35,13 @@
     -fx-border-color: transparent;
     -fx-text-fill: white;
     -fx-font-size: 15px;
-    -fx-padding: 5px;
-    -fx-prompt-text-fill: rgba(255, 255, 255, 0.5);
-    -fx-pref-width: 220px;  /* Largeur préférée */
+    -fx-padding: 3px;
+    -fx-prompt-text-fill: black;
+    -fx-pref-width: 220px;
     -fx-max-width: 220px;
+    -fx-end-margin: 20px; /* Pas utile en JavaFX */
 }
+
 
 ImageView {
     -fx-opacity: 0.8; /* Rend l'icône légèrement visible */
@@ -87,7 +89,7 @@ StackPane {
 .search-bar {
     -fx-background-color: #343A40;
     -fx-text-fill: white;
-    -fx-padding: 8px;
+    -fx-padding: 4px;
     -fx-border-radius: 20px;
     -fx-background-radius: 20px;
     -fx-pref-width: 300px;
@@ -165,4 +167,41 @@ StackPane {
 .floating-button:hover {
     -fx-background-color: #3700B3;
 }
+
+/* Styles pour améliorer la pagination */
+.styled-pagination {
+    -fx-page-information-visible: false;
+    -fx-background-color: transparent;
+}
+
+.styled-pagination .pagination-control {
+    -fx-background-color: #E0E0E0;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-padding: 5px;
+}
+
+.styled-pagination .pagination-control .button {
+    -fx-background-color: rgba(74, 127, 204, 0.77);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 5px 10px;
+}
+
+.styled-pagination .pagination-control .button:hover {
+    -fx-background-color: #002F6C;
+}
+
+.styled-pagination .pagination-control .button:disabled {
+    -fx-background-color: #B0BEC5;
+}
+
+.styled-pagination .pagination-control .toggle-button:selected {
+    -fx-background-color: #FF9800;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
 

@@ -22,12 +22,12 @@
             </HBox>
 
             <!-- Barre de recherche -->
-            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="searchBox" maxWidth="400">
+            <HBox alignment="CENTER_LEFT" spacing="5" styleClass="searchBox" style="-fx-padding: 0 0 15px 0;">
                 <TextField fx:id="searchField" promptText="Rechercher un employé..."
-                           styleClass="searchInput" maxWidth="300"/>
+                           styleClass="searchInput" maxWidth="250" />
 
                 <Button fx:id="searchButton" onAction="#handleSearch"
-                        styleClass="searchButton" alignment="TOP_RIGHT">
+                        styleClass="searchButton" minWidth="40" minHeight="40">
                     <graphic>
                         <ImageView fitWidth="20" fitHeight="20">
                             <image>
@@ -37,30 +37,38 @@
                     </graphic>
                 </Button>
             </HBox>
-        </VBox>
+
+        </VBox> <!-- Ici, on ferme correctement le VBox -->
     </top>
 
     <!-- TableView bien positionné -->
     <center>
-        <AnchorPane >
+        <AnchorPane>
             <TableView fx:id="employeeTable" AnchorPane.topAnchor="0.0"
                        AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                        AnchorPane.rightAnchor="0.0" prefHeight="700" prefWidth="1600">
                 <columns>
                     <TableColumn fx:id="colProfile" text="Profile" prefWidth="80"/>
-                    <TableColumn fx:id="colFirstName" text="Nom" prefWidth="120"/>
-                    <TableColumn fx:id="colLastName" text="Prénom" prefWidth="120"/>
-                    <TableColumn fx:id="colEmail" text="Email" prefWidth="180"/>
-                    <TableColumn fx:id="colBirthday" text="Date de Naissance" prefWidth="100"/>
-                    <TableColumn fx:id="colJoiningDate" text="Date d'embauche" prefWidth="100"/>
-                    <TableColumn fx:id="colRole" text="Rôle" prefWidth="120"/>
-                    <TableColumn fx:id="colNumTel" text="Téléphone" prefWidth="120"/>
-                    <TableColumn fx:id="colCongeRestant" text="Congés Restants" prefWidth="120"/>
-                    <TableColumn fx:id="colTtRestants" text="TT Restants" prefWidth="120"/>
-                    <TableColumn fx:id="colActions" text="Actions" prefWidth="200"/>
+                    <TableColumn fx:id="colFirstName" text="Nom" prefWidth="80"/>
+                    <TableColumn fx:id="colLastName" text="Prénom" prefWidth="80"/>
+                    <TableColumn fx:id="colEmail" text="Email" prefWidth="120"/>
+                    <TableColumn fx:id="colBirthday" text="Date de Naissance" prefWidth="90"/>
+                    <TableColumn fx:id="colJoiningDate" text="Date d'embauche" prefWidth="90"/>
+                    <TableColumn fx:id="colRole" text="Rôle" prefWidth="90"/>
+                    <TableColumn fx:id="colNumTel" text="Téléphone" prefWidth="90"/>
+                    <TableColumn fx:id="colCongeRestant" text="Congés Restants" prefWidth="60"/>
+                    <TableColumn fx:id="colTtRestants" text="TT Restants" prefWidth="60"/>
+                    <TableColumn fx:id="colActions" text="Actions" prefWidth="100"/>
                 </columns>
             </TableView>
         </AnchorPane>
     </center>
+
+    <bottom>
+        <HBox alignment="CENTER" spacing="10" style="-fx-padding: 10px;">
+            <Pagination fx:id="pagination" pageCount="1" maxPageIndicatorCount="5"
+                        styleClass="styled-pagination"/>
+        </HBox>
+    </bottom>
 
 </BorderPane>

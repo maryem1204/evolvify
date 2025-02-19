@@ -18,6 +18,9 @@ public class MainFX extends Application {
             primaryStage.setTitle("Dashboard");
             primaryStage.setResizable(false);
 
+            //primaryStage.setMinWidth(1366); // Largeur minimale (ex : Full HD)
+            //primaryStage.setMinHeight(768); // Hauteur minimale       e'
+
             //primaryStage.initStyle(StageStyle.UTILITY);
             primaryStage.setScene(new Scene(root));
             primaryStage.show();
