@@ -1,60 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.geometry.*?>
 
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.image.Image?>
-<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="tn.esprit.Controllers.DashboardCongeRh" stylesheets="@../Styles/DashboardCongeRh.css">
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane stylesheets="@../Styles/DashboardCongeRh.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="tn.esprit.Controllers.DashboardCongeRh">
 
     <!-- Contenu principal -->
+    <top>
+        <HBox spacing="20" style="-fx-padding:20px 20px 10px 20px; -fx-alignment: top-right;">
+            <Button fx:id="addLeaveButton" onAction="#showAddCongePopup" styleClass="gradient-button" text="+ Ajouter Congé" />
+        </HBox>
+    </top>
+
     <center>
-        <VBox spacing="15" style="-fx-padding: 20 20 20 20;"> <!-- Correction ici -->
-            <HBox spacing="10">
-                <TextField fx:id="searchField" promptText="Rechercher un congé..." styleClass="searchInput" maxWidth="300"/>
-                <Button text="🔍" fx:id="searchButton" onAction="#handleSearch" styleClass="searchButton" alignment="TOP_RIGHT"/>
-                <Button text="+ Ajouter Congé" fx:id="addLeaveButton" styleClass="gradient-button" onAction="#showAddCongePopup" />
-            </HBox>
+        <!-- Conteneur TabPane avec les deux listes -->
+        <TabPane prefHeight="600.0" prefWidth="1000.0" tabClosingPolicy="UNAVAILABLE" style="-fx-padding: 10px;">
+            <tabs>
+                <!-- Tab pour Congés -->
+                <Tab text="Congés" styleClass="tab-conges">
+                    <content>
+                        <VBox spacing="10">
+                            <TableView fx:id="leaveTable" style="-fx-border-color: #ddd;" visible="true" styleClass="table-view">
+                                <columns>
+                                    <TableColumn fx:id="colEmployee" text="Employé" />
+                                    <TableColumn fx:id="colType" text="Type" />
+                                    <TableColumn fx:id="colStartDate" text="Date début" />
+                                    <TableColumn fx:id="colEndDate" text="Date fin" />
+                                    <TableColumn fx:id="colDays" text="Jours" />
+                                    <TableColumn fx:id="colReason" text="Raison" />
+                                    <TableColumn fx:id="colStatus" text="Statut" />
+                                    <TableColumn fx:id="colActions" text="Actions" />
+                                </columns>
+                            </TableView>
+                        </VBox>
+                    </content>
+                </Tab>
 
-            <!-- Espacement entre les boutons "Congés", "TT" et "Autorisation" et la table -->
-            <HBox spacing="15" alignment="CENTER">
-                <Button text="Congés" onAction="#showConges" styleClass="button-small"/>
-                <Button text="TT" onAction="#showTT" styleClass="button-small"/>
-            </HBox>
-
-            <!-- Espacement entre les boutons et le tableau -->
-            <Region style="-fx-pref-height: 20px;"/>
-
-            <!-- Conteneur pour les deux TableView -->
-            <StackPane>
-                <!-- Tableau des congés -->
-                <TableView fx:id="leaveTable" visible="true" style="-fx-border-color: #ddd;">
-                    <columns>
-                        <TableColumn text="Employé" fx:id="colEmployee" />
-                        <TableColumn text="Type" fx:id="colType" />
-                        <TableColumn text="Date début" fx:id="colStartDate" />
-                        <TableColumn text="Date fin" fx:id="colEndDate" />
-                        <TableColumn text="Jours" fx:id="colDays" />
-                        <TableColumn text="Raison" fx:id="colReason" />
-                        <TableColumn text="Statut" fx:id="colStatus" />
-                        <TableColumn text="Actions" fx:id="colActions"/>
-                    </columns>
-                </TableView>
-
-                <!-- Tableau des TT -->
-                <TableView fx:id="leaveTt" visible="false" style="-fx-border-color: #ddd;">
-                    <columns>
-                        <TableColumn text="Employé" fx:id="colEmployeeTT" />
-                        <TableColumn text="Date début" fx:id="colStartDateTT" />
-                        <TableColumn text="Date fin" fx:id="colEndDateTT" />
-                        <TableColumn text="Jours" fx:id="colDaysTT" />
-                        <TableColumn text="Statut" fx:id="colStatusTT" />
-                        <TableColumn text="Actions" fx:id="colActionsTT"/>
-                    </columns>
-                </TableView>
-            </StackPane>
-
-        </VBox>
+                <!-- Tab pour TT -->
+                <Tab text="TT" styleClass="tab-tt">
+                    <content>
+                        <VBox spacing="10">
+                            <TableView fx:id="leaveTt" style="-fx-border-color: #ddd;" visible="true" styleClass="table-view">
+                                <columns>
+                                    <TableColumn fx:id="colEmployeeTT" text="Employé" />
+                                    <TableColumn fx:id="colStartDateTT" text="Date début" />
+                                    <TableColumn fx:id="colEndDateTT" text="Date fin" />
+                                    <TableColumn fx:id="colDaysTT" text="Jours" />
+                                    <TableColumn fx:id="colStatusTT" text="Statut" />
+                                    <TableColumn fx:id="colActionsTT" text="Actions" />
+                                </columns>
+                            </TableView>
+                        </VBox>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
     </center>
 
 </BorderPane>
+

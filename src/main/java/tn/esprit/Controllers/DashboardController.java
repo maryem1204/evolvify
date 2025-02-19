@@ -78,4 +78,5 @@ public class DashboardController {
     private void handleGestionConge(ActionEvent event) {
         loadView("/fxml/dashboardCongeRh.fxml");
     }
+
 }

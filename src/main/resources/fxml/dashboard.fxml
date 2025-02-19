@@ -107,7 +107,7 @@
                                                 </ImageView>
                                             </graphic>
                                         </Button>
-                                        <Button fx:id="gestcong" layoutX="6.0" layoutY="218.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="202.0" styleClass="nav-btn" stylesheets="@/Styles/color.css" text="Gestion Conge" textFill="#9e1470" >
+                                        <Button onAction="#handleGestionConge" fx:id="gestcong" layoutX="6.0" layoutY="218.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="202.0" styleClass="nav-btn" stylesheets="@/Styles/color.css" text="Gestion Conge" textFill="#9e1470" >
                                             <font>
                                                 <Font size="14.0" />
                                             </font>

@@ -8,6 +8,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -51,8 +53,7 @@ public class DashboardCongeRh {
     private Button addLeaveButton;
     @FXML
     private TextField searchField;
-    @FXML
-    private Button searchButton;
+
 
     private final CongeService congeService = new CongeService();
     private final TtService ttService = new TtService();
@@ -63,11 +64,13 @@ public class DashboardCongeRh {
 
     @FXML
     public void initialize() {
+        leaveTt.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        leaveTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         setupTableColumns();
         setupTtTableColumns();
         loadConges();
         loadTt();
-        searchButton.setOnAction(event -> searchConges());
+        //searchButton.setOnAction(event -> searchConges());
     }
 
     private void setupTableColumns() {
@@ -87,18 +90,24 @@ public class DashboardCongeRh {
             @Override
             public TableCell<Conge, String> call(TableColumn<Conge, String> param) {
                 return new TableCell<Conge, String>() {
-                    private final Button editButton = new Button("Éditer");
-                    private final Button deleteButton = new Button("Supprimer");
-                    private final HBox actionButtons = new HBox(5, editButton, deleteButton);
+                    private final ImageView editIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/editIcon.png")));
+                    private final ImageView deleteIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/deleteIcon.png")));
+                    private final HBox hbox = new HBox(10, editIcon, deleteIcon);
 
                     {
-                        editButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
-                        deleteButton.setStyle("-fx-background-color: #f44336; -fx-text-fill: white;");
-                        editButton.setOnAction(event -> {
+                        // Taille des icônes
+                        editIcon.setFitHeight(20);
+                        editIcon.setFitWidth(20);
+                        deleteIcon.setFitHeight(20);
+                        deleteIcon.setFitWidth(20);
+
+                        // Action sur le clic des icônes
+                        editIcon.setOnMouseClicked(event -> {
                             Conge conge = getTableView().getItems().get(getIndex());
                             editConge(conge);
                         });
-                        deleteButton.setOnAction(event -> {
+
+                        deleteIcon.setOnMouseClicked(event -> {
                             Conge conge = getTableView().getItems().get(getIndex());
                             deleteConge(conge);
                         });
@@ -110,13 +119,14 @@ public class DashboardCongeRh {
                         if (empty) {
                             setGraphic(null);
                         } else {
-                            setGraphic(actionButtons);
+                            setGraphic(hbox);
                         }
                     }
                 };
             }
         });
     }
+
 
     private void setupTtTableColumns() {
         colEmployeeTT.setCellValueFactory(cellData -> {
@@ -134,18 +144,24 @@ public class DashboardCongeRh {
             @Override
             public TableCell<Tt, String> call(TableColumn<Tt, String> param) {
                 return new TableCell<Tt, String>() {
-                    private final Button editButtonTT = new Button("Éditer");
-                    private final Button deleteButtonTT = new Button("Supprimer");
-                    private final HBox actionButtons = new HBox(5, editButtonTT, deleteButtonTT);
+                    private final ImageView editIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/editIcon.png")));
+                    private final ImageView deleteIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/deleteIcon.png")));
+                    private final HBox hbox = new HBox(10, editIcon, deleteIcon);
 
                     {
-                        editButtonTT.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
-                        deleteButtonTT.setStyle("-fx-background-color: #f44336; -fx-text-fill: white;");
-                        editButtonTT.setOnAction(event -> {
+                        // Taille des icônes
+                        editIcon.setFitHeight(20);
+                        editIcon.setFitWidth(20);
+                        deleteIcon.setFitHeight(20);
+                        deleteIcon.setFitWidth(20);
+
+                        // Action sur le clic des icônes
+                        editIcon.setOnMouseClicked(event -> {
                             Tt tt = getTableView().getItems().get(getIndex());
                             editTt(tt);
                         });
-                        deleteButtonTT.setOnAction(event -> {
+
+                        deleteIcon.setOnMouseClicked(event -> {
                             Tt tt = getTableView().getItems().get(getIndex());
                             deleteTt(tt);
                         });
@@ -157,13 +173,14 @@ public class DashboardCongeRh {
                         if (empty) {
                             setGraphic(null);
                         } else {
-                            setGraphic(actionButtons);
+                            setGraphic(hbox);
                         }
                     }
                 };
             }
         });
     }
+
 
     private void loadConges() {
         try {
@@ -255,7 +272,7 @@ public class DashboardCongeRh {
     }
 
     private void editTt(Tt tt) {
-        /*try {
+        try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EditTt.fxml"));
             Parent root = loader.load();
             EditTtController controller = loader.getController();
@@ -269,7 +286,7 @@ public class DashboardCongeRh {
             loadTt();  // Rafraîchir après modification
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     @FXML
