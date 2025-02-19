@@ -1,14 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="$CONTROLLER_NAME$"
-            prefHeight="400.0" prefWidth="600.0" >
+<AnchorPane prefHeight="636.0" prefWidth="844.0" stylesheets="@../java/tn/esprit/Styles/color.css" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.FrontController">
+   <children>
+      <Label layoutX="253.0" layoutY="44.0" prefHeight="36.0" prefWidth="506.0" text="Listes des moyens de transport disponibles">
+         <font>
+            <Font size="25.0" />
+         </font>
+         <stylesheets>
+            <URL value="@../java/tn/esprit/Styles/color.css" />
+            <URL value="@../java/tn/esprit/Styles/add_transport.css" />
+         </stylesheets>
+      </Label>
+      <ImageView fitHeight="185.0" fitWidth="285.0" layoutX="91.0" layoutY="94.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../java/tn/esprit/Images/bus.jpg" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="167.0" fitWidth="248.0" layoutX="488.0" layoutY="93.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../java/tn/esprit/Images/train.jpg" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="170.0" fitWidth="285.0" layoutX="91.0" layoutY="301.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../java/tn/esprit/Images/taxi.jpg" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="170.0" fitWidth="255.0" layoutX="485.0" layoutY="299.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../java/tn/esprit/Images/voiture.jpg" />
+         </image>
+      </ImageView>
 
+      <Button fx:id="Creer_ab" layoutX="101.0" layoutY="522.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="247.0" styleClass="gradient-button" text="Créer votre abonnement" onAction="#openAbonnementWindow" />
+
+      <Button fx:id="Accocier_tr" layoutX="488.0" layoutY="522.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="247.0" styleClass="gradient-button" text="Associer votre trajet" onAction="#openTrajetWindow" />
+   </children>
 </AnchorPane>
