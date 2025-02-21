@@ -1,19 +1,23 @@
 package tn.esprit.Controllers;
 
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;  // ✅ Ajout de l'importation manquante
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import tn.esprit.Entities.Role;
 import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Services.UtilisateurService;
 
@@ -22,8 +26,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javafx.scene.input.MouseEvent;
-
 
 public class ListUsersController {
 
@@ -53,9 +55,11 @@ public class ListUsersController {
     private TableColumn<Utilisateur, Void> colActions;
     @FXML
     private TextField searchField;
+    @FXML
+    private Pagination pagination; // Ajout de la pagination
 
     private ObservableList<Utilisateur> users = FXCollections.observableArrayList();
-    private ObservableList<Utilisateur> filteredUsers = FXCollections.observableArrayList();
+    private static final int ROWS_PER_PAGE = 10;
 
     private static ListUsersController instance;
 
@@ -66,122 +70,82 @@ public class ListUsersController {
     public static ListUsersController getInstance() {
         return instance;
     }
-
     @FXML
     public void initialize() {
+        employeeTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        VBox.setMargin(searchField, new Insets(0, 0, 20, 0)); // 20px de marge en bas
+
+        loadUsers();
+        configureTable();
+        pagination.setPageCount((int) Math.ceil((double) users.size() / ROWS_PER_PAGE));
+        pagination.setCurrentPageIndex(0);
+        pagination.currentPageIndexProperty().addListener((obs, oldIndex, newIndex) -> updateTable(newIndex.intValue()));
+        updateTable(0);
+
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> handleSearch());
+    }
+
+    private void loadUsers() {
         try {
             UtilisateurService userService = new UtilisateurService();
+            users.clear();
             List<Utilisateur> userList = userService.showAll();
-
             for (Utilisateur user : userList) {
                 byte[] profilePhoto = userService.getProfilePhoto(user.getId_employe());
                 user.setProfilePhoto(profilePhoto);
                 users.add(user);
             }
-
-            employeeTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-
-            colProfile.setCellValueFactory(new PropertyValueFactory<>("profilePhotoImageView"));
-            colFirstName.setCellValueFactory(new PropertyValueFactory<>("firstname"));
-            colLastName.setCellValueFactory(new PropertyValueFactory<>("lastname"));
-            colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
-            colBirthday.setCellValueFactory(new PropertyValueFactory<>("birthdayDate"));
-            colJoiningDate.setCellValueFactory(new PropertyValueFactory<>("joiningDate"));
-            colRole.setCellValueFactory(new PropertyValueFactory<>("role"));
-            colNumTel.setCellValueFactory(new PropertyValueFactory<>("num_tel"));
-            colCongeRestant.setCellValueFactory(new PropertyValueFactory<>("congeRestant"));
-            colTtRestants.setCellValueFactory(new PropertyValueFactory<>("ttRestants"));
-
-            employeeTable.setItems(users);
-
-            // 🔹 Ajustement dynamique des colonnes
-            colProfile.prefWidthProperty().bind(employeeTable.widthProperty().multiply(0.10));
-            colFirstName.prefWidthProperty().bind(employeeTable.widthProperty().multiply(0.12));
-            colLastName.prefWidthProperty().bind(employeeTable.widthProperty().multiply(0.12));
-            colEmail.prefWidthProperty().bind(employeeTable.widthProperty().multiply(0.18));
-            colBirthday.prefWidthProperty().bind(employeeTable.widthProperty().multiply(0.10));
-            colJoiningDate.prefWidthProperty().bind(employeeTable.widthProperty().multiply(0.10));
-            colRole.prefWidthProperty().bind(employeeTable.widthProperty().multiply(0.08));
-            colNumTel.prefWidthProperty().bind(employeeTable.widthProperty().multiply(0.08));
-            colCongeRestant.prefWidthProperty().bind(employeeTable.widthProperty().multiply(0.06));
-            colTtRestants.prefWidthProperty().bind(employeeTable.widthProperty().multiply(0.06));
-            colActions.prefWidthProperty().bind(employeeTable.widthProperty().multiply(0.10));
-
-            addActionsColumn();
-
-            searchField.textProperty().addListener((observable, oldValue, newValue) -> handleSearch());
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    // ✅ Correction de la méthode handleSearch() et ajout de filterUsers()
-    @FXML
-    private void handleSearch() {
-        String keyword = searchField.getText();
-        filterUsers(keyword);
+    private void configureTable() {
+        colProfile.setCellValueFactory(new PropertyValueFactory<>("profilePhotoImageView"));
+        colFirstName.setCellValueFactory(new PropertyValueFactory<>("firstname"));
+        colLastName.setCellValueFactory(new PropertyValueFactory<>("lastname"));
+        colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
+        colBirthday.setCellValueFactory(new PropertyValueFactory<>("birthdayDate"));
+        colJoiningDate.setCellValueFactory(new PropertyValueFactory<>("joiningDate"));
+        colRole.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(formatRole(cellData.getValue().getRole())));
+        colNumTel.setCellValueFactory(new PropertyValueFactory<>("num_tel"));
+        colCongeRestant.setCellValueFactory(new PropertyValueFactory<>("congeRestant"));
+        colTtRestants.setCellValueFactory(new PropertyValueFactory<>("ttRestants"));
+
+        addActionsColumn();
     }
 
-    private void filterUsers(String keyword) {
-        if (keyword == null || keyword.trim().isEmpty()) {
-            employeeTable.setItems(users);
-            return;
-        }
+    private void updateTable(int pageIndex) {
+        int fromIndex = pageIndex * ROWS_PER_PAGE;
+        int toIndex = Math.min(fromIndex + ROWS_PER_PAGE, users.size());
+        employeeTable.setItems(FXCollections.observableArrayList(users.subList(fromIndex, toIndex)));
 
-        String searchKeyword = keyword.toLowerCase();
-
-        List<Utilisateur> filteredList = users.stream()
-                .filter(utilisateur -> (utilisateur.getFirstname() + " " + utilisateur.getLastname()).toLowerCase().contains(searchKeyword)
-                        || utilisateur.getFirstname().toLowerCase().contains(searchKeyword)
-                        || utilisateur.getLastname().toLowerCase().contains(searchKeyword)
-                        || utilisateur.getEmail().contains(searchKeyword)
-                        || utilisateur.getRole().toString().toLowerCase().contains(searchKeyword))
-                .collect(Collectors.toList());
-
-        filteredUsers.setAll(filteredList);
-        employeeTable.setItems(filteredUsers);
+        addActionsColumn(); // Rafraîchir la colonne des actions
+        employeeTable.refresh();
     }
+
 
     private void addActionsColumn() {
         colActions.setCellFactory(param -> new TableCell<Utilisateur, Void>() {
             private final ImageView editIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/editIcon.png")));
-            private final ImageView deleteIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/deleteIconn.png")));
+            private final ImageView deleteIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/deleteIcon.png")));
             private final HBox hbox = new HBox(10, editIcon, deleteIcon);
 
             {
-                // Taille des icônes
-                editIcon.setFitWidth(20);
-                editIcon.setFitHeight(20);
-                deleteIcon.setFitWidth(20);
-                deleteIcon.setFitHeight(20);
+                editIcon.setFitWidth(30);
+                editIcon.setFitHeight(30);
+                deleteIcon.setFitWidth(30);
+                deleteIcon.setFitHeight(30);
 
-                // Style au survol
-                editIcon.setOnMouseEntered(e -> editIcon.setOpacity(0.7));
-                editIcon.setOnMouseExited(e -> editIcon.setOpacity(1.0));
-                deleteIcon.setOnMouseEntered(e -> deleteIcon.setOpacity(0.7));
-                deleteIcon.setOnMouseExited(e -> deleteIcon.setOpacity(1.0));
-
-                // Actions des icônes
-                editIcon.setOnMouseClicked((MouseEvent event) -> {
-                    Utilisateur user = getTableView().getItems().get(getIndex());
-                    showEditPopup(user);
-                });
-
-                deleteIcon.setOnMouseClicked((MouseEvent event) -> {
-                    Utilisateur user = getTableView().getItems().get(getIndex());
-                    confirmDelete(user);
-                });
+                editIcon.setOnMouseClicked(event -> showEditPopup(getTableView().getItems().get(getIndex())));
+                deleteIcon.setOnMouseClicked(event -> confirmDelete(getTableView().getItems().get(getIndex())));
             }
 
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    setGraphic(hbox);
-                }
+                setGraphic(empty ? null : hbox);
             }
         });
     }
@@ -190,24 +154,21 @@ public class ListUsersController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/editUser.fxml"));
             Parent root = loader.load();
-
-            // 🔹 Récupérer le contrôleur du formulaire d'édition
             EditUserController controller = loader.getController();
             controller.setUserData(user);
-            controller.setListUsersController(this); // ✅ Passer la référence de ListUsersController
+            controller.setListUsersController(this);
 
-            // 🔹 Afficher la fenêtre de modification sans barre de titre
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initStyle(StageStyle.UNDECORATED); // ❌ Supprime toute la barre de titre
+            stage.initStyle(StageStyle.UNDECORATED);
             stage.setScene(new Scene(root));
             stage.showAndWait();
 
+            refreshUserList();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 
     private void confirmDelete(Utilisateur user) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -218,7 +179,7 @@ public class ListUsersController {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
-                new UtilisateurService().delete(user);  // ✅ Correction de l'appel de delete()
+                new UtilisateurService().delete(user);
                 refreshUserList();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -238,28 +199,49 @@ public class ListUsersController {
             stage.setScene(new Scene(root));
             stage.showAndWait();
 
-            refreshUserList(); // Mettre à jour la liste après l'ajout
+            refreshUserList();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-
     public void refreshUserList() {
-        try {
-            UtilisateurService userService = new UtilisateurService();
-            List<Utilisateur> userList = userService.showAll();
+        loadUsers();
+        pagination.setPageCount((int) Math.ceil((double) users.size() / ROWS_PER_PAGE));
+        updateTable(pagination.getCurrentPageIndex());
+        addActionsColumn(); // Recharger les icônes d'actions
+        employeeTable.refresh();
+    }
 
-            users.clear();
-            for (Utilisateur user : userList) {
-                byte[] profilePhoto = userService.getProfilePhoto(user.getId_employe());
-                user.setProfilePhoto(profilePhoto);
-                users.add(user);
-            }
 
-            employeeTable.setItems(users);
-        } catch (SQLException e) {
-            e.printStackTrace();
+    @FXML
+    private void handleSearch() {
+        String keyword = searchField.getText().toLowerCase();
+
+        if (keyword.isEmpty()) {
+            refreshUserList();
+            pagination.setCurrentPageIndex(0); // revenir à la liste complète et à la première page de pagination
+        } else {
+            List<Utilisateur> filteredList = users.stream()
+                    .filter(u -> (u.getFirstname() + " " + u.getLastname()).toLowerCase().contains(keyword)
+                            || u.getEmail().contains(keyword)
+                            || u.getRole().toString().toLowerCase().contains(keyword))
+                    .collect(Collectors.toList());
+
+            employeeTable.setItems(FXCollections.observableArrayList(filteredList));
+        }
+
+        addActionsColumn(); // Forcer la mise à jour des icônes d'action
+        employeeTable.refresh();
+    }
+    private String formatRole(Role role) {
+        if (role == null) return "Non défini";
+        switch (role) {
+            case RESPONSABLE_RH: return "Responsable RH";
+            case CHEF_PROJET: return "Chef de projet";
+            case EMPLOYEE: return "Employée";
+            case CONDIDAT: return "Candidat";
+            default: return "Inconnu";
         }
     }
 
