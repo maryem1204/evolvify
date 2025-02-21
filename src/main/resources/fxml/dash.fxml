@@ -14,14 +14,15 @@
 <AnchorPane maxWidth="1865.0" prefHeight="823.0" prefWidth="1865.0" stylesheets="@../Styles/styledash.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.DashController">
 
     <!-- Navbar -->
-    <AnchorPane prefHeight="66.0" styleClass="navbar" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+    <AnchorPane layoutY="-11.0" prefHeight="109.0" prefWidth="1865.0" styleClass="navbar" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+            style="-fx-background-color:#7B61FF">
         <HBox alignment="CENTER_RIGHT" prefHeight="66.0" spacing="10">
             <!-- Espace flexible pour pousser le userBox à droite -->
             <Region HBox.hgrow="ALWAYS" />
         </HBox>
 
         <!-- Profil utilisateur aligné à droite -->
-        <HBox fx:id="userBox" layoutX="1345.0" layoutY="19.0" spacing="10">
+        <HBox fx:id="userBox" layoutX="1343.0" layoutY="14.0" spacing="10" style="-fx-background-color: #7B61FF;">
             <padding>
                 <Insets bottom="10" left="10" right="10" top="10" />
             </padding>
@@ -42,7 +43,7 @@
             </image>
         </ImageView>
 
-        <Button fx:id="btnDashboard" styleClass="sidebar-button" text="  Dashboard">
+        <Button fx:id="btnDashboard" onAction="#handleDashboard" styleClass="sidebar-button" text="  Dashboard">
             <graphic>
                 <ImageView fitHeight="30.0" fitWidth="30.0">
                     <image>
@@ -52,7 +53,7 @@
             </graphic>
         </Button>
 
-        <Button fx:id="btnUser" prefHeight="51.0" prefWidth="354.0" styleClass="sidebar-button" text=" Gestion Utilisateurs" textAlignment="CENTER">
+        <Button fx:id="btnUser" onAction="#handleGestionUtilisateur" prefHeight="51.0" prefWidth="354.0" styleClass="sidebar-button" text=" Gestion Utilisateurs" textAlignment="CENTER">
             <graphic>
                 <ImageView fitHeight="30.0" fitWidth="30.0">
                     <image>
@@ -115,6 +116,9 @@
                 </ImageView>
             </graphic>
         </Button>
+
     </VBox>
+    <AnchorPane fx:id="contentArea" layoutX="290.0" layoutY="99.0" prefHeight="791.0" prefWidth="1575.0" />
+
 
 </AnchorPane>

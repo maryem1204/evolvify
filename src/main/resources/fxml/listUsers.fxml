@@ -46,7 +46,7 @@
         <AnchorPane>
             <TableView fx:id="employeeTable" AnchorPane.topAnchor="0.0"
                        AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                       AnchorPane.rightAnchor="0.0" prefHeight="700" prefWidth="1600">
+                       AnchorPane.rightAnchor="0.0" prefHeight="400" prefWidth="1200">
                 <columns>
                     <TableColumn fx:id="colProfile" text="Profile" prefWidth="80"/>
                     <TableColumn fx:id="colFirstName" text="Nom" prefWidth="80"/>
@@ -58,7 +58,7 @@
                     <TableColumn fx:id="colNumTel" text="Téléphone" prefWidth="90"/>
                     <TableColumn fx:id="colCongeRestant" text="Congés Restants" prefWidth="60"/>
                     <TableColumn fx:id="colTtRestants" text="TT Restants" prefWidth="60"/>
-                    <TableColumn fx:id="colActions" text="Actions" prefWidth="100"/>
+                    <TableColumn fx:id="colActions" text="Actions" prefWidth="60"/>
                 </columns>
             </TableView>
         </AnchorPane>

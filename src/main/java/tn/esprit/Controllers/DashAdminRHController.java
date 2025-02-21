@@ -39,7 +39,7 @@ public class DashAdminRHController {
     @FXML
     private TextField searchField;
     @FXML
-    private VBox progressionBox;
+    private VBox progressionBox,effectifs;
     @FXML
     private Label labelHommes;
     @FXML
@@ -58,8 +58,12 @@ public class DashAdminRHController {
         updateEffectifs();
         employeeTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
+
         AnchorPane.setLeftAnchor(progressionBox, 260.0);
-        AnchorPane.setTopAnchor(progressionBox, 520.0);
+        AnchorPane.setTopAnchor(progressionBox, 470.0);
+        AnchorPane.setLeftAnchor(employeeTable, 260.0);
+        AnchorPane.setTopAnchor(employeeTable, 470.0);
+
 
         setupPieChart();
         setupBarChart();

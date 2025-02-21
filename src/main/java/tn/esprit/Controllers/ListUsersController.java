@@ -17,6 +17,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import tn.esprit.Entities.Role;
 import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Services.UtilisateurService;
 
@@ -107,7 +108,7 @@ public class ListUsersController {
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
         colBirthday.setCellValueFactory(new PropertyValueFactory<>("birthdayDate"));
         colJoiningDate.setCellValueFactory(new PropertyValueFactory<>("joiningDate"));
-        colRole.setCellValueFactory(new PropertyValueFactory<>("role"));
+        colRole.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(formatRole(cellData.getValue().getRole())));
         colNumTel.setCellValueFactory(new PropertyValueFactory<>("num_tel"));
         colCongeRestant.setCellValueFactory(new PropertyValueFactory<>("congeRestant"));
         colTtRestants.setCellValueFactory(new PropertyValueFactory<>("ttRestants"));
@@ -132,10 +133,10 @@ public class ListUsersController {
             private final HBox hbox = new HBox(10, editIcon, deleteIcon);
 
             {
-                editIcon.setFitWidth(40);
-                editIcon.setFitHeight(40);
-                deleteIcon.setFitWidth(40);
-                deleteIcon.setFitHeight(40);
+                editIcon.setFitWidth(30);
+                editIcon.setFitHeight(30);
+                deleteIcon.setFitWidth(30);
+                deleteIcon.setFitHeight(30);
 
                 editIcon.setOnMouseClicked(event -> showEditPopup(getTableView().getItems().get(getIndex())));
                 deleteIcon.setOnMouseClicked(event -> confirmDelete(getTableView().getItems().get(getIndex())));
@@ -232,6 +233,16 @@ public class ListUsersController {
 
         addActionsColumn(); // Forcer la mise à jour des icônes d'action
         employeeTable.refresh();
+    }
+    private String formatRole(Role role) {
+        if (role == null) return "Non défini";
+        switch (role) {
+            case RESPONSABLE_RH: return "Responsable RH";
+            case CHEF_PROJET: return "Chef de projet";
+            case EMPLOYEE: return "Employée";
+            case CONDIDAT: return "Candidat";
+            default: return "Inconnu";
+        }
     }
 
 }
