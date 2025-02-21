@@ -62,4 +62,15 @@ public class DashboardController {
     public void handleDashboard(ActionEvent actionEvent) {
         loadView("/fxml/dashboardAdminRH.fxml");
     }
+
+    @FXML
+    private void handleGestionConge(ActionEvent event) {
+        loadView("/fxml/dashboardCongeRh.fxml");
+    }
+
+    @FXML
+    private void handleGestionAbsence(ActionEvent event) {
+        loadView("/fxml/dashboardCongeRh.fxml");
+    }
+
 }
