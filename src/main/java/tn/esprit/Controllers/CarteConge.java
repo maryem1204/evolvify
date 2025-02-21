@@ -129,7 +129,7 @@ public class CarteConge {
             stage.initStyle(StageStyle.UNDECORATED);
             stage.setScene(new Scene(root));
             stage.showAndWait();
-
+handleClose();
             // refreshUserList(); // Mettre à jour la liste après l'ajout
         } catch (IOException e) {
             e.printStackTrace();
@@ -146,7 +146,7 @@ public class CarteConge {
             stage.initStyle(StageStyle.UNDECORATED);
             stage.setScene(new Scene(root));
             stage.showAndWait();
-
+handleClose();
             // refreshUserList(); // Mettre à jour la liste après l'ajout
         } catch (IOException e) {
             e.printStackTrace();

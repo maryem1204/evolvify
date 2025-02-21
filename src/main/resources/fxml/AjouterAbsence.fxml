@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="tn.esprit.Controllers.AjouterAbsenceController"
+      spacing="10" alignment="CENTER">
+
+    <!-- Titre -->
+    <Label text="Ajouter une Absence" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+    <GridPane hgap="10" vgap="10">
+        <columnConstraints>
+            <ColumnConstraints halignment="RIGHT"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <!-- Champ pour la date -->
+        <Label text="Date de l'absence:"/>
+        <DatePicker fx:id="dpDateAbsence" GridPane.columnIndex="1"/>
+
+        <!-- Champ pour le statut -->
+        <Label text="Statut:"/>
+        <ComboBox fx:id="cbStatutAbsence" GridPane.columnIndex="1"/>
+
+        <!-- Boutons -->
+        <HBox spacing="10" GridPane.columnSpan="2" alignment="CENTER">
+            <Button text="Enregistrer" fx:id="btnSave" onAction="#handleSave"/>
+            <Button text="Annuler" fx:id="btnCancel" onAction="#handleCancel"/>
+        </HBox>
+    </GridPane>
+
+</VBox>

@@ -79,4 +79,9 @@ public class DashboardController {
         loadView("/fxml/dashboardCongeRh.fxml");
     }
 
+    @FXML
+    private void handleGestionAbsence(ActionEvent event) {
+        loadView("/fxml/dashboardCongeRh.fxml");
+    }
+
 }

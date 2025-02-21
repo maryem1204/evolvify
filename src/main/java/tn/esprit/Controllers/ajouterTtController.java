@@ -85,6 +85,7 @@ import java.time.LocalDate;
                 } else {
                     System.out.println("Erreur lors de l'ajout du TT.");
                 }
+                handleCancel();
             } catch (SQLException e) {
                 e.printStackTrace();
                 System.out.println("Erreur de connexion à la base de données.");
