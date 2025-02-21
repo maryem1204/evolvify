@@ -119,7 +119,11 @@ public class ListUsersController {
         int fromIndex = pageIndex * ROWS_PER_PAGE;
         int toIndex = Math.min(fromIndex + ROWS_PER_PAGE, users.size());
         employeeTable.setItems(FXCollections.observableArrayList(users.subList(fromIndex, toIndex)));
+
+        addActionsColumn(); // Rafraîchir la colonne des actions
+        employeeTable.refresh();
     }
+
 
     private void addActionsColumn() {
         colActions.setCellFactory(param -> new TableCell<Utilisateur, Void>() {
@@ -204,7 +208,10 @@ public class ListUsersController {
         loadUsers();
         pagination.setPageCount((int) Math.ceil((double) users.size() / ROWS_PER_PAGE));
         updateTable(pagination.getCurrentPageIndex());
+        addActionsColumn(); // Recharger les icônes d'actions
+        employeeTable.refresh();
     }
+
 
     @FXML
     private void handleSearch() {
@@ -222,6 +229,9 @@ public class ListUsersController {
 
             employeeTable.setItems(FXCollections.observableArrayList(filteredList));
         }
+
+        addActionsColumn(); // Forcer la mise à jour des icônes d'action
+        employeeTable.refresh();
     }
 
 }
