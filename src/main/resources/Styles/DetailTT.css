@@ -1,0 +1,99 @@
+/* ------------------- GENERAL ------------------- */
+.root {
+    -fx-background-color: #f3f3f3;
+    -fx-font-family: "Arial", sans-serif;
+}
+
+/* ------------------- CONTAINER PRINCIPAL ------------------- */
+.container {
+    -fx-background-color: white;
+    -fx-padding: 20px;
+    -fx-border-radius: 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 5);
+}
+
+/* ------------------- TITRE ------------------- */
+.label-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: black;
+}
+
+/* ------------------- ÉTAPES ------------------- */
+.step-container {
+    -fx-padding: 10px;
+    -fx-spacing: 15px;
+}
+
+.step-number {
+    -fx-text-fill: grey;
+    -fx-font-size: 14px;
+}
+
+/* Étape active */
+.step-active {
+    -fx-text-fill: #3b82f6;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+}
+
+/* ------------------- BOUTONS DE TYPE DE CONGÉ ------------------- */
+.button-type {
+    -fx-background-color: white;
+    -fx-border-color: #3b82f6;
+    -fx-border-radius: 10px;
+    -fx-text-fill: #3b82f6;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 10px;
+    -fx-pref-width: 120px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 3);
+}
+
+/* Effet de bouton 3D enfoncé */
+.button:pressed {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 8, 0, 1, 1);
+    -fx-translate-y: 2px;
+}
+/* Effet au survol */
+.button-type:hover {
+    -fx-background-color: #3b82f6;
+    -fx-text-fill: white;
+}
+
+/* ------------------- BOUTONS ACTIONS ------------------- */
+.button-primary {
+    -fx-background-color: #3b82f6;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10px;
+    -fx-pref-width: 120px;
+    -fx-padding: 10px;
+}
+
+.button-primary:hover {
+    -fx-background-color: #1d4ed8;
+}
+
+/* Bouton Annuler */
+.button-secondary {
+    -fx-background-color: white;
+    -fx-border-color: #d1d5db;
+    -fx-border-radius: 10px;
+    -fx-text-fill: black;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-pref-width: 120px;
+    -fx-padding: 10px;
+}
+
+.button-secondary:hover {
+    -fx-background-color: #e5e7eb;
+}
+
+/* ------------------- ESPACEMENT ------------------- */
+.hbox {
+    -fx-spacing: 10px;
+    -fx-alignment: center;
+}

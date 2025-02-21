@@ -1,0 +1,131 @@
+/* Style de la carte (conteneur principal) */
+.card {
+    -fx-background-color: rgba(255, 255, 255, 0.06);
+    -fx-background-radius: 15px;
+    -fx-padding: 20px;
+    -fx-border-radius: 15px;
+
+    /* Ombre douce pour effet 3D */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 15, 0, 5, 5);
+
+    /* Légère élévation */
+    -fx-translate-y: -2px;
+}
+
+/* Effet d’élévation au survol */
+.card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 20, 0, 6, 6);
+    -fx-translate-y: -4px;
+}
+
+/* Effet d'enfoncement au clic */
+.card:pressed {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 3, 3);
+    -fx-translate-y: 0;
+}
+
+/* Style général des boutons */
+.button {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 12px;
+    -fx-padding: 10px 18px;
+    -fx-border-width: 2px;
+    -fx-border-radius: 12px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 2, 2);
+}
+
+/* Effet de bouton 3D enfoncé */
+.button:pressed {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 8, 0, 1, 1);
+    -fx-translate-y: 2px;
+}
+
+/* Bouton principal (ex: "Suivant") */
+.button-primary {
+    -fx-background-color: linear-gradient(to bottom,  #E54091,  #A53BD4);
+    -fx-border-color: #8E2CBE;
+}
+
+/* Boutons secondaires (ex: "Congé", "TT", "Autorisation") */
+.button-secondary {
+    -fx-background-color: linear-gradient(to bottom, #0F82E6, #0047AB);
+    -fx-border-color: #003C8F;
+}
+
+/* Bouton annulation ou retour */
+.button-alternative {
+    -fx-background-color: linear-gradient(to bottom, #0F82E6, #0047AB);
+    -fx-border-color: #003C8F;
+}
+
+/* Effet au survol */
+.button:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 10, 0, 3, 3);
+}
+
+/* Style pour le conteneur VBox */
+.vbox {
+    -fx-spacing: 15px;
+    -fx-alignment: center;
+}
+
+/* Style pour les HBox */
+.hbox {
+    -fx-spacing: 10px;
+    -fx-alignment: center;
+}
+
+/* Style des labels */
+.label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
+}
+
+/* Style spécifique pour le titre */
+.label-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #3b82f6;
+}
+
+/* Style des étapes dans HBox (numérotation et texte) */
+.hbox .label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+/* Style des étapes avec les numéros */
+.hbox-first {
+    -fx-text-fill: #3b82f6; /* Bleu pour la première étape */
+}
+
+/* Style des boutons */
+.button {
+    -fx-background-color: #f3f7fe;
+    -fx-text-fill: #3b82f6;
+    -fx-background-radius: 8px;
+    -fx-pref-width: 100px;
+    -fx-pref-height: 45px;
+}
+
+/* Style pour les boutons "Suivant" et "Annuler" */
+.button-suivant {
+    -fx-background-color: #3b82f6;
+    -fx-text-fill: white;
+}
+
+.button-annuler {
+    -fx-background-color: #f3f7fe;
+    -fx-text-fill: #3b82f6;
+}
+
+.button-suivant:hover {
+    -fx-background-color: #2563eb;
+}
+
+.button-annuler:hover {
+    -fx-background-color: #e0f3ff;
+}
