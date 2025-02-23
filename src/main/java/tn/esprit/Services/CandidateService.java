@@ -10,9 +10,9 @@ import java.util.List;
 
 public class CandidateService implements CRUD<Utilisateur> {
 
-    private Connection cnx = MyDataBase.getInstance().getCnx();//cnx : Objet Connection utilisé pour interagir avec la base de données. Il est obtenu via la classe MyDatabase.
+    private Connection cnx = MyDataBase.getInstance().getCnx();
 
-    private PreparedStatement ps ;// Objet PreparedStatement utilisé pour exécuter des requêtes SQL paramétrées.
+    private PreparedStatement ps ;
     @Override
     public int add(Utilisateur user) throws SQLException {
         String req = "INSERT INTO `users`(`firstname`, `lastname`, `email`, `password`, `profilePhoto`, `birthdayDate`, `joiningDate`,  `tt_restants`, `conge_restant`, `uploaded_cv`, `num_tel`) " +
@@ -37,7 +37,8 @@ public class CandidateService implements CRUD<Utilisateur> {
 
         // Exécuter la mise à jour et retourner le nombre de lignes insérées
         int rowsAffected = ps.executeUpdate();
-// Récupérer l'ID généré
+        System.out.println("rowsAffected : " + rowsAffected);
+        // Récupérer l'ID généré
         if (rowsAffected > 0) {
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {

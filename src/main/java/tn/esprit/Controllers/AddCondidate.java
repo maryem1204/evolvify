@@ -168,16 +168,29 @@ public class AddCondidate {
             try {
                 int rowsAffected = ps.add(condidate);
 
-                ListOffre lo = new ListOffre(condidate.getId_employe(), getIdOffre(), condidate.getJoiningDate());
+                int idOffre = getIdOffre();  // Récupération de l'ID de l'offre
+                System.out.println("********Valeur récupérée de getIdOffre() avant instanciation : " + idOffre);
+                System.out.println("*********ID employé utilisé : " + condidate.getId_employe());
+                System.out.println("********Date d'inscription utilisée : " + condidate.getJoiningDate());
+
+                ListOffre lo = new ListOffre(condidate.getId_employe(), idOffre, condidate.getJoiningDate());
+                System.out.println("Objet ListOffre créé : " + lo);
+                System.out.println("********Valeur récupérée de getIdOffre() aapres instanciation : " + lo.getIdOffre());
+                System.out.println("*********ID employé utilisé ******** : " + lo.getIdCondidate());
+                System.out.println("********Date d'inscription utilisée ******: " + lo.getDatePostulation());
+
 
                 if (rowsAffected > 0) {
                     if (lo == null) {
                         System.out.println("Objet ListOffre (lo) est null !");
                     } else {
                         System.out.println("ID de l'offre à insérer : " + lo.getIdOffre());
+                        System.out.println("ID de condidate à insérer : " + lo.getIdCondidate());
+                        System.out.println("date  à insérer : " + lo.getDatePostulation());
+                        addToListOffre(lo);
                     }
 
-                   addToListOffre(lo);
+
 
                 } else {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -206,7 +219,7 @@ public class AddCondidate {
      String queryInsertListOffre = "INSERT INTO `liste_offres`( `id_condidat`, `id_offre`, `date_postulation`) VALUES (?, ?,  ?)";
      try (PreparedStatement stmt = cnx.prepareStatement(queryInsertListOffre)) {
          stmt.setInt(1, lo.getIdCondidate());
-         stmt.setInt(2, getIdOffre());
+         stmt.setInt(2, lo.getIdOffre());
 
          stmt.setDate(3,  new Date(lo.getDatePostulation().getTime())); // La date de postulation est la même que la date de dépôt
          try {

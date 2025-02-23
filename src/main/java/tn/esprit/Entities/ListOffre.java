@@ -5,31 +5,40 @@ import java.util.Date;
 public class ListOffre {
     public enum Status {
         en_cours,
-        accepte,
-        refuse
+        refuse,
+        accepte
     }
+
     private int idListOffre;
-    private int idcondidate; // User est une autre classe représentant la table `user`
-    private int idoffre; // Offre est une autre classe représentant la table `offre`
-    private Status status; // Status est un enum que tu devras définir
+    private int idCondidate; // User est une autre classe représentant la table `user`
+    private int idOffre; // Offre est une autre classe représentant la table `offre`
+    private Status status; // Status est un enum
     private Date datePostulation;
-    public ListOffre(){}
-    public ListOffre(int idListOffre, int idcondidate, Date datePostulation) {
+
+    private String nomCandidat;
+    private String prenomCandidat;
+    private String titreOffre;
+
+    // Constructeurs
+
+    public ListOffre() {}
+
+    public ListOffre(int idListOffre, int idCondidate, int idOffre, Date datePostulation) {
         this.idListOffre = idListOffre;
-        this.idcondidate = idcondidate;
-        this.idoffre = idoffre;
-        this.status = status;
+        this.idCondidate = idCondidate;
+        this.idOffre = idOffre;
         this.datePostulation = datePostulation;
-    }
-    public ListOffre(int idcondidate, int idoffre, String s, Date datePostulation) {
-
-        this.idcondidate = idcondidate;
-        this.idoffre = idoffre;
-
-        this.datePostulation = datePostulation;
+        this.status = Status.en_cours; // Par défaut, le statut est "EN_COURS"
     }
 
-    // Getter et Setter pour chaque attribut
+    public ListOffre(int idCondidate, int idOffre, Date datePostulation) {
+        this.idCondidate = idCondidate;
+        this.idOffre = idOffre;
+        this.datePostulation = datePostulation;
+        this.status = Status.en_cours; // Par défaut
+    }
+
+    // Getters et Setters
 
     public int getIdListOffre() {
         return idListOffre;
@@ -40,19 +49,19 @@ public class ListOffre {
     }
 
     public int getIdCondidate() {
-        return idcondidate;
+        return idCondidate;
     }
 
     public void setIdCondidate(int condidate) {
-        this.idcondidate = condidate;
+        this.idCondidate = condidate;
     }
 
     public int getIdOffre() {
-        return idoffre;
+        return idOffre;
     }
 
     public void setIdOffre(int offre) {
-        this.idoffre = offre;
+        this.idOffre = offre;
     }
 
     public Status getStatus() {
@@ -70,9 +79,7 @@ public class ListOffre {
     public void setDatePostulation(Date datePostulation) {
         this.datePostulation = datePostulation;
     }
-    private String nomCandidat;
-    private String prenomCandidat;
-    private String titreOffre;
+
     public String getNomCandidat() {
         return nomCandidat;
     }
@@ -95,5 +102,20 @@ public class ListOffre {
 
     public void setTitreOffre(String titreOffre) {
         this.titreOffre = titreOffre;
+    }
+
+    // Méthode toString pour faciliter le débogage
+    @Override
+    public String toString() {
+        return "ListOffre{" +
+                "idListOffre=" + idListOffre +
+                ", idCondidate=" + idCondidate +
+                ", idOffre=" + idOffre +
+                ", status=" + status +
+                ", datePostulation=" + datePostulation +
+                ", nomCandidat='" + nomCandidat + '\'' +
+                ", prenomCandidat='" + prenomCandidat + '\'' +
+                ", titreOffre='" + titreOffre + '\'' +
+                '}';
     }
 }

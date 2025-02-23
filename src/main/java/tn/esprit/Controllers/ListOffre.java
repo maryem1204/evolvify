@@ -62,7 +62,7 @@ public class ListOffre {
                 offreDetails.setAlignment(Pos.CENTER_LEFT); // Alignement à gauche
 
                 // Créer un HBox pour tout contenir (titre + description + bouton)
-                HBox offreRow = new HBox(10, offreDetails, postulerBtn);  // Espacement de 10px entre les éléments
+                HBox offreRow = new HBox(100, offreDetails, postulerBtn);
                 offreRow.setAlignment(Pos.CENTER_LEFT); // Aligner à gauche
                 // Alignement du bouton à droite du HBox
                 HBox.setHgrow(postulerBtn, Priority.ALWAYS);  // Permet au bouton de se déployer à droite
