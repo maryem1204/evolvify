@@ -21,7 +21,7 @@
         <AnchorPane prefHeight="200.0" prefWidth="200.0">
             <children>
                 <BorderPane layoutX="14.0" layoutY="-14.0" prefHeight="600.0" prefWidth="1100.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="-14.0" AnchorPane.topAnchor="-14.0">
-
+                    
 
                     <center>
                         <AnchorPane fx:id="tableblanche" prefHeight="472.0" prefWidth="807.0" styleClass="shadow" stylesheets="@../java/tn/esprit/Styles/color.css">

@@ -11,12 +11,13 @@ public class Abonnement {
     private Date date_exp;
     private double prix;
     private int id_employe;
-    private String status;
+    private StatusAbonnement status;
 
+    // Constructeurs
     public Abonnement() {
     }
 
-    public Abonnement(int id_Ab, String type_Ab, Date date_debut, Date date_exp, double prix, int id_employe, String status) {
+    public Abonnement(int id_Ab, String type_Ab, Date date_debut, Date date_exp, double prix, int id_employe, StatusAbonnement status) {
         this.id_Ab = id_Ab;
         this.type_Ab = type_Ab;
         this.date_debut = date_debut;
@@ -27,7 +28,6 @@ public class Abonnement {
     }
 
     // Getters et Setters
-
     public int getId_Ab() {
         return id_Ab;
     }
@@ -35,6 +35,7 @@ public class Abonnement {
     public void setId_Ab(int id_Ab) {
         this.id_Ab = id_Ab;
     }
+
     public String getType_Ab() {
         return type_Ab;
     }
@@ -75,15 +76,15 @@ public class Abonnement {
         this.id_employe = id_employe;
     }
 
-    public String getStatus() {
+    public StatusAbonnement getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(StatusAbonnement status) {
         this.status = status;
     }
 
-    // Méthode toString (facultatif, pour afficher l'objet facilement)
+    // Méthode toString
     @Override
     public String toString() {
         return "Abonnement{" +
@@ -93,7 +94,7 @@ public class Abonnement {
                 ", date_exp=" + date_exp +
                 ", prix=" + prix +
                 ", id_employe=" + id_employe +
-                ", status='" + status + '\'' +
+                ", status=" + status.name() +
                 '}';
     }
 }

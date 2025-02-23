@@ -1,27 +1,35 @@
 package tn.esprit.Entities;
+import tn.esprit.Entities.StatusTransport;
+
 
 public class MoyenTransport {
     private int idMoyen;
     private String typeMoyen;
     private int capacité;
     private int immatriculation;
-    private String status;
+    private StatusTransport status;
+
 
     // Constructeur par défaut
     public MoyenTransport() {
     }
+
     public MoyenTransport(int idMoyen, String typeMoyen) {
         this.idMoyen = idMoyen;
         this.typeMoyen = typeMoyen;
     }
 
     // Constructeur avec paramètres
-    public MoyenTransport(int idMoyen, String typeMoyen, int capacité, int immatriculation, String status) {
+    public MoyenTransport(int idMoyen, String typeMoyen, int capacité, int immatriculation, StatusTransport status) {
         this.idMoyen = idMoyen;
         this.typeMoyen = typeMoyen;
         this.capacité = capacité;
         this.immatriculation = immatriculation;
         this.status = status;
+    }
+
+    public MoyenTransport(String bus, int i, int i1, StatusTransport statusTransport) {
+
     }
 
     // Getters et Setters
@@ -57,11 +65,11 @@ public class MoyenTransport {
         this.immatriculation = immatriculation;
     }
 
-    public String getStatus() {
+    public StatusTransport getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(StatusTransport status) {
         this.status = status;
     }
 
@@ -71,9 +79,9 @@ public class MoyenTransport {
         return "MoyenTransport{" +
                 "idMoyen=" + idMoyen +
                 ", typeMoyen='" + typeMoyen + '\'' +
-                ", capacite=" + capacité +
+                ", capacité=" + capacité +
                 ", immatriculation=" + immatriculation +
-                ", status='" + status + '\'' +
+                ", status=" + status +
                 '}';
     }
 }

@@ -1,5 +1,6 @@
 package tn.esprit.Controllers;
 
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -12,6 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import tn.esprit.Entities.MoyenTransport;
+import tn.esprit.Entities.StatusTransport;
 import tn.esprit.Services.MoyenTransportCRUD;
 
 import java.io.IOException;
@@ -26,41 +28,31 @@ public class AffichageTransportController {
 
     @FXML
     private TableView<MoyenTransport> tableMoyenTransport;
-
     @FXML
     private TableColumn<MoyenTransport, Integer> colId;
-
     @FXML
     private TableColumn<MoyenTransport, String> colType;
-
     @FXML
     private TableColumn<MoyenTransport, Integer> colCapacite;
-
     @FXML
     private TableColumn<MoyenTransport, Integer> colImmatriculation;
-
     @FXML
-    private TableColumn<MoyenTransport, String> colStatus;
-
-    @FXML
-    private TextField recherche;
+    private TableColumn<MoyenTransport, StatusTransport> colStatus;
     @FXML
     private TableColumn<MoyenTransport, Void> colAction;
     @FXML
-    private ObservableList<MoyenTransport> moyensTransport = FXCollections.observableArrayList();
-    @FXML
+    private TextField recherche;
+
+    private final ObservableList<MoyenTransport> moyensTransport = FXCollections.observableArrayList();
+    private final ObservableList<MoyenTransport> filteredMoyenTransportList = FXCollections.observableArrayList();
     private static final Logger logger = Logger.getLogger(AffichageTransportController.class.getName());
-
-    @FXML
-    private ObservableList<MoyenTransport> filteredMoyenTransportList = FXCollections.observableArrayList();
-
-
 
     @FXML
     void loadMoyens() {
         MoyenTransportCRUD moyenTransportCRUD = new MoyenTransportCRUD();
         try {
             List<MoyenTransport> moyensList = moyenTransportCRUD.showAll();
+
             moyensTransport.setAll(moyensList);
             tableMoyenTransport.setItems(moyensTransport);
         } catch (SQLException e) {
@@ -71,7 +63,7 @@ public class AffichageTransportController {
 
     @FXML
     private void addActionsColumn() {
-        colAction.setCellFactory(param -> new TableCell<MoyenTransport, Void>() {
+        colAction.setCellFactory(param -> new TableCell<>() {
             private final Button btnEdit = new Button("Modifier");
             private final Button btnDelete = new Button("Supprimer");
             private final HBox hbox = new HBox(10, btnEdit, btnDelete);
@@ -94,11 +86,7 @@ public class AffichageTransportController {
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    setGraphic(hbox);
-                }
+                setGraphic(empty ? null : hbox);
             }
         });
     }
@@ -117,26 +105,23 @@ public class AffichageTransportController {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
 
-            loadMoyens(); // Recharger les données après modification
+            loadMoyens();
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Erreur lors de l'ouverture de la fenêtre de modification", e);
         }
     }
 
     private void confirmDelete(MoyenTransport moyenTransport) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Êtes-vous sûr de vouloir supprimer ce moyen de transport ?", ButtonType.OK, ButtonType.CANCEL);
         alert.setTitle("Confirmation de suppression");
-        alert.setHeaderText(null);
-        alert.setContentText("Êtes-vous sûr de vouloir supprimer ce moyen de transport ?");
-
         Optional<ButtonType> result = alert.showAndWait();
+
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
-                MoyenTransportCRUD moyenTransportCRUD = new MoyenTransportCRUD();
-                moyenTransportCRUD.delete(moyenTransport);
-                loadMoyens(); // Recharger les données après suppression
+                new MoyenTransportCRUD().delete(moyenTransport);
+                loadMoyens();
             } catch (SQLException e) {
-                logger.log(Level.SEVERE, "Erreur lors de la suppression du moyen de transport", e);
+                logger.log(Level.SEVERE, "Erreur lors de la suppression", e);
                 afficherAlerte("Erreur", "Impossible de supprimer le moyen de transport.");
             }
         }
@@ -144,17 +129,9 @@ public class AffichageTransportController {
 
     @FXML
     void handleAjouterTransport() throws IOException {
-        System.out.println("Le bouton Ajouter a été cliqué !");
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/add_transport.fxml"));
         Parent root = loader.load();
-
         Scene scene = new Scene(root);
-        String cssPath = "/styles/add_transport.css";
-        if (getClass().getResource(cssPath) != null) {
-            scene.getStylesheets().add(getClass().getResource(cssPath).toExternalForm());
-        } else {
-            logger.log(Level.WARNING, "Fichier CSS non trouvé : " + cssPath);
-        }
 
         Stage newStage = new Stage();
         newStage.setScene(scene);
@@ -166,23 +143,31 @@ public class AffichageTransportController {
 
     @FXML
     public void initialize() {
-        // Initialisation des colonnes
         colId.setCellValueFactory(new PropertyValueFactory<>("idMoyen"));
         colType.setCellValueFactory(new PropertyValueFactory<>("typeMoyen"));
         colCapacite.setCellValueFactory(new PropertyValueFactory<>("capacité"));
         colImmatriculation.setCellValueFactory(new PropertyValueFactory<>("immatriculation"));
-        colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
 
-        // Ajouter la colonne d'actions
+        // Correction de la liaison avec StatusTransport
+        colStatus.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getStatus()));
+
+        // Affichage correct du statut dans la table
+        colStatus.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(StatusTransport status, boolean empty) {
+                super.updateItem(status, empty);
+                setText(empty || status == null ? "" : status.toString());
+            }
+        });
+
         addActionsColumn();
         recherche.textProperty().addListener((observable, oldValue, newValue) -> handleSearch());
-        // Charger les données
         loadMoyens();
     }
+
     @FXML
     private void handleSearch() {
-        String keyword = recherche.getText();
-        filterTransport(keyword);
+        filterTransport(recherche.getText());
     }
 
     private void filterTransport(String keyword) {
@@ -192,14 +177,11 @@ public class AffichageTransportController {
         }
 
         String searchKeyword = keyword.toLowerCase();
-
-        // Filter the list based on the relevant fields in MoyenTransport
         List<MoyenTransport> filteredList = moyensTransport.stream()
                 .filter(transport -> transport.getTypeMoyen().toLowerCase().contains(searchKeyword)
-                        || String.valueOf(transport.getImmatriculation()).toLowerCase().contains(searchKeyword)
-
+                        || String.valueOf(transport.getImmatriculation()).contains(searchKeyword)  // Correction ici
                         || String.valueOf(transport.getCapacité()).contains(searchKeyword)
-                        || transport.getStatus().toLowerCase().contains(searchKeyword))
+                        || transport.getStatus().name().toLowerCase().contains(searchKeyword))
                 .collect(Collectors.toList());
 
         filteredMoyenTransportList.setAll(filteredList);
@@ -207,12 +189,9 @@ public class AffichageTransportController {
     }
 
 
-    @FXML
     private void afficherAlerte(String titre, String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
+        Alert alert = new Alert(Alert.AlertType.WARNING, message, ButtonType.OK);
         alert.setTitle(titre);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
         alert.showAndWait();
     }
 }

@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="add_transport" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.AddTransportController">
+<AnchorPane fx:id="add_transport" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.AddTransportController">
     <children>
         <Label layoutX="128.0" layoutY="39.0" prefHeight="46.0" prefWidth="348.0" text="Nouveau Moyen de Transport" textFill="#ef4907">
             <font>
@@ -37,10 +37,9 @@
             </font>
         </Label>
         <TextField fx:id="type" layoutX="274.0" layoutY="133.0" />
-        <SplitMenuButton fx:id="status" layoutX="274.0" layoutY="275.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0" text="disponible">
+        <SplitMenuButton fx:id="status" layoutX="274.0" layoutY="275.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0" text="Status">
             <items>
-                <MenuItem mnemonicParsing="false" text="disponible" />
-                <MenuItem mnemonicParsing="false" text="En maintenance" />
+
             </items>
         </SplitMenuButton>
         <TextField fx:id="immatriculation" layoutX="275.0" layoutY="233.0" />

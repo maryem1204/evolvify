@@ -1,6 +1,7 @@
 package tn.esprit.Tests;
 
 import tn.esprit.Entities.MoyenTransport;
+import tn.esprit.Entities.StatusTransport;
 import tn.esprit.Services.MoyenTransportCRUD;
 import tn.esprit.Utils.MyDataBase;
 
@@ -14,7 +15,7 @@ public class MainTestM {
         MoyenTransportCRUD moyenTransportCRUD = new MoyenTransportCRUD();
 
         // Ajouter un moyen de transport
-        MoyenTransport mt1 = new MoyenTransport(0, "Bus", 50, 123456, "Disponible");
+        MoyenTransport mt1 = new MoyenTransport(0, "Bus", 50, 123456, StatusTransport.DISPONIBLE);
         moyenTransportCRUD.add(mt1);
 
         // Afficher tous les moyens de transport
@@ -28,7 +29,7 @@ public class MainTestM {
         if (!moyens.isEmpty()) {
             MoyenTransport mtToUpdate = moyens.get(0);
             mtToUpdate.setCapacité(60);
-            mtToUpdate.setStatus("En maintenance");
+            mtToUpdate.setStatus(StatusTransport.EN_MAINTENANCE);
             moyenTransportCRUD.update(mtToUpdate);
         }
 

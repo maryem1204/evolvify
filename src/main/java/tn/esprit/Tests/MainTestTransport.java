@@ -1,4 +1,5 @@
 package tn.esprit.Tests;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -9,70 +10,66 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
-
 import java.io.IOException;
-import java.net.URL;
 import java.util.Objects;
 
 public class MainTestTransport extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-
         // Charger la vue initiale (Affichage_transport.fxml)
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Affichage_transport.fxml"));
         Parent root = loader.load();
 
         // Créer une scène avec la vue chargée
-        Scene scene = new Scene(root);
+        BorderPane borderPane = new BorderPane();
+        borderPane.setTop(createMenuBar(stage, borderPane)); // Ajout du menu
+        borderPane.setCenter(root);
+
+        Scene scene = new Scene(borderPane);
 
         // Ajouter le fichier CSS
+        String cssPath = "/tn/esprit/Styles/color.css";
+        if (getClass().getResource(cssPath) != null) {
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(cssPath)).toExternalForm());
+        } else {
+            System.err.println("CSS file not found: " + cssPath);
+        }
 
-        scene.getStylesheets().add(
-                Objects.requireNonNull(getClass().getResource("/tn/esprit/Styles/color.css")).toExternalForm()
-        );
         // Configurer la scène et le titre
         stage.setScene(scene);
         stage.setTitle("Gestion des Transports");
+        stage.show();
+    }
 
-        // Ajouter le menu et les actions
+    private MenuBar createMenuBar(Stage stage, BorderPane borderPane) {
         MenuBar menuBar = new MenuBar();
-
-        // Menu
         Menu menu = new Menu("Navigation");
 
         // Option pour afficher la liste des moyens de transport
         MenuItem afficherTransport = new MenuItem("Afficher les transports");
-        afficherTransport.setOnAction(e -> loadView("/Affichage_transport.fxml", stage));
+        afficherTransport.setOnAction(e -> loadView("/Affichage_transport.fxml", borderPane));
 
         // Option pour ajouter un moyen de transport
         MenuItem ajouterTransport = new MenuItem("Ajouter un transport");
-        ajouterTransport.setOnAction(e -> loadView("/add_transport.fxml", stage));
+        ajouterTransport.setOnAction(e -> loadView("/add_transport.fxml", borderPane));
 
         menu.getItems().addAll(afficherTransport, ajouterTransport);
         menuBar.getMenus().add(menu);
 
-        // Afficher le menu
-        BorderPane borderPane = new BorderPane();
-        borderPane.setTop(menuBar);
-        borderPane.setCenter(root);
-
-        // Ajouter la scène avec le menu
-        Scene menuScene = new Scene(borderPane);
-        stage.setScene(menuScene);
-
-        // Afficher la scène
-        stage.show();
+        return menuBar;
     }
 
-    // Méthode modifiée pour accepter les deux paramètres : un chemin de fichier et un stage
-    void loadView(String fxmlFile, Stage stage) {
+    private void loadView(String fxmlFile, BorderPane borderPane) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             Parent view = loader.load();
-            ((BorderPane) stage.getScene().getRoot()).setCenter(view);
+            borderPane.setCenter(view);
         } catch (IOException e) {
+            System.err.println("Erreur lors du chargement de la vue : " + fxmlFile);
             e.printStackTrace();
         }
     }
+
+
 }

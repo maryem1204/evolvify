@@ -1,11 +1,12 @@
 package tn.esprit.Tests;
 
 import tn.esprit.Entities.Trajet;
+import tn.esprit.Entities.StatusTrajet; // Import de l'Enum StatusTrajet
 import tn.esprit.Services.TrajetCRUD;
-import tn.esprit.Utils.MyDataBase;
+
 import java.sql.Time;
-import java.util.List;
 import java.sql.SQLException;
+import java.util.List;
 
 public class MainTestT {
     public static void main(String[] args) {
@@ -15,7 +16,7 @@ public class MainTestT {
         try {
             // Ajouter un trajet
             System.out.println("Ajout d'un nouveau trajet :");
-            Trajet t1 = new Trajet(1, "Tunis", "Sousse", 150.5, new Time(2, 30, 0), 2, 1, "En cours");
+            Trajet t1 = new Trajet(1, "Tunis", "Sousse", 150.5, new Time(2, 30, 0), 2, 1, StatusTrajet.EN_COURS); // Utilisation de l'Enum
             int trajetId = trajetCRUD.add(t1);
             if (trajetId > 0) {
                 System.out.println("✅ Trajet ajouté avec succès, ID: " + trajetId);
@@ -30,11 +31,13 @@ public class MainTestT {
                 System.out.println(t);
             }
 
-            // Modifier un trajet (modifier le trajet avec l'ID 1)
+            // Modifier un trajet (modifier le premier trajet récupéré)
             if (!trajets.isEmpty()) {
                 System.out.println("\nModification du premier trajet...");
                 Trajet tModif = trajets.get(0);
                 tModif.setDistance(160.0);  // Modification de la distance
+                tModif.setStatus(StatusTrajet.TERMINE); // Modification du statut
+
                 int rowsUpdated = trajetCRUD.update(tModif);
                 if (rowsUpdated > 0) {
                     System.out.println("✅ Trajet mis à jour avec succès !");
@@ -50,10 +53,10 @@ public class MainTestT {
                 System.out.println(t);
             }
 
-            // Supprimer un trajet (supprimer le trajet avec l'ID 1)
+            // Supprimer un trajet (supprimer le premier trajet récupéré)
             if (!trajets.isEmpty()) {
                 System.out.println("\nSuppression du premier trajet...");
-                int rowsDeleted = trajetCRUD.delete(trajets.get(0)); // Pass the whole Trajet object
+                int rowsDeleted = trajetCRUD.delete(trajets.get(0)); // Suppression par objet Trajet
                 if (rowsDeleted > 0) {
                     System.out.println("✅ Trajet supprimé avec succès !");
                 } else {

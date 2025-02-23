@@ -1,7 +1,9 @@
 package tn.esprit.Services;
 
 import tn.esprit.Entities.MoyenTransport;
+import tn.esprit.Entities.StatusTransport;
 import tn.esprit.Utils.MyDataBase;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +24,7 @@ public class MoyenTransportCRUD implements CRUD<MoyenTransport> {
             pst.setString(1, mt.getTypeMoyen());
             pst.setInt(2, mt.getCapacité());
             pst.setInt(3, mt.getImmatriculation());
-            pst.setString(4, mt.getStatus());
+            pst.setString(4, mt.getStatus().name());
 
             int rowsInserted = pst.executeUpdate();
             if (rowsInserted > 0) {
@@ -48,7 +50,7 @@ public class MoyenTransportCRUD implements CRUD<MoyenTransport> {
                         rs.getString("type_moyen"),
                         rs.getInt("capacité"),
                         rs.getInt("immatriculation"),
-                        rs.getString("status")
+                        StatusTransport.valueOf(rs.getString("status").toUpperCase()) // Correction ici
                 );
                 list.add(mt);
             }
@@ -67,7 +69,7 @@ public class MoyenTransportCRUD implements CRUD<MoyenTransport> {
                             rs.getString("type_moyen"),
                             rs.getInt("capacité"),
                             rs.getInt("immatriculation"),
-                            rs.getString("status")
+                            StatusTransport.valueOf(rs.getString("status").toUpperCase()) // Correction ici
                     ));
                 }
             }
@@ -82,7 +84,7 @@ public class MoyenTransportCRUD implements CRUD<MoyenTransport> {
             pst.setString(1, mt.getTypeMoyen());
             pst.setInt(2, mt.getCapacité());
             pst.setInt(3, mt.getImmatriculation());
-            pst.setString(4, mt.getStatus());
+            pst.setString(4, mt.getStatus().name());
             pst.setInt(5, mt.getIdMoyen());
 
             return pst.executeUpdate();
@@ -97,18 +99,23 @@ public class MoyenTransportCRUD implements CRUD<MoyenTransport> {
             return pst.executeUpdate();
         }
     }
-    public MoyenTransport findById(int id) throws SQLException {
-        MoyenTransport moyenTransport = null;
-        String query = "SELECT * FROM MoyenTransport WHERE idMoyen = ?";
+
+    public Optional<MoyenTransport> findById(int id) throws SQLException {
+        String query = "SELECT * FROM MoyenTransport WHERE id_moyen = ?";
         try (PreparedStatement stmt = cnx.prepareStatement(query)) {
             stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                moyenTransport = new MoyenTransport(rs.getInt("idMoyen"), rs.getString("typeMoyen"));
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(new MoyenTransport(
+                            rs.getInt("id_moyen"),
+                            rs.getString("type_moyen"),
+                            rs.getInt("capacité"),
+                            rs.getInt("immatriculation"),
+                            StatusTransport.valueOf(rs.getString("status").toUpperCase()) // Correction ici
+                    ));
+                }
             }
         }
-        return moyenTransport;
+        return Optional.empty();
     }
-
-
 }

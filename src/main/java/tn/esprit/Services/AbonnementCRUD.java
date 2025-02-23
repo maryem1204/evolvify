@@ -1,6 +1,7 @@
 package tn.esprit.Services;
 
 import tn.esprit.Entities.Abonnement;
+import tn.esprit.Entities.StatusAbonnement;
 import tn.esprit.Utils.MyDataBase;
 
 import java.sql.*;
@@ -18,6 +19,10 @@ public class AbonnementCRUD implements CRUD<Abonnement> {
 
     @Override
     public int add(Abonnement abonnement) throws SQLException {
+        if (abonnement.getDate_debut().after(abonnement.getDate_exp())) {
+            throw new SQLException("❌ Erreur : La date de début doit être antérieure à la date d'expiration.");
+        }
+
         String query = "INSERT INTO abonnement (type_Ab, date_debut, date_exp, prix, id_employe, status) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement preparedStatement = cnx.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, abonnement.getType_Ab());
@@ -25,7 +30,7 @@ public class AbonnementCRUD implements CRUD<Abonnement> {
             preparedStatement.setDate(3, new java.sql.Date(abonnement.getDate_exp().getTime()));
             preparedStatement.setDouble(4, abonnement.getPrix());
             preparedStatement.setInt(5, abonnement.getId_employe());
-            preparedStatement.setString(6, abonnement.getStatus());
+            preparedStatement.setString(6, abonnement.getStatus().name()); // Conversion enum -> String
 
             int rowsInserted = preparedStatement.executeUpdate();
             if (rowsInserted > 0) {
@@ -48,16 +53,15 @@ public class AbonnementCRUD implements CRUD<Abonnement> {
              ResultSet resultSet = statement.executeQuery(query)) {
 
             while (resultSet.next()) {
-                Abonnement abonnement = new Abonnement(
+                abonnements.add(new Abonnement(
                         resultSet.getInt("id_Ab"),
                         resultSet.getString("type_Ab"),
                         resultSet.getDate("date_debut"),
                         resultSet.getDate("date_exp"),
                         resultSet.getDouble("prix"),
                         resultSet.getInt("id_employe"),
-                        resultSet.getString("status")
-                );
-                abonnements.add(abonnement);
+                        StatusAbonnement.valueOf(resultSet.getString("status").toUpperCase()) // Conversion String -> Enum
+                ));
             }
         }
         return abonnements;
@@ -76,7 +80,7 @@ public class AbonnementCRUD implements CRUD<Abonnement> {
                             resultSet.getDate("date_exp"),
                             resultSet.getDouble("prix"),
                             resultSet.getInt("id_employe"),
-                            resultSet.getString("status")
+                            StatusAbonnement.valueOf(resultSet.getString("status").toUpperCase()) // Conversion String -> Enum
                     ));
                 }
             }
@@ -97,7 +101,7 @@ public class AbonnementCRUD implements CRUD<Abonnement> {
             preparedStatement.setDate(3, new java.sql.Date(abonnement.getDate_exp().getTime()));
             preparedStatement.setDouble(4, abonnement.getPrix());
             preparedStatement.setInt(5, abonnement.getId_employe());
-            preparedStatement.setString(6, abonnement.getStatus());
+            preparedStatement.setString(6, abonnement.getStatus().name()); // Conversion enum -> String
             preparedStatement.setInt(7, abonnement.getId_Ab());
 
             return preparedStatement.executeUpdate();
@@ -112,5 +116,4 @@ public class AbonnementCRUD implements CRUD<Abonnement> {
             return preparedStatement.executeUpdate();
         }
     }
-
 }

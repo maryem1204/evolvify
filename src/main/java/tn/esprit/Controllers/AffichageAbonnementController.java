@@ -54,9 +54,6 @@ public class AffichageAbonnementController {
     @FXML
     private TextField recherche;
 
-   // @FXML
-    //private Button ajouter;
-
     @FXML
     private ObservableList<Abonnement> abonnements = FXCollections.observableArrayList();
 
@@ -212,7 +209,7 @@ public class AffichageAbonnementController {
                         || String.valueOf(abonnement.getId_Ab()).contains(searchKeyword)
                         || String.valueOf(abonnement.getId_employe()).contains(searchKeyword)
                         || String.valueOf(abonnement.getPrix()).contains(searchKeyword)
-                        || abonnement.getStatus().toLowerCase().contains(searchKeyword))
+                        || (abonnement.getStatus() != null && abonnement.getStatus().name().toLowerCase().contains(searchKeyword)))
                 .collect(Collectors.toList());
 
         filteredAbonnementList.setAll(filteredList);

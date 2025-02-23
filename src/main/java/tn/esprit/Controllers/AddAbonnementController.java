@@ -3,6 +3,7 @@ package tn.esprit.Controllers;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import tn.esprit.Entities.Abonnement;
+import tn.esprit.Entities.StatusAbonnement;
 import tn.esprit.Services.AbonnementCRUD;
 
 import java.sql.SQLException;
@@ -17,28 +18,40 @@ public class AddAbonnementController {
     @FXML
     private DatePicker date_deb;
     @FXML
-    private TextField id_employe;  // Maintien du nom avec accent
+    private TextField id_employe;
     @FXML
     private DatePicker date_exp;
     @FXML
     private TextField prix;
     @FXML
-    private SplitMenuButton status;
+    private ComboBox<String> status;  // Remplacement du SplitMenuButton
     @FXML
-    private SplitMenuButton type_ab;
+    private ComboBox<String> type_ab; // Remplacement du SplitMenuButton
 
     private final AbonnementCRUD abonnementCRUD = new AbonnementCRUD();
 
     @FXML
     public void initialize() {
-        date_deb.setValue(LocalDate.now()); // Remplit automatiquement la date du jour
+        // Remplit automatiquement la date du jour
+        date_deb.setValue(LocalDate.now());
+
+        // Initialisation des valeurs des ComboBox
+        type_ab.getItems().addAll("Mensuel", "Trimestriel", "Annuel");
+        status.getItems().addAll("ACTIF", "INACTIF");
+
+        // Sélection par défaut
+        type_ab.setValue("Mensuel");
+        status.setValue("ACTIF");
     }
+
     @FXML
     void ajouterAbonnement() {
         try {
             // Vérification des champs vides
-            if (id_employe.getText().isEmpty() || type_ab.getText().isEmpty() || prix.getText().isEmpty() ||
-                    date_deb.getValue() == null || date_exp.getValue() == null || status.getText().isEmpty()) {
+            if (id_employe.getText().isEmpty() || prix.getText().isEmpty() ||
+                    date_deb.getValue() == null || date_exp.getValue() == null ||
+                    type_ab.getValue() == null || status.getValue() == null) {
+
                 showAlert("Erreur", "Veuillez remplir tous les champs !");
                 return;
             }
@@ -51,9 +64,9 @@ public class AddAbonnementController {
             int idEmployeValue = Integer.parseInt(id_employe.getText());
 
             // Conversion des valeurs
-            String typeValue = type_ab.getText();
+            String typeValue = type_ab.getValue();
             double prixValue = Double.parseDouble(prix.getText());
-            String statusValue = status.getText();
+            String statusValue = status.getValue();
 
             // Conversion de LocalDate en Date
             LocalDate localDateDebut = date_deb.getValue();
@@ -67,8 +80,11 @@ public class AddAbonnementController {
                 return;
             }
 
-            // Création d'un objet Abonnement avec id_employé
-            Abonnement abonnement = new Abonnement(0, typeValue, dateDebutValue, dateExpValue, prixValue, idEmployeValue, statusValue);
+            // Conversion du statut en Enum
+            StatusAbonnement statusEnum = StatusAbonnement.valueOf(statusValue.toUpperCase());
+
+            // Création d'un objet Abonnement
+            Abonnement abonnement = new Abonnement(0, typeValue, dateDebutValue, dateExpValue, prixValue, idEmployeValue, statusEnum);
 
             // Ajout dans la base de données
             int id = abonnementCRUD.add(abonnement);
@@ -80,12 +96,15 @@ public class AddAbonnementController {
             }
         } catch (NumberFormatException e) {
             showAlert("Erreur", "Le prix doit être un nombre valide !");
+        } catch (IllegalArgumentException e) {
+            showAlert("Erreur", "Le statut sélectionné est invalide !");
         } catch (SQLException e) {
             showAlert("Erreur SQL", e.getMessage());
         } catch (Exception e) {
             showAlert("Erreur", "Une erreur inconnue s'est produite.");
         }
     }
+
 
     // Vérifie si une chaîne est un entier valide
     private boolean isInteger(String str) {
@@ -107,10 +126,10 @@ public class AddAbonnementController {
 
     private void clearFields() {
         id_employe.clear();
-        type_ab.setText("Sélectionner");
+        type_ab.setValue("Mensuel");
         prix.clear();
-        date_deb.setValue(null);
+        date_deb.setValue(LocalDate.now());
         date_exp.setValue(null);
-        status.setText("Sélectionner");
+        status.setValue("ACTIF");
     }
 }

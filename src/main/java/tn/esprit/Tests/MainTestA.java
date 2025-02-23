@@ -1,6 +1,7 @@
 package tn.esprit.Tests;
 
 import tn.esprit.Entities.Abonnement;
+import tn.esprit.Entities.StatusAbonnement;
 import tn.esprit.Services.AbonnementCRUD;
 import tn.esprit.Utils.MyDataBase;
 
@@ -16,7 +17,7 @@ public class MainTestA {
         // Ajouter un nouvel abonnement
         Abonnement ab1 = new Abonnement(0, "Mensuel", new java.sql.Date(System.currentTimeMillis()),
                 new java.sql.Date(System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000),
-                50.0, 1, "Actif");
+                50.0, 1, StatusAbonnement.ACTIF);
 
         try {
             int abonnementId = abonnementCRUD.add(ab1);

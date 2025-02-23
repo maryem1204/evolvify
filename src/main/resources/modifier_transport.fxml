@@ -42,10 +42,7 @@
         <TextField fx:id="immatriculation" layoutX="275.0" layoutY="233.0" promptText="Ex: 123-XYZ-789" stylesheets="@../java/tn/esprit/Styles/add_transport.css" />
 
         <SplitMenuButton fx:id="status" layoutX="274.0" layoutY="275.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0" text="disponible">
-            <items>
-                <MenuItem mnemonicParsing="false" text="disponible" />
-                <MenuItem mnemonicParsing="false" text="En maintenance" />
-            </items>
+
         </SplitMenuButton>
 
         <Button fx:id="modifier" layoutX="386.0" layoutY="335.0" mnemonicParsing="false" onAction="#handleModifier" styleClass="gradient-button" text="Modifier" />

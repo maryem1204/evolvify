@@ -2,13 +2,11 @@ package tn.esprit.Controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import tn.esprit.Services.TrajetCRUD;
 import tn.esprit.Entities.Trajet;
+import tn.esprit.Entities.StatusTrajet;
 
 import java.sql.SQLException;
 import java.sql.Time;
@@ -26,78 +24,82 @@ public class ModifierTrajetController {
     @FXML
     private Button modifier;
     @FXML
-    private MenuButton moyen_transport;
+    private ComboBox<String> moyen_transport; // Correction: MenuButton -> ComboBox
     @FXML
     private TextField pointArr;
     @FXML
     private TextField pointDep;
     @FXML
-    private TextField status;
+    private ComboBox<String> status; // Correction: TextField -> ComboBox
 
-    private Trajet trajet; // ✅ Ajouter cette variable d'instance
+    private Trajet trajet;
 
     public void setTrajet(Trajet trajet) {
         if (trajet != null) {
-            this.trajet = trajet; // ✅ Stocker l'objet pour l'utiliser dans handleModifier()
+            this.trajet = trajet;
             pointDep.setText(trajet.getPointDep());
             pointArr.setText(trajet.getPointArr());
             distance.setText(String.valueOf(trajet.getDistance()));
-            try {
-                // Convertir Time en String pour afficher dans le TextField
-                dureeEstime.setText(trajet.getDureeEstime().toString());
-            } catch (Exception e) {
-                dureeEstime.setText(trajet.getDureeEstime().toString()); // Affichage de la durée estimée
-            }
-
+            dureeEstime.setText(trajet.getDuréeEstimé().toString());
             id_employe.setText(String.valueOf(trajet.getIdEmploye()));
-            status.setText(trajet.getStatus());
-            moyen_transport.setText(String.valueOf(trajet.getIdMoyen()));
+
+            // Sélection du statut correspondant dans la ComboBox
+            status.setValue(trajet.getStatus().name());
+
+            // Conversion de l'ID moyen de transport en son libellé (si nécessaire)
+            moyen_transport.setValue(convertIdToTransportName(trajet.getIdMoyen()));
         }
     }
 
     @FXML
     void handleModifier(ActionEvent event) {
         try {
-            if (trajet == null) { // ✅ Vérifier si trajet est null
+            if (trajet == null) {
                 showAlert(Alert.AlertType.ERROR, "Erreur", "Aucun trajet sélectionné.");
                 return;
             }
 
             if (pointDep.getText().isEmpty() || pointArr.getText().isEmpty() ||
                     distance.getText().isEmpty() || dureeEstime.getText().isEmpty() ||
-                    id_employe.getText().isEmpty() || status.getText().isEmpty() ||
-                    moyen_transport.getText().isEmpty()) {
+                    id_employe.getText().isEmpty() || status.getValue() == null ||
+                    moyen_transport.getValue() == null) {
 
                 showAlert(Alert.AlertType.WARNING, "Champ manquant", "Veuillez remplir tous les champs.");
                 return;
             }
 
-            // Validation des entrées numériques
-            double distanceValue = 0;
-            int employeId = 0;
-            int moyenId = 0;
+            double distanceValue;
+            int employeId;
             try {
                 distanceValue = Double.parseDouble(distance.getText());
                 employeId = Integer.parseInt(id_employe.getText());
-                moyenId = Integer.parseInt(moyen_transport.getText());
             } catch (NumberFormatException e) {
                 showAlert(Alert.AlertType.ERROR, "Erreur de format", "Veuillez entrer des valeurs numériques valides.");
                 return;
             }
 
-            // Convertir la durée estimée en Time (Assurez-vous que le format soit correct: HH:MM:SS)
             Time duree = convertStringToTime(dureeEstime.getText());
 
-            // Mettre à jour l'objet existant avec les nouvelles valeurs
+            // Conversion du statut en Enum
+            StatusTrajet statusTrajet;
+            try {
+                statusTrajet = StatusTrajet.valueOf(status.getValue().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Statut invalide. Veuillez choisir un statut valide.");
+                return;
+            }
+
+            // Conversion du moyen de transport (si l'ID est stocké ailleurs, adapter cette partie)
+            int moyenId = convertTransportNameToId(moyen_transport.getValue());
+
             trajet.setPointDep(pointDep.getText());
             trajet.setPointArr(pointArr.getText());
             trajet.setDistance(distanceValue);
-            trajet.setDureeEstime(duree); // Set le Time dans l'objet Trajet
+            trajet.setDuréeEstimé(duree);
             trajet.setIdEmploye(employeId);
             trajet.setIdMoyen(moyenId);
-            trajet.setStatus(status.getText());
+            trajet.setStatus(statusTrajet);
 
-            // Mise à jour du trajet dans la base de données via TrajetCRUD
             TrajetCRUD trajetCRUD = new TrajetCRUD();
             int result = trajetCRUD.update(trajet);
 
@@ -117,11 +119,9 @@ public class ModifierTrajetController {
 
     private Time convertStringToTime(String timeString) {
         try {
-            // Convertir la chaîne de caractères en Time
-            // Assurez-vous que le format de la chaîne soit : "HH:MM:SS"
             return Time.valueOf(timeString);
         } catch (IllegalArgumentException e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Le format de la durée estimée est incorrect. Veuillez entrer un format valide (HH:MM:SS).");
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Le format de la durée estimée est incorrect. Format attendu : HH:MM:SS.");
             throw new IllegalArgumentException("Format de durée incorrect");
         }
     }
@@ -135,7 +135,28 @@ public class ModifierTrajetController {
 
     @FXML
     void handleAnnuler(ActionEvent event) {
-        // Fermer la fenêtre sans effectuer de mise à jour
         ((Stage) annuler.getScene().getWindow()).close();
+    }
+
+    // Simuler la conversion ID -> Nom pour le moyen de transport
+    private String convertIdToTransportName(int id) {
+        switch (id) {
+            case 1: return "Voiture";
+            case 2: return "Bus";
+            case 3: return "Train";
+            case 4: return "Vélo";
+            default: return "Inconnu";
+        }
+    }
+
+    // Simuler la conversion Nom -> ID pour le moyen de transport
+    private int convertTransportNameToId(String name) {
+        switch (name) {
+            case "Voiture": return 1;
+            case "Bus": return 2;
+            case "Train": return 3;
+            case "Vélo": return 4;
+            default: return -1;
+        }
     }
 }

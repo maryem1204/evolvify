@@ -1,8 +1,9 @@
 package tn.esprit.Services;
 
-import tn.esprit.Entities.MoyenTransport;
+import tn.esprit.Entities.StatusTrajet;
 import tn.esprit.Entities.Trajet;
 import tn.esprit.Utils.MyDataBase;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ public class TrajetCRUD implements CRUD<Trajet> {
         try (PreparedStatement pst = cnx.prepareStatement(query)) {
             pst.setInt(1, employeId);
             try (ResultSet rs = pst.executeQuery()) {
-                return rs.next() && "actif".equalsIgnoreCase(rs.getString("status"));
+                return rs.next() && "ACTIF".equalsIgnoreCase(rs.getString("status"));
             }
         } catch (SQLException e) {
             System.err.println("❌ Erreur lors de la vérification de l'abonnement : " + e.getMessage());
@@ -32,7 +33,7 @@ public class TrajetCRUD implements CRUD<Trajet> {
         try (PreparedStatement pst = cnx.prepareStatement(query)) {
             pst.setInt(1, moyenId);
             try (ResultSet rs = pst.executeQuery()) {
-                return rs.next() && "disponible".equalsIgnoreCase(rs.getString("status"));
+                return rs.next() && "DISPONIBLE".equalsIgnoreCase(rs.getString("status"));
             }
         } catch (SQLException e) {
             System.err.println("❌ Erreur lors de la vérification du moyen de transport : " + e.getMessage());
@@ -57,23 +58,23 @@ public class TrajetCRUD implements CRUD<Trajet> {
             pst.setString(1, t.getPointDep());
             pst.setString(2, t.getPointArr());
             pst.setDouble(3, t.getDistance());
-            pst.setTime(4, t.getDureeEstime());
+            pst.setTime(4, t.getDuréeEstimé());
             pst.setInt(5, t.getIdMoyen());
             pst.setInt(6, t.getIdEmploye());
-            pst.setString(7, t.getStatus());
+            pst.setString(7, t.getStatus().name());
 
             int rowsInserted = pst.executeUpdate();
             if (rowsInserted > 0) {
                 try (ResultSet generatedKeys = pst.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
-                        return generatedKeys.getInt(1); // Return the generated ID
+                        return generatedKeys.getInt(1);
                     }
                 }
             }
-            return 0; // Return 0 if no rows were inserted
+            return 0;
         } catch (SQLException e) {
             System.err.println("❌ Erreur lors de l'insertion du trajet : " + e.getMessage());
-            throw e; // Propagate exception
+            throw e;
         }
     }
 
@@ -85,17 +86,22 @@ public class TrajetCRUD implements CRUD<Trajet> {
              ResultSet rs = stmt.executeQuery(query)) {
 
             while (rs.next()) {
-                Trajet t = new Trajet(
-                        rs.getInt("id_T"),
-                        rs.getString("point_dep"),
-                        rs.getString("point_arr"),
-                        rs.getDouble("distance"),
-                        rs.getTime("durée_estimé"),
-                        rs.getInt("id_moyen"),
-                        rs.getInt("id_employe"),
-                        rs.getString("status")
-                );
-                trajets.add(t);
+                try {
+                    StatusTrajet status = StatusTrajet.valueOf(rs.getString("status").toUpperCase());
+                    Trajet t = new Trajet(
+                            rs.getInt("id_T"),
+                            rs.getString("point_dep"),
+                            rs.getString("point_arr"),
+                            rs.getDouble("distance"),
+                            rs.getTime("durée_estimé"),
+                            rs.getInt("id_moyen"),
+                            rs.getInt("id_employe"),
+                            status
+                    );
+                    trajets.add(t);
+                } catch (IllegalArgumentException e) {
+                    System.err.println("⚠️ Statut inconnu trouvé en base de données : " + rs.getString("status"));
+                }
             }
         } catch (SQLException e) {
             System.err.println("❌ Erreur lors de l'affichage des trajets : " + e.getMessage());
@@ -103,10 +109,8 @@ public class TrajetCRUD implements CRUD<Trajet> {
         return trajets;
     }
 
-
-
     @Override
-    public int update(Trajet t) throws SQLException{
+    public int update(Trajet t) throws SQLException {
         if (!verifierAbonnementActif(t.getIdEmploye())) {
             System.out.println("❌ L'employé n'a pas d'abonnement actif.");
             return 0;
@@ -122,19 +126,13 @@ public class TrajetCRUD implements CRUD<Trajet> {
             pst.setString(1, t.getPointDep());
             pst.setString(2, t.getPointArr());
             pst.setDouble(3, t.getDistance());
-            pst.setTime(4, t.getDureeEstime());
+            pst.setTime(4, t.getDuréeEstimé());
             pst.setInt(5, t.getIdMoyen());
             pst.setInt(6, t.getIdEmploye());
-            pst.setString(7, t.getStatus());
+            pst.setString(7, t.getStatus().name());
             pst.setInt(8, t.getIdT());
 
-            int rowsUpdated = pst.executeUpdate();
-            if (rowsUpdated > 0) {
-                System.out.println("✅ Trajet mis à jour avec succès !");
-            } else {
-                System.out.println("⚠ Aucun trajet trouvé avec cet ID !");
-            }
-            return rowsUpdated; // Return the number of rows updated
+            return pst.executeUpdate();
         } catch (SQLException e) {
             System.err.println("❌ Erreur lors de la mise à jour du trajet : " + e.getMessage());
             return 0;
@@ -143,22 +141,24 @@ public class TrajetCRUD implements CRUD<Trajet> {
 
     @Override
     public int delete(Trajet trajet) throws SQLException {
-        String query = "DELETE FROM trajet WHERE id_T=?";
-        try (PreparedStatement pst = cnx.prepareStatement(query)) {
-            pst.setInt(1, trajet.getIdT()); // Assuming `getIdT()` is the method to get the ID of the `Trajet` object
-
-            int rowsDeleted = pst.executeUpdate();
-            if (rowsDeleted > 0) {
-                System.out.println("✅ Trajet supprimé avec succès !");
-            } else {
-                System.out.println("⚠ Aucun trajet trouvé avec cet ID !");
+        String checkStatusQuery = "SELECT status FROM trajet WHERE id_T=?";
+        try (PreparedStatement checkStmt = cnx.prepareStatement(checkStatusQuery)) {
+            checkStmt.setInt(1, trajet.getIdT());
+            try (ResultSet rs = checkStmt.executeQuery()) {
+                if (rs.next() && "EN_COURS".equalsIgnoreCase(rs.getString("status"))) {
+                    System.out.println("❌ Impossible de supprimer un trajet en cours.");
+                    return 0;
+                }
             }
+        }
 
-            return rowsDeleted; // Return the number of rows deleted
+        String deleteQuery = "DELETE FROM trajet WHERE id_T=?";
+        try (PreparedStatement pst = cnx.prepareStatement(deleteQuery)) {
+            pst.setInt(1, trajet.getIdT());
+            return pst.executeUpdate();
         } catch (SQLException e) {
             System.err.println("❌ Erreur lors de la suppression du trajet : " + e.getMessage());
-            throw e; // Propagate the exception
+            throw e;
         }
     }
-
 }

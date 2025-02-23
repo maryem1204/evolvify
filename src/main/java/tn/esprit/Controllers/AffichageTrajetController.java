@@ -14,6 +14,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import tn.esprit.Entities.MoyenTransport;
 import tn.esprit.Entities.Trajet;
+import tn.esprit.Entities.StatusTrajet; // Ajout pour utiliser l'énumération
 import tn.esprit.Services.TrajetCRUD;
 
 import java.io.IOException;
@@ -43,10 +44,10 @@ public class AffichageTrajetController {
     private TableColumn<Trajet, Double> colDistance;
 
     @FXML
-    private TableColumn<Trajet, Time> colDureeEstimee;
+    private TableColumn<Trajet, Time> colDuréeEstimé;
 
     @FXML
-    private TableColumn<Trajet, String> colIdMoyen;
+    private TableColumn<Trajet, Integer> colIdMoyen;
 
     @FXML
     private TableColumn<Trajet, Integer> colIdEmploye;
@@ -61,7 +62,6 @@ public class AffichageTrajetController {
     private TableColumn<Trajet, Void> colAction;
 
     private ObservableList<Trajet> trajets = FXCollections.observableArrayList();
-
     private static final Logger logger = Logger.getLogger(AffichageTrajetController.class.getName());
 
     private ObservableList<Trajet> filteredTrajetList = FXCollections.observableArrayList();
@@ -141,11 +141,7 @@ public class AffichageTrajetController {
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    setGraphic(hbox);
-                }
+                setGraphic(empty ? null : hbox);
             }
         });
     }
@@ -179,14 +175,10 @@ public class AffichageTrajetController {
         colPointDep.setCellValueFactory(new PropertyValueFactory<>("pointDep"));
         colPointArr.setCellValueFactory(new PropertyValueFactory<>("pointArr"));
         colDistance.setCellValueFactory(new PropertyValueFactory<>("distance"));
-        colDureeEstimee.setCellValueFactory(new PropertyValueFactory<>("dureeEstime"));
+        colDuréeEstimé.setCellValueFactory(new PropertyValueFactory<>("duréeEstimé"));
         colIdMoyen.setCellValueFactory(new PropertyValueFactory<>("idMoyen"));
-
-
-
-
         colIdEmploye.setCellValueFactory(new PropertyValueFactory<>("idEmploye"));
-        colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
+        colStatus.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStatus().name()));
 
         addActionsColumn();
         recherche.textProperty().addListener((observable, oldValue, newValue) -> handleSearch());
@@ -212,7 +204,7 @@ public class AffichageTrajetController {
                 .filter(trajet -> trajet.getPointDep().toLowerCase().contains(searchKeyword)
                         || trajet.getPointArr().toLowerCase().contains(searchKeyword)
                         || String.valueOf(trajet.getDistance()).contains(searchKeyword)
-                        || trajet.getStatus().toLowerCase().contains(searchKeyword))
+                        || trajet.getStatus().name().toLowerCase().contains(searchKeyword)) // Correction ici
                 .collect(Collectors.toList());
 
         filteredTrajetList.setAll(filteredList);
