@@ -9,13 +9,18 @@ import javafx.scene.layout.HBox;
 import tn.esprit.Services.ListOffreService;
 import tn.esprit.Entities.ListOffre;
 import tn.esprit.Utils.MyDataBase;
+
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
-
+import java.util.Properties;
 import static com.mysql.cj.conf.PropertyKey.logger;
 
 public class DashboardListOffre {
@@ -109,6 +114,7 @@ public class DashboardListOffre {
                 btnOk.setOnAction(event -> {
                     ListOffre offre = getTableView().getItems().get(getIndex());
                     updateStatus(offre, "accepte");
+
                 });
 
                 // Action du bouton "Not OK" -> Change le statut en "refusé"
@@ -153,6 +159,12 @@ public class DashboardListOffre {
                 afficherAlerte("Succès", "Le statut de l'offre a été mis à jour en " + status);
                 offre.setStatus(status);  // Mise à jour du statut localement
                 tabledeliste.refresh();  // Rafraîchir la TableView
+
+                // Récupérer l'email du candidat et envoyer l'email
+                String email = getEmailById(offre.getIdCondidate());
+                if (email != null) {
+                    sendEmail(email, newStatus);
+                }
             } else {
                 afficherAlerte("Erreur", "La mise à jour a échoué !");
             }
@@ -168,6 +180,63 @@ public class DashboardListOffre {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+    private String getEmailById(int idCandidat) {
+        String query = "SELECT email FROM users WHERE id_employe = ?";
+        try (PreparedStatement statement = cnx.prepareStatement(query)) {
+            statement.setInt(1, idCandidat);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                return rs.getString("email");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private void sendEmail(String recipientEmail, String status) {
+        final String fromEmail = "cherif.sarra@esprit.tn"; // Remplacez par votre email
+        final String password = "ihdr zwon zlnj ngpp"; // Remplacez par votre mot de passe
+
+        Properties props = new Properties();
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+
+        Session session = Session.getInstance(props, new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(fromEmail, password);
+            }
+        });
+
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(fromEmail));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
+            message.setSubject("Mise à jour de votre candidature");
+
+            String messageText = "<html><body>";
+            messageText += "<p>Bonjour,</p>";
+            if (status.equalsIgnoreCase("accepte")) {
+                messageText += "<p><b>Félicitations !</b> Votre candidature a été <span style='color:green;'>acceptée</span>.</p>";
+            } else {
+                messageText += "<p>Nous sommes désolés, mais votre candidature a été <span style='color:red;'>refusée</span>.</p>";
+            }
+            messageText += "<p>Cordialement,<br>L'équipe RH</p>";
+            messageText += "</body></html>";
+
+            message.setContent(messageText, "text/html");
+
+            Transport.send(message);
+
+            afficherAlerte("Succès", "L'email a été envoyé avec succès à " + recipientEmail);
+
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            afficherAlerte("Erreur", "L'envoi de l'email a échoué !");
+        }
     }
 
 
