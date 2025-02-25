@@ -8,7 +8,7 @@ public class SmsService {
     // Your Twilio credentials - store these securely in a properties file
     private static final String ACCOUNT_SID = "TWILIO_ACCOUNT_SID";
     private static final String AUTH_TOKEN = "TWILIO_AUTH_TOKEN";
-    private static final String FROM_NUMBER = "TWILIO_FROM_NUMBER"; // Format: +1234567890
+    private static final String FROM_NUMBER = "TWILIO_FROM_NUMBER";
 
     // HR phone number - ideally this should come from a configuration or database
     private static final String HR_PHONE_NUMBER = "+21697129381"; // Format: +1234567890
