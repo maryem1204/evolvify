@@ -49,11 +49,20 @@ public class ModifierTacheController {
     public void setTache(Tache tache) {
         this.tache = tache;
         descriptionField.setText(tache.getDescription());
-        priorityComboBox.setValue(tache.getPriority().toString());
-        statusComboBox.setValue(tache.getStatus().toString());
+
+        // Convertir l'ENUM en format affichable
+        priorityComboBox.setValue(formatEnum(tache.getPriority().name()));
+        statusComboBox.setValue(formatEnum(tache.getStatus().name()));
+
         locationComboBox.setValue(tache.getLocation());
         createdAtPicker.setValue(tache.getCreated_at());
     }
+
+    // Fonction pour formater l'affichage des ENUM
+    private String formatEnum(String enumValue) {
+        return enumValue.substring(0, 1).toUpperCase() + enumValue.substring(1).toLowerCase();
+    }
+
 
     @FXML
     private void handleEdit() {

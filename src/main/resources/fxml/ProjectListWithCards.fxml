@@ -32,10 +32,17 @@
 
             <!-- On remplace le Pane et le HBox par un seul StackPane -->
             <StackPane>
-                <ImageView fx:id="notificationIcon" fitHeight="40" fitWidth="40" onMouseClicked="#handleNotificationClick" pickOnBounds="true" preserveRatio="true" />
 
+                <ImageView fx:id="notificationIcon" fitHeight="40" fitWidth="40" onMouseClicked="#handleNotificationClick" pickOnBounds="true" style="-fx-cursor: hand" preserveRatio="true" />
+                <Label fx:id="notificationBadge" style="-fx-background-color: red;
+                                            -fx-text-fill: white;
+                                            -fx-font-size: 14px;
+                                            -fx-padding: 3px 7px;
+                                            -fx-background-radius: 50%;
+                                            -fx-translate-x: 10;
+                                            -fx-translate-y: -10;" />
                 <!-- Le badge s'affichera au-dessus de l'icône -->
-                <Label fx:id="notificationBadge" style="-fx-background-color: red;                       -fx-text-fill: white;                       -fx-font-size: 14px;                       -fx-padding: 3px 7px;                       -fx-background-radius: 50%;                       -fx-translate-x: 10;  /* Ajuste la position en x si nécessaire */                       -fx-translate-y: -10; /* Ajuste la position en y si nécessaire */                      " />
+
             </StackPane>
 
             <!-- Bouton Ajouter projet -->

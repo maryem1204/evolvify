@@ -177,7 +177,7 @@ public class ProjectListWithCardsController {
         // Changer le curseur quand la souris passe dessus
         editIcon.setStyle("-fx-cursor: hand;");
         deleteIcon.setStyle("-fx-cursor: hand;");
-
+        eyeIcon.setStyle("-fx-cursor: hand;");
         // Actions lors du clic sur les icônes
         editIcon.setOnMouseClicked(event -> showEditPopup(projet));
         deleteIcon.setOnMouseClicked(event -> showDeleteConfirmation(projet));
@@ -266,27 +266,6 @@ public class ProjectListWithCardsController {
         }
     }
 
-
-
-    private void checkProjectDeadlines() {
-        try {
-            allProjets = projetService.showAll(); // Recharger les projets
-
-            // Filtrer les projets en retard
-            long notificationCount = allProjets.stream()
-                    .filter(projet -> projet.getEnd_date() != null && projet.getEnd_date().isBefore(LocalDate.now()))
-                    .count();
-
-            System.out.println("Projets en retard : " + notificationCount); // Vérifier la valeur
-            updateNotificationBadge((int) notificationCount);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
-
     @FXML
     private void handleNotificationClick() {
         DeadLineNotification.checkProjectDeadlines();
@@ -296,6 +275,23 @@ public class ProjectListWithCardsController {
         Image image = new Image(getClass().getResourceAsStream(iconPath));
         notificationIcon.setImage(image);
     }
+
+    private void checkProjectDeadlines() {
+        try {
+            allProjets = projetService.showAll(); // Recharger les projets
+
+            // Filtrer les projets ayant une deadline demain
+            long notificationCount = allProjets.stream()
+                    .filter(projet -> projet.getEnd_date() != null && projet.getEnd_date().isEqual(LocalDate.now().plus(1, ChronoUnit.DAYS)))
+                    .count();
+
+            System.out.println("Projets avec deadline demain : " + notificationCount); // Vérifier la valeur
+            updateNotificationBadge((int) notificationCount);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void updateNotificationBadge(int count) {
         Platform.runLater(() -> {

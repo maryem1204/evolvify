@@ -16,9 +16,9 @@
     <top>
         <VBox spacing="10">
             <HBox spacing="10.0" style="-fx-padding: 10px;">
-                <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #0047AB;" text="Liste des Projets" />
+                <Label prefHeight="35.0" prefWidth="234.0" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #0047AB;" text="Liste des Projets" />
                 <HBox alignment="CENTER_LEFT" maxWidth="700" prefHeight="47.0" prefWidth="595.0" spacing="10" styleClass="searchBox">
-                    <TextField fx:id="recherche" maxWidth="726.0" prefHeight="26.0" prefWidth="695.0" promptText="Rechercher un projet..." styleClass="searchInput" />
+                    <TextField fx:id="recherche" maxWidth="726.0" prefHeight="26.0" prefWidth="558.0" promptText="Rechercher un projet..." styleClass="searchInput" />
                 </HBox>
                 <Button onAction="#exportTableViewToPDF" prefHeight="42.0" prefWidth="158.0" styleClass="gradient-button" text="+ Upload pdf" />
                 <Button onAction="#openAjoutProjetPopup" prefHeight="42.0" prefWidth="207.0" styleClass="gradient-button" text="+ Ajouter Projet" />
