@@ -1,0 +1,55 @@
+/* Style général de la fenêtre */
+AnchorPane {
+    -fx-background-color: #f4f4f4;
+}
+
+/* Style du titre */
+Label {
+    -fx-font-family: "Arial";
+    -fx-text-fill: #333;
+}
+
+Label first-child {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+/* Style des champs de saisie */
+TextField, DatePicker, ComboBox {
+    -fx-pref-width: 200px;
+    -fx-padding: 5px;
+    -fx-border-radius: 5px;
+    -fx-border-color: #ccc;
+}
+
+TextField:focused, DatePicker:focused, ComboBox:focused {
+    -fx-border-color: #3498db;
+    -fx-border-width: 2px;
+}
+
+/* Style des boutons */
+Button {
+    -fx-font-size: 14px;
+    -fx-padding: 8px 16px;
+    -fx-border-radius: 5px;
+    -fx-cursor: hand;
+}
+
+#btnSave {
+    -fx-background-color: #2ecc71;
+    -fx-text-fill: white;
+}
+
+#btnSave:hover {
+    -fx-background-color: #27ae60;
+}
+
+#btnCancel {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+}
+
+#btnCancel:hover {
+    -fx-background-color: #c0392b;
+}

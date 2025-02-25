@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8.0" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.Controllers.ListUsersController"
+            style="-fx-background-color: transparent; -fx-padding: 20px;"
+            stylesheets="@../Styles/stylesListUser.css">
+
+    <!-- Header avec titre et barre de recherche -->
+    <top>
+        <VBox spacing="10">
+            <HBox spacing="10" style="-fx-padding: 10px;">
+                <Label text=" Liste des Utilisateurs"
+                       style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #0047AB; " />
+                <Pane HBox.hgrow="ALWAYS"/>
+                <Button text="+ Ajouter Employé" onAction="#showAddEmployeePopup"
+                        styleClass="gradient-button"/>
+            </HBox>
+
+            <!-- Barre de recherche -->
+            <HBox alignment="CENTER_LEFT" spacing="5" styleClass="searchBox" style="-fx-padding: 0 0 15px 0;">
+                <TextField fx:id="searchField" promptText="Rechercher un employé..."
+                           styleClass="searchInput" maxWidth="250" />
+
+                <Button fx:id="searchButton" onAction="#handleSearch"
+                        styleClass="searchButton" minWidth="40" minHeight="40">
+                    <graphic>
+                        <ImageView fitWidth="20" fitHeight="20">
+                            <image>
+                                <Image url="@../images/search-1.jpg"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </HBox>
+
+        </VBox> <!-- Ici, on ferme correctement le VBox -->
+    </top>
+
+    <!-- TableView bien positionné -->
+    <center>
+        <AnchorPane>
+            <TableView fx:id="employeeTable" AnchorPane.topAnchor="0.0"
+                       AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                       AnchorPane.rightAnchor="0.0" prefHeight="400" prefWidth="1200">
+                <columns>
+                    <TableColumn fx:id="colProfile" text="Profile" prefWidth="80"/>
+                    <TableColumn fx:id="colFirstName" text="Nom" prefWidth="80"/>
+                    <TableColumn fx:id="colLastName" text="Prénom" prefWidth="80"/>
+                    <TableColumn fx:id="colEmail" text="Email" prefWidth="120"/>
+                    <TableColumn fx:id="colBirthday" text="Date de Naissance" prefWidth="90"/>
+                    <TableColumn fx:id="colJoiningDate" text="Date d'embauche" prefWidth="90"/>
+                    <TableColumn fx:id="colRole" text="Rôle" prefWidth="90"/>
+                    <TableColumn fx:id="colNumTel" text="Téléphone" prefWidth="90"/>
+                    <TableColumn fx:id="colCongeRestant" text="Congés Restants" prefWidth="60"/>
+                    <TableColumn fx:id="colTtRestants" text="TT Restants" prefWidth="60"/>
+                    <TableColumn fx:id="colActions" text="Actions" prefWidth="60"/>
+                </columns>
+            </TableView>
+        </AnchorPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER" spacing="10" style="-fx-padding: 10px;">
+            <Pagination fx:id="pagination" pageCount="1" maxPageIndicatorCount="5"
+                        styleClass="styled-pagination"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

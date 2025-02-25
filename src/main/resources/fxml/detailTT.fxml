@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.control.ComboBox?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.DetailTTController" stylesheets="@../Styles/DetailTT.css">
+    <VBox alignment="CENTER" spacing="15" style="-fx-background-color: white;" prefWidth="400" prefHeight="350">
+        <HBox alignment="TOP_RIGHT">
+            <Button fx:id="btnAnnuler" text="✖" onAction="#handleClose" style="-fx-background-color: transparent; -fx-font-size: 30px;" />
+        </HBox>
+        <Label text="Add TT" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+        <HBox spacing="10">
+            <Label text="From *" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+            <DatePicker fx:id="fromDate" onAction="#calculateLeaveDays"/>
+        </HBox>
+
+        <HBox spacing="10">
+            <Label text="To *" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+            <DatePicker fx:id="toDate" onAction="#calculateLeaveDays"/>
+        </HBox>
+        <HBox spacing="10">
+            <Label text="Reason *" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+            <ComboBox fx:id="reasonComboBox" prefWidth="200"/>
+        </HBox>
+        <HBox spacing="10">
+            <Label text="Number of days *" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+            <TextField fx:id="numberOfDaysField" text="0" editable="false"/>
+        </HBox>
+
+        <HBox spacing="10">
+            <Label text="Remaining TT *" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+            <TextField fx:id="remainingTT" text="23" editable="false"/>
+        </HBox>
+
+        <Button fx:id="btnSubmit" onAction="#handleSubmit" text="Submit" style="-fx-background-color: orange; -fx-text-fill: white; -fx-font-weight: bold;"/>
+    </VBox>
+
+    <HBox fx:id="successMessageBox" spacing="10" alignment="CENTER_LEFT" visible="false">
+        <Label fx:id="successMessageLabel" text="" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+        <Button text="✖" onAction="#handleCloseSuccessMessage" style="-fx-background-color: transparent;"/>
+    </HBox>
+</AnchorPane>
