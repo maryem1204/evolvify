@@ -1,28 +1,65 @@
 package tn.esprit.Services;
 
+import jakarta.mail.*;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
+import org.mindrot.jbcrypt.BCrypt;
 import tn.esprit.Entities.Gender;
 import tn.esprit.Entities.Role;
 import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Utils.MyDataBase;
+
+import java.security.SecureRandom;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Date;
+import java.util.*;
 
 public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisateur> {
     private Connection cnx = MyDataBase.getInstance().getCnx();
     private PreparedStatement pst;
 
+
     /******* ❌Add user into database *********/
     @Override
     public int add(Utilisateur user) throws SQLException {
-        String req = "INSERT INTO Users (firstname, lastname, email, role) VALUES (?, ?, ?, ?)";
-        pst = cnx.prepareStatement(req);
-        pst.setString(1, user.getFirstname());
-        pst.setString(2, user.getLastname());
-        pst.setString(3, user.getEmail());
-        pst.setString(4, user.getRole().toString());
-        return pst.executeUpdate();
+        if (isEmailExists(user.getEmail())) {
+            System.out.println("Erreur : L'email est déjà utilisé !");
+            return 0; // Échec
+        }
+
+        // 1️⃣ Générer un mot de passe aléatoire
+        String rawPassword = generateRandomPassword(8);
+        String hashedPassword = BCrypt.hashpw(rawPassword, BCrypt.gensalt());
+
+        // 3️⃣ Enregistrer dans la base avec le mot de passe haché
+        String req = "INSERT INTO Users (firstname, lastname, email, password, role) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement pst = cnx.prepareStatement(req)) {
+            pst.setString(1, user.getFirstname());
+            pst.setString(2, user.getLastname());
+            pst.setString(3, user.getEmail());
+            pst.setString(4, hashedPassword);
+            pst.setString(5, user.getRole().toString());
+            pst.executeUpdate();
+        }
+
+        // 4️⃣ Envoyer l'email avec le mot de passe en clair
+        sendConfirmationEmail(user.getEmail(), rawPassword);
+
+        return 1; // Succès
     }
+    /******* ❌ Vérifier si l'email existe déjà *********/
+    public boolean isEmailExists(String email) throws SQLException {
+        String query = "SELECT COUNT(*) FROM Users WHERE email = ?";
+        try (PreparedStatement pst = cnx.prepareStatement(query)) {
+            pst.setString(1, email);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0; // Retourne true si l'email existe déjà
+            }
+        }
+        return false;
+    }
+
 
     /******* ❌Display list Users *********/
     @Override
@@ -47,7 +84,7 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
                     rs.getInt("conge_restant"),
                     rs.getBytes("uploaded_cv"),
                     rs.getString("num_tel"),
-                    Gender.valueOf(rs.getString("gender"))
+                    Gender.valueOf(rs.getString("gender")) // Ajout du genre
 
             ));
         }
@@ -161,7 +198,8 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
                         rs.getInt("conge_restant"),
                         rs.getBytes("uploaded_cv"),
                         rs.getString("num_tel"),
-                        Gender.valueOf(rs.getString("gender"))
+                        Gender.valueOf(rs.getString("gender")) // Ajout du genre
+
                 );
             }
         } catch (SQLException e) {
@@ -194,13 +232,31 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
                         rs.getInt("conge_restant"),
                         rs.getBytes("uploaded_cv"),
                         rs.getString("num_tel"),
-                        Gender.valueOf(rs.getString("gender"))
+                        Gender.valueOf(rs.getString("gender")) // Ajout du genre
 
                 );
             }
         }
         return null;
     }
+    public String getEmployeNameById(int id) {
+        String req = "SELECT firstname, lastname FROM Users WHERE id_employe = ?";
+
+        try (PreparedStatement pst = cnx.prepareStatement(req)) {
+            pst.setInt(1, id);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("firstname") + " " + rs.getString("lastname");
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la récupération du nom de l'employé : " + e.getMessage());
+        }
+
+        return "Inconnu";  // Si l'ID n'existe pas, on retourne "Inconnu"
+    }
+
+
     public List<Utilisateur> getAllEmployees() throws SQLException {
         List<Utilisateur> employees = new ArrayList<>();
         String req = "SELECT * FROM Users WHERE role = 'EMPLOYEE'";
@@ -243,6 +299,7 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
         }
         return count;
     }
+
     public int countByRole(Role role) {
         int count = 0;
         String query = "SELECT COUNT(*) FROM users WHERE role = ?";
@@ -287,4 +344,160 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
         }
         return count;
     }
+
+    public Utilisateur authenticateUser(String email, String password) {
+        String query = "SELECT id_employe, email, password, role FROM users WHERE email = ? AND password = ?";
+        try (PreparedStatement pst = cnx.prepareStatement(query)) {
+            pst.setString(1, email);
+            pst.setString(2, password);
+
+            ResultSet resultSet = pst.executeQuery();
+
+            if (resultSet.next()) {
+                return new Utilisateur(
+                        resultSet.getInt("id_employe"),
+                        resultSet.getString("email"),
+                        resultSet.getString("password"),
+                        Role.valueOf(resultSet.getString("role")) // Convertit la chaîne de la BD en Role ENUM
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null; // Si aucun utilisateur trouvé
+    }
+
+    public String generateRandomPassword(int length) {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*!";
+        SecureRandom random = new SecureRandom();
+        StringBuilder password = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            password.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return password.toString();
+    }
+
+    public void sendConfirmationEmail(String toEmail, String generatedPassword) {
+        String subject = "Votre compte a été créé !";
+        String content = "<p>Bonjour,</p>"
+                + "<p>Votre compte a été créé avec succès.</p>"
+                + "<p>Voici vos informations de connexion :</p>"
+                + "<ul>"
+                + "<li><b>Email :</b> " + toEmail + "</li>"
+                + "<li><b>Mot de passe :</b> " + generatedPassword + "</li>"
+                + "</ul>"
+                + "<p>Nous vous conseillons de modifier votre mot de passe après votre première connexion.</p>"
+                + "<p>Ouvrez l'application et connectez-vous avec vos identifiants.</p>";
+
+        try {
+            Properties properties = new Properties();
+            properties.put("mail.smtp.auth", "true");
+            properties.put("mail.smtp.starttls.enable", "true");
+            properties.put("mail.smtp.host", "smtp.gmail.com");
+            properties.put("mail.smtp.port", "587");
+
+            Session session = Session.getInstance(properties, new Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication("maryemsassi.dev@gmail.com", "jlej mknk aukk iqlx");
+                }
+            });
+
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("maryemsassi.dev@gmail.com"));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
+            message.setSubject(subject);
+            message.setContent(content, "text/html");
+
+            Transport.send(message);
+            System.out.println("E-mail envoyé avec succès !");
+        } catch (MessagingException e) {
+            System.err.println("Erreur lors de l'envoi de l'e-mail : " + e.getMessage());
+        }
+    }
+
+    public int updateAbsenceCount() {
+        String req = "SELECT COUNT(*) FROM absence WHERE status = 'absent' AND date = CURDATE()";
+        int count = 0;
+
+        try (PreparedStatement preparedStatement = cnx.prepareStatement(req);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            if (resultSet.next()) {
+                count =resultSet.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+    public int getAbonnementCount() {
+        String query = "SELECT COUNT(*) FROM abonnement WHERE status = 'actif'";
+        int count = 0;
+
+        try (PreparedStatement preparedStatement = cnx.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            if (resultSet.next()) {
+                count = resultSet.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return count;
+    }
+    public int getProjectCount() {
+        String query = "SELECT COUNT(*) FROM projet WHERE status = 'IN_PROGRESS'";
+        int count = 0;
+
+        try (PreparedStatement preparedStatement = cnx.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            if (resultSet.next()) {
+                count = resultSet.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return count;
+    }
+
+    public int getTaskCount() {
+        String query = "SELECT COUNT(*) FROM tache WHERE status = 'TO_DO'";
+        int count = 0;
+
+        try (PreparedStatement preparedStatement = cnx.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            if (resultSet.next()) {
+                count = resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return count;
+    }
+
+    public Map<String, Integer> getAbonnementStatistics() {
+        Map<String, Integer> stats = new HashMap<>();
+        String query = "SELECT type_Ab, COUNT(*) FROM abonnement GROUP BY type_Ab";
+
+        try (PreparedStatement preparedStatement = cnx.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            while (resultSet.next()) {
+                stats.put(resultSet.getString("type_Ab"), resultSet.getInt(2));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return stats;
+    }
+
 }

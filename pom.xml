@@ -16,7 +16,6 @@
 
     <dependencies>
 
-        <!-- Dépendance pour MySQL -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -52,8 +51,19 @@
             <version>20.0.2</version>
         </dependency>
 
-    </dependencies>
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>jakarta.mail</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.4</version>
+        </dependency>
 
+
+    </dependencies>
 
     <!-- cette partie pour inclure les fichiers de resources -->
     <build>

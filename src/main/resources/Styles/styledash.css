@@ -1,0 +1,125 @@
+/* 🎨 Général */
+.root {
+    -fx-background-color: #f4f5f7;
+    -fx-font-family: "Arial";
+}
+
+/* 🟣 Sidebar */
+.sidebar {
+    -fx-background-color: #2C1E50;
+    -fx-padding: 20px;
+    -fx-spacing: 15px;
+    -fx-alignment: center;
+}
+
+.logo {
+    -fx-padding: 10px;
+    -fx-alignment: center;
+}
+
+/* 📌 Boutons sidebar */
+.sidebar-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-pref-width: 200px;
+    -fx-alignment: CENTER-LEFT;
+    -fx-padding: 10px;
+    -fx-border-radius: 5px;
+    -fx-cursor: hand;
+}
+
+.sidebar-button:hover {
+    -fx-background-color: #5a3ea6;
+}
+
+.sidebar-button:selected, .sidebar-button:focused {
+    -fx-background-color: #7B61FF;
+    -fx-text-fill: #fff;
+    -fx-font-weight: bold;
+    -fx-border-width: 2px;
+}
+
+/* 🔵 Navbar */
+.navbar {
+    -fx-background-color: #F8F9FA;
+    -fx-padding: 10px;
+    -fx-pref-height: 66px;
+    -fx-pref-width: 100%;
+}
+
+/* 🔍 Barre de recherche */
+.search-bar {
+    -fx-background-color: #E9ECEF;
+    -fx-text-fill: #495057;
+    -fx-padding: 5px;
+    -fx-border-radius: 15px;
+    -fx-pref-width: 200px;
+}
+
+.search-button {
+    -fx-background-color: transparent;
+}
+
+/* 📌 User section */
+.user-box {
+    -fx-spacing: 10px;
+    -fx-alignment: center-right;
+}
+
+.user-icon {
+    -fx-clip-shape: circle;
+    -fx-border-radius: 50%;
+}
+
+.username {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+.online-indicator {
+    -fx-fill: #28A745;
+}
+.sidebar-sub-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 5px 20px;
+    -fx-alignment: CENTER_LEFT;
+}
+.sidebar-sub-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+/* Bouton sélectionné (actif) */
+.active-sidebar-button {
+    -fx-background-color: #7B61FF !important; /* Mauve foncé */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10px;
+    -fx-font-size: 14px;
+    -fx-border-radius: 5px;
+}
+.sidebar-item.active {
+    background-color: #6a0dad; /* Couleur mauve */
+    color: white;
+    font-weight: bold;
+}
+.selected {
+    -fx-background-color: #7B61FF; /* Couleur mauve */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+#subMenuConges {
+    -fx-max-height: 0;
+    -fx-opacity: 0;
+    -fx-transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+#subMenuConges.visible {
+    -fx-max-height: 100px; /* Ajustez selon la hauteur nécessaire */
+    -fx-opacity: 1;
+}
+
+
+
