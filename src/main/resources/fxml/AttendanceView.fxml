@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.AbsenceController" stylesheets="@../Styles/Attendance.css">
+    <children>
+        <VBox spacing="20" prefWidth="860">
+            <!-- Barre de sélection du mois et de l'année -->
+            <HBox spacing="10">
+                <ComboBox fx:id="monthComboBox" prefWidth="150"/>
+                <ComboBox fx:id="yearComboBox" prefWidth="100"/>
+                <Button text="Rechercher" onAction="#loadAbsences"/>
+            </HBox>
+
+            <!-- Filtres -->
+            <HBox spacing="10">
+                <TextField fx:id="searchEmployeeField" promptText="Rechercher un employé..." prefWidth="200" onKeyReleased="#applyFilters"/>
+                <ComboBox fx:id="statusFilterComboBox" promptText="Filtrer par statut" onAction="#applyFilters"/>
+            </HBox>
+
+            <!-- ScrollPane pour éviter la coupure du tableau -->
+            <ScrollPane fitToWidth="true" fitToHeight="true">
+                <content>
+                    <TableView fx:id="absenceTable" prefHeight="400">
+                        <columns>
+                            <!-- Colonne Employé -->
+                            <TableColumn text="Employé" fx:id="employeeColumn" prefWidth="200"/>
+                        </columns>
+                    </TableView>
+                </content>
+            </ScrollPane>
+        </VBox>
+    </children>
+</AnchorPane>

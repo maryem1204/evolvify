@@ -81,7 +81,7 @@ public class DashboardController {
 
     @FXML
     private void handleGestionAbsence(ActionEvent event) {
-        loadView("/fxml/dashboardCongeRh.fxml");
+        loadView("/fxml/EmployeeAbsence.fxml");
     }
 
 }

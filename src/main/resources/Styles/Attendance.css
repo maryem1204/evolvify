@@ -1,0 +1,24 @@
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 5;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #f4f4f4;
+}
+
+.table-view .column-header {
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+}
+
+.table-cell {
+    -fx-text-fill: black;
+    -fx-alignment: center;
+}
+
+.combo-box {
+    -fx-font-size: 14px;
+    -fx-padding: 5px;
+}
