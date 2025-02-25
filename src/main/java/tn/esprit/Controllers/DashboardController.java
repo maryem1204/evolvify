@@ -83,5 +83,4 @@ public class DashboardController {
     private void handleGestionAbsence(ActionEvent event) {
         loadView("/fxml/EmployeeAbsence.fxml");
     }
-
 }

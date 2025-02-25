@@ -1,0 +1,67 @@
+package tn.esprit.Controllers;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.stage.Stage;
+import tn.esprit.Entities.Projet;
+
+import java.util.Base64;
+
+public class DetailsProjetController {
+
+    @FXML
+    private Label lblNomProjet;
+
+    @FXML
+    private Label lblDescription;
+
+    @FXML
+    private Label lblStatus;
+
+    @FXML
+    private Label lblStartDate;
+
+    @FXML
+    private Label lblEndDate;
+
+    @FXML
+    private Label lblAbbreviation;
+
+    @FXML
+    private Label lblIdEmploye;
+
+    @FXML
+    private Label lblUploadedFiles;
+
+    private Projet projet;
+
+    public void setProjet(Projet projet) {
+        this.projet = projet;
+        afficherDetails();
+    }
+
+    private void afficherDetails() {
+        if (projet != null) {
+            lblNomProjet.setText(projet.getName());
+            lblDescription.setText(projet.getDescription());
+            lblStatus.setText(projet.getStatus().name());
+            lblStartDate.setText(projet.getStarter_at().toString());
+            lblEndDate.setText(projet.getEnd_date().toString());
+            lblAbbreviation.setText(projet.getAbbreviation());
+            lblIdEmploye.setText(String.valueOf(projet.getId_employe()));
+
+            // Convertir les fichiers en Base64 pour affichage
+            //if (projet.getUploaded_files() != null && projet.getUploaded_files().length > 0) {
+               // lblUploadedFiles.setText("Fichier attaché (encodé)");
+            //} else {
+              //  lblUploadedFiles.setText("Aucun fichier attaché");
+            //}
+        }
+    }
+
+    @FXML
+    private void fermerFenetre() {
+        Stage stage = (Stage) lblNomProjet.getScene().getWindow();
+        stage.close();
+    }
+}

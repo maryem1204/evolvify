@@ -5,7 +5,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.io.IOException;
 
@@ -13,10 +12,13 @@ public class MainFX extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/dashboard.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProjectListWithCards.fxml"));
             Parent root = loader.load();
             primaryStage.setTitle("Dashboard");
             primaryStage.setResizable(false);
+
+            //primaryStage.setMinWidth(1366); // Largeur minimale (ex : Full HD)
+            //primaryStage.setMinHeight(768); // Hauteur minimale       e'
 
             //primaryStage.initStyle(StageStyle.UTILITY);
             primaryStage.setScene(new Scene(root));

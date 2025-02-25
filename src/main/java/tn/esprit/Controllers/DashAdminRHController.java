@@ -6,6 +6,7 @@ import javafx.scene.control.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import tn.esprit.Entities.Gender;
@@ -16,6 +17,7 @@ import tn.esprit.Services.UtilisateurService;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DashAdminRHController {
@@ -39,7 +41,7 @@ public class DashAdminRHController {
     @FXML
     private TextField searchField;
     @FXML
-    private VBox progressionBox;
+    private VBox progressionBox,effectifs;
     @FXML
     private Label labelHommes;
     @FXML
@@ -50,18 +52,36 @@ public class DashAdminRHController {
     private Label labelCongesAcceptes;
     @FXML
     private Label labelCandidats;
+    @FXML
+    private Label absenceCount;
+    @FXML
+    private Label abonnementsCount;
+    @FXML
+    private Label projectsCount;
+    @FXML
+    private Label tasksCount;
+
 
     private final UtilisateurService utilisateurService = new UtilisateurService();
     private ObservableList<Utilisateur> masterData = FXCollections.observableArrayList();
 
     public void initialize() {
         updateEffectifs();
+        updateAbsenceLabel();
+        updateAbonnementCount();
+        updateProjectCount();
+        updateTaskCount();
+        loadPieChart();
+
         employeeTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        AnchorPane.setLeftAnchor(progressionBox, 260.0);
-        AnchorPane.setTopAnchor(progressionBox, 520.0);
 
-        setupPieChart();
+        AnchorPane.setLeftAnchor(progressionBox, 260.0);
+        AnchorPane.setTopAnchor(progressionBox, 470.0);
+        AnchorPane.setLeftAnchor(employeeTable, 260.0);
+        AnchorPane.setTopAnchor(employeeTable, 470.0);
+
+
         setupBarChart();
         setupLineChart();
         setupEmployeeTable();
@@ -83,13 +103,13 @@ public class DashAdminRHController {
         labelCandidats.setText(candidats + " à recruter");
     }
 
-    private void setupPieChart() {
+    /*private void setupPieChart() {
         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
                 new PieChart.Data("Males", 889),
                 new PieChart.Data("Females", 591)
         );
         pieChart.setData(pieChartData);
-    }
+    }*/
 
     private void setupBarChart() {
         XYChart.Series<String, Number> series = new XYChart.Series<>();
@@ -129,6 +149,37 @@ public class DashAdminRHController {
         }
     }
 
+    private void updateAbsenceLabel() {
+        int count = utilisateurService.updateAbsenceCount(); // Appel de la méthode du service
+        absenceCount.setText(String.valueOf(count)); // Mise à jour du label
+    }
+
+    public void updateAbonnementCount() {
+        int count = utilisateurService.getAbonnementCount();
+        abonnementsCount.setText(String.valueOf(count));
+    }
+
+
+    public void updateProjectCount() {
+        int count = utilisateurService.getProjectCount();
+        projectsCount.setText(String.valueOf(count));
+    }
+
+    public void updateTaskCount() {
+        int count = utilisateurService.getTaskCount();
+        tasksCount.setText(String.valueOf(count));
+    }
+
+    private void loadPieChart() {
+        pieChart.getData().clear(); // Vider les anciennes données
+
+        Map<String, Integer> stats = utilisateurService.getAbonnementStatistics(); // Récupérer les nouvelles données
+
+        for (Map.Entry<String, Integer> entry : stats.entrySet()) {
+            PieChart.Data slice = new PieChart.Data(entry.getKey(), entry.getValue());
+            pieChart.getData().add(slice);
+        }
+    }
     private void setupSearch() {
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
             filterEmployeeList(newValue);
