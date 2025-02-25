@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" prefHeight="338.0" prefWidth="656.0" spacing="20" style="-fx-background-color: #f4f4f4; -fx-padding: 30px; -fx-border-radius: 10px; -fx-background-radius: 10px;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.AjoutTacheController">
+
+    <!-- Bouton de fermeture en haut à droite -->
+    <HBox alignment="TOP_RIGHT" prefHeight="66.0" prefWidth="510.0">
+   
+       <Label prefHeight="68.0" prefWidth="287.0" style="-fx-font-size: 22px; -fx-font-weight: bold;" text="Créer une Tâche" textFill="#480fd9">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </Label>
+      <HBox prefHeight="100.0" prefWidth="200.0" />
+        <Button fx:id="closeButton" onAction="#handleClose" prefHeight="66.0" prefWidth="72.0" style="-fx-background-color: transparent; -fx-font-size: 30px;" text="✖" textFill="RED" />
+    </HBox>
+
+             <!-- Affichage du nom de l'employé -->
+    <Label fx:id="employeNameLabel" style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Employé : " />
+
+    <GridPane hgap="15" vgap="10">
+        <columnConstraints>
+            <ColumnConstraints halignment="RIGHT" minWidth="100.0" />
+            <ColumnConstraints halignment="LEFT" minWidth="200.0" />
+            <ColumnConstraints />
+            <ColumnConstraints />
+        </columnConstraints>
+
+        <Label style="-fx-font-weight: bold;" text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <TextField fx:id="descriptionField" prefHeight="45.0" promptText="Entrez la description" style="-fx-pref-width: 250px;" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+        <Label style="-fx-font-weight: bold;" text="Priorité:" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+        <ComboBox fx:id="priorityComboBox" style="-fx-pref-width: 150px;" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+
+        <Label style="-fx-font-weight: bold;" text="Statut:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <ComboBox fx:id="statusComboBox" style="-fx-pref-width: 250px;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+        <Label style="-fx-font-weight: bold;" text="Date de création:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <DatePicker fx:id="createdAtPicker" style="-fx-pref-width: 250px;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+        <Label style="-fx-font-weight: bold;" text="Lieu:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+        <ComboBox fx:id="locationComboBox" style="-fx-pref-width: 150px;" GridPane.columnIndex="3" GridPane.rowIndex="2">
+        </ComboBox>
+
+        <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+        </rowConstraints>
+    </GridPane>
+
+    <Button fx:id="submitButton" onAction="#handleAddTache" prefHeight="39.0" prefWidth="281.0" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-pref-width: 250px; -fx-background-radius: 5px;" text="Enrgistrer" />
+</VBox>
