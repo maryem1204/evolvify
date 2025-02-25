@@ -80,4 +80,20 @@
 AnchorPane {
     -fx-background-color: white;
 }
+.card-number {
+    -fx-font-size: 40px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #6a5acd;
+}
 
+.image-view {
+    -fx-background-radius: 50%;
+}
+.chart-pie-label {
+    -fx-font-size: 20px;
+    -fx-fill: black;
+}
+
+.default-color0.chart-pie { -fx-pie-color: #FF5733; }  /* Couleur pour le 1er type */
+.default-color1.chart-pie { -fx-pie-color: #33FF57; }  /* Couleur pour le 2ème type */
+.default-color2.chart-pie { -fx-pie-color: #3357FF; }  /* Couleur pour le 3ème type */

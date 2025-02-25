@@ -84,6 +84,9 @@ public class ListUsersController {
         updateTable(0);
 
         searchField.textProperty().addListener((observable, oldValue, newValue) -> handleSearch());
+
+        employeeTable.setSelectionModel(null);
+
     }
 
     private void loadUsers() {
@@ -137,6 +140,11 @@ public class ListUsersController {
                 editIcon.setFitHeight(30);
                 deleteIcon.setFitWidth(30);
                 deleteIcon.setFitHeight(30);
+
+                // Appliquer un curseur "pointer" aux icônes
+                editIcon.setStyle("-fx-cursor: hand;");
+                deleteIcon.setStyle("-fx-cursor: hand;");
+
 
                 editIcon.setOnMouseClicked(event -> showEditPopup(getTableView().getItems().get(getIndex())));
                 deleteIcon.setOnMouseClicked(event -> confirmDelete(getTableView().getItems().get(getIndex())));

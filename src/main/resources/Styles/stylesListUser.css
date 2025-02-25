@@ -117,6 +117,8 @@ StackPane {
     -fx-border-color: #DDDDDD;
     -fx-border-radius: 5px;
     -fx-padding: 5px;
+    -fx-selection-bar: transparent;
+    -fx-selection-bar-non-focused: transparent;
 }
 
 .table-view .column-header-background {
@@ -138,10 +140,10 @@ StackPane {
     -fx-background-color: #FFFFFF;
 }
 
-.table-row-cell:selected {
+/*.table-row-cell:selected {
     -fx-background-color: #B0C4DE;
     -fx-text-fill: black;
-}
+}*/
 
 
 /* Style des images dans la colonne Profil */
@@ -171,6 +173,7 @@ StackPane {
 .styled-pagination {
     -fx-page-information-visible: false;
     -fx-background-color: transparent;
+    -fx-cursor: hand;
 }
 
 .styled-pagination .pagination-control {
@@ -178,6 +181,7 @@ StackPane {
     -fx-border-radius: 10px;
     -fx-background-radius: 10px;
     -fx-padding: 5px;
+    -fx-cursor: hand;
 }
 
 .styled-pagination .pagination-control .button {
@@ -187,20 +191,24 @@ StackPane {
     -fx-border-radius: 5px;
     -fx-background-radius: 5px;
     -fx-padding: 5px 10px;
+    -fx-cursor: hand;
 }
 
 .styled-pagination .pagination-control .button:hover {
     -fx-background-color: #002F6C;
+    -fx-cursor: hand;
 }
 
 .styled-pagination .pagination-control .button:disabled {
     -fx-background-color: #B0BEC5;
+
 }
 
 .styled-pagination .pagination-control .toggle-button:selected {
     -fx-background-color: #FF9800;
     -fx-text-fill: white;
     -fx-font-weight: bold;
+    -fx-cursor: hand;
 }
 
 

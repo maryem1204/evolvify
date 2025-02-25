@@ -10,47 +10,42 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import tn.esprit.Entities.Role;
+import tn.esprit.Entities.Utilisateur;
+import tn.esprit.Services.UtilisateurService;
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class LoginController {
     @FXML
-    private Hyperlink forgotPasswordLink;
-
+    private TextField emailField;
     @FXML
     private PasswordField passwordField;
-
     @FXML
     private TextField textPasswordField;
-
-    @FXML
-    private TextField emailField;
-
     @FXML
     private Button toggleButton;
+    @FXML
+    private Button loginButton;
+    @FXML
+    private Hyperlink forgotPasswordLink;
 
+    private final UtilisateurService utilisateurService = new UtilisateurService();
     private boolean isPasswordVisible = false;
 
     @FXML
     private void initialize() {
-        if (passwordField == null || textPasswordField == null || toggleButton == null) {
-            System.out.println("Erreur : un élément FXML est null. Vérifiez votre fichier loginUser.fxml.");
-            return;
-        }
-
-        // Masquer le champ texte pour le mot de passe
         textPasswordField.setManaged(false);
         textPasswordField.setVisible(false);
-
-        // Ajouter l'icône "œil" au bouton
         updateEyeIcon();
-
-        // Action du bouton pour afficher/cacher le mot de passe
         toggleButton.setOnAction(e -> togglePasswordVisibility());
+
+        // Associer le bouton login
+        loginButton.setOnAction(this::handleLogin);
     }
 
     private void togglePasswordVisibility() {
         isPasswordVisible = !isPasswordVisible;
-
         if (isPasswordVisible) {
             textPasswordField.setText(passwordField.getText());
             textPasswordField.setVisible(true);
@@ -64,7 +59,6 @@ public class LoginController {
             textPasswordField.setVisible(false);
             textPasswordField.setManaged(false);
         }
-
         updateEyeIcon();
     }
 
@@ -77,18 +71,62 @@ public class LoginController {
     }
 
     @FXML
+    private void handleLogin(ActionEvent event) {
+        String email = emailField.getText().trim();
+        String password = passwordField.isVisible() ? passwordField.getText() : textPasswordField.getText();
+
+        if (email.isEmpty() || password.isEmpty()) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Veuillez remplir tous les champs.");
+            return;
+        }
+
+        try {
+            Utilisateur utilisateur = utilisateurService.getUserByEmail(email);
+            if (utilisateur != null) {
+                redirectUser(utilisateur.getRole(), event);
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Aucun compte trouvé avec cet email.");
+            }
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Problème de connexion à la base de données.");
+        }
+    }
+
+    private void redirectUser(Role role, ActionEvent event) throws IOException {
+        String fxmlFile;
+        if (role == Role.RESPONSABLE_RH) {
+            fxmlFile = "/fxml/dash.fxml";
+        } else {
+            fxmlFile = "/fxml/dashboard.fxml";
+        }
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
+        Parent root = loader.load();
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
+
+    private void showAlert(Alert.AlertType type, String title, String message) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    @FXML
     private void handleForgotPassword(ActionEvent event) {
-        System.out.println("Hyperlink cliqué !");
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/forgetPwd.fxml"));
             Parent root = loader.load();
-
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Erreur lors du chargement du fichier FXML.");
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page de récupération de mot de passe.");
         }
     }
 }

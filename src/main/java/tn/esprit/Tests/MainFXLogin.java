@@ -2,8 +2,11 @@ package tn.esprit.Tests;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -12,12 +15,25 @@ public class MainFXLogin extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
+            primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/logo1.png")));
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/loginUser.fxml"));
             Parent root = loader.load();
             primaryStage.setTitle("Login");
-            primaryStage.setResizable(false);
+            // Obtenir les dimensions de l'écran SANS cacher la barre des tâches
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
 
-            //primaryStage.initStyle(StageStyle.UTILITY);
+            // Ajustements pour occuper toute la zone visible
+            double correctionX = 5;  // Élargir un peu vers la droite
+            double correctionY = 5;  // Agrandir vers le bas
+
+            primaryStage.setX(screenBounds.getMinX() - 6); // Déplace légèrement à gauche
+            primaryStage.setY(screenBounds.getMinY());
+            primaryStage.setWidth(screenBounds.getWidth() + 5);
+            primaryStage.setHeight(screenBounds.getHeight() + correctionY);
+
+            // Empêcher le redimensionnement
+            primaryStage.setResizable(false);
+            primaryStage.setFullScreen(false);
             primaryStage.setScene(new Scene(root));
             primaryStage.show();
         } catch (IOException e) {
