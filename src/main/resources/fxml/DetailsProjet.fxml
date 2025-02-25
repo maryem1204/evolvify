@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.Label?>
+
+<VBox alignment="CENTER" spacing="10" xmlns:fx="DetailsProjetController">
+    <Label text="Nom du projet" />
+    <Text fx:id="projectName" />
+    <Label text="Description" />
+    <Text fx:id="projectDescription" />
+    <Label text="Statut" />
+    <Text fx:id="projectStatus" />
+</VBox>

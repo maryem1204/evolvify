@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import tn.esprit.Entities.Gender;
 import tn.esprit.Entities.Projet;
 import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Services.ProjetService;
@@ -90,7 +91,9 @@ public class AjoutProjetController {
                     rs.getDate("birthdayDate"),
                     rs.getDate("joiningDate"),
                     null,
-                    0, 0, null, rs.getString("num_tel")
+                    0, 0, null, rs.getString("num_tel"),
+                    Gender.valueOf(rs.getString("gender"))
+
             ));
         }
         return employees;

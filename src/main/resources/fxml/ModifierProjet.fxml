@@ -9,7 +9,7 @@
             fx:controller="tn.esprit.Controllers.ModifierProjetController"
             stylesheets="@/Styles/AjoutProjet.css">
     <VBox alignment="CENTER" spacing="15" prefWidth="500" prefHeight="600"
-          style="-fx-background-color: white; -fx-padding: 20px; -fx-background-radius: 10px; -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);">
+          style="-fx-background-color: #ffdcee; -fx-padding: 20px; -fx-background-radius: 10px; -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);-fx-border-color: grey;">
 
         <!-- Titre -->
         <Label text="Modifier un projet" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #086147;" />

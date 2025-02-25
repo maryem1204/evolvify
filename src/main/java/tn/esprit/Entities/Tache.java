@@ -1,5 +1,6 @@
 package tn.esprit.Entities;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
 
@@ -7,7 +8,7 @@ public class Tache {
     private int id_tache;
     private String description;
     private Status status;  // Changed to enum Status
-    private Date created_at;  // Changed to Date type
+    private LocalDate created_at;  // Changed to Date type
     private int id_employe;
     private int id_projet;
     private Priority priority;  // Changed to enum Priority
@@ -29,7 +30,7 @@ public class Tache {
     }
 
 
-    public Tache(String description, Status status, Date created_at, int id_employe, int id_projet, Priority priority, String location) {
+    public Tache(String description, Status status, LocalDate created_at, int id_employe, int id_projet, Priority priority, String location) {
         this.description = description;
         this.status = status;
         this.created_at = created_at;
@@ -40,7 +41,7 @@ public class Tache {
     }
 
     // Constructor with id_tache, status as enum and created_at as Date
-    public Tache(int id_tache, String description, Status status, Date created_at, int id_employe, int id_projet, Priority priority, String location) {
+    public Tache(int id_tache, String description, Status status, LocalDate created_at, int id_employe, int id_projet, Priority priority, String location) {
         this.id_tache = id_tache;
         this.description = description;
         this.status = status;
@@ -76,11 +77,11 @@ public class Tache {
         this.status = status;
     }
 
-    public Date getCreated_at() {
+    public LocalDate getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(Date created_at) {
+    public void setCreated_at(LocalDate created_at) {
         this.created_at = created_at;
     }
 

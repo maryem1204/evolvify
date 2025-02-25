@@ -34,6 +34,7 @@ public class DeleteProjetController {
     public void setProjet(Projet projet) {
         if (projet == null) {
             LOGGER.log(Level.WARNING, "Projet null passé à DeleteProjetController");
+            showErrorAlert("Aucun projet sélectionné.");
             return;
         }
         this.projet = projet;
@@ -57,16 +58,15 @@ public class DeleteProjetController {
 
             // Rafraîchir la liste des projets immédiatement
             if (projectListController != null) {
-                projectListController.refreshProjetList(); // ✅ Mettre à jour la table
+                projectListController.refreshProjetList();
             }
 
             closeWindow();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Erreur lors de la suppression du projet : " + projet.getId_projet(), e);
-            showErrorAlert("Erreur lors de la suppression du projet.");
+            showErrorAlert("Erreur lors de la suppression du projet. Veuillez réessayer.");
         }
     }
-
 
     /**
      * Méthode appelée lorsque l'utilisateur annule la suppression.

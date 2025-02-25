@@ -44,4 +44,32 @@
     -fx-effect: dropshadow(three-pass-box, rgba(71, 184, 255, 0.5), 10, 0, 0, 5);
 }
 
+.status-en-cours {
+    -fx-background-color: #007BFF; /* Bleu pour TO_DO */
+    -fx-text-fill: white;
+    -fx-padding: 5px 10px;
+    -fx-background-radius: 5px;
+}
+
+.status-terminee {
+    -fx-background-color: #FFC107; /* Jaune pour IN_PROGRESS */
+    -fx-text-fill: white;
+    -fx-padding: 5px 10px;
+    -fx-background-radius: 5px;
+}
+
+.status-valide {
+    -fx-background-color: #28A745; /* Vert pour DONE */
+    -fx-text-fill: white;
+    -fx-padding: 5px 10px;
+    -fx-background-radius: 5px;
+}
+
+.status-en-attente {
+    -fx-background-color: #DC3545; /* Rouge pour CANCELED */
+    -fx-text-fill: white;
+    -fx-padding: 5px 10px;
+    -fx-background-radius: 5px;
+}
+
 

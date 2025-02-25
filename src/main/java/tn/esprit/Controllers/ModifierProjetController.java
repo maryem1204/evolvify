@@ -25,7 +25,7 @@ public class ModifierProjetController {
     @FXML private ComboBox<String> statusComboBox;
     @FXML private TextField abbreviationField;
     @FXML private ComboBox<Utilisateur> employeComboBox;
-    @FXML private Button enregistrerButton, annulerButton, uploadButton;
+    @FXML private Button  uploadButton;
 
     private ProjetService projetService = new ProjetService();
     private UtilisateurService utilisateurService = new UtilisateurService();
@@ -129,6 +129,7 @@ public class ModifierProjetController {
             System.out.println("⚠ Aucun fichier sélectionné.");
         }
     }
+
     private void showConfirmation(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Succès");

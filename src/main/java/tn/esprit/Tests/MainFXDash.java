@@ -12,7 +12,7 @@ public class MainFXDash extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/dashboardAdminRH.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/.fxml"));
             Parent root = loader.load();
             primaryStage.setTitle("Dashboard");
             primaryStage.setResizable(false);

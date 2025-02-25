@@ -1,5 +1,6 @@
 package tn.esprit.Services;
 
+import tn.esprit.Entities.Gender;
 import tn.esprit.Entities.Role;
 import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Utils.MyDataBase;
@@ -45,7 +46,9 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
                     rs.getInt("tt_restants"),  // Ajout de la virgule ici
                     rs.getInt("conge_restant"),
                     rs.getBytes("uploaded_cv"),
-                    rs.getString("num_tel")
+                    rs.getString("num_tel"),
+                    Gender.valueOf(rs.getString("gender"))
+
             ));
         }
 
@@ -157,7 +160,8 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
                         rs.getInt("tt_restants"),
                         rs.getInt("conge_restant"),
                         rs.getBytes("uploaded_cv"),
-                        rs.getString("num_tel")
+                        rs.getString("num_tel"),
+                        Gender.valueOf(rs.getString("gender"))
                 );
             }
         } catch (SQLException e) {
@@ -189,7 +193,9 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
                         rs.getInt("tt_restants"),
                         rs.getInt("conge_restant"),
                         rs.getBytes("uploaded_cv"),
-                        rs.getString("num_tel")
+                        rs.getString("num_tel"),
+                        Gender.valueOf(rs.getString("gender"))
+
                 );
             }
         }
@@ -215,9 +221,70 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
                     rs.getInt("tt_restants"),
                     rs.getInt("conge_restant"),
                     rs.getBytes("uploaded_cv"),
-                    rs.getString("num_tel")
+                    rs.getString("num_tel"),
+                    Gender.valueOf(rs.getString("gender"))
+
             ));
         }
         return employees;
+    }
+    public int countByGender(Gender gender) {
+        int count = 0;
+        String query = "SELECT COUNT(*) FROM users WHERE gender = ?";
+        try {
+            PreparedStatement ps = cnx.prepareStatement(query);
+            ps.setString(1, gender.name());
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+    public int countByRole(Role role) {
+        int count = 0;
+        String query = "SELECT COUNT(*) FROM users WHERE role = ?";
+        try {
+            PreparedStatement ps = cnx.prepareStatement(query);
+            ps.setString(1, role.name());
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
+    public int countAcceptedLeaves() {
+        int count = 0;
+        String query = "SELECT COUNT(*) FROM congé WHERE status = 'Accepte'";
+        try {
+            PreparedStatement ps = cnx.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+    public int countUsers() {
+        int count = 0;
+        String query = "SELECT COUNT(*) FROM users"; // Compter tous les utilisateurs
+        try {
+            PreparedStatement ps = cnx.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
     }
 }
