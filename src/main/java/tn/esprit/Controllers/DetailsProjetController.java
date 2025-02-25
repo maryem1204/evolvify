@@ -1,10 +1,14 @@
 package tn.esprit.Controllers;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import tn.esprit.Entities.Projet;
 
+import java.io.IOException;
 import java.util.Base64;
 
 public class DetailsProjetController {
@@ -64,4 +68,20 @@ public class DetailsProjetController {
         Stage stage = (Stage) lblNomProjet.getScene().getWindow();
         stage.close();
     }
+
+    @FXML
+    private void openListTacheChefP() {
+        try {
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ListTacheChefP.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Liste des Tâches du Chef");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
