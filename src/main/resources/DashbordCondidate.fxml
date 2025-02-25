@@ -16,10 +16,9 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.Dashboard">
-
-    <children>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1500.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.Dashboard">
+   <children>
+      <AnchorPane prefHeight="900.0" prefWidth="1900.0">
          <children>
             <BorderPane layoutX="14.0" layoutY="-14.0" prefHeight="600.0" prefWidth="1100.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="-14.0" AnchorPane.topAnchor="-14.0">
                <top>
@@ -41,7 +40,8 @@
                                     </ImageView>
                                  </graphic>
                               </Button>
-                           </children></AnchorPane>
+                           </children>
+                        </AnchorPane>
                      </children>
                   </AnchorPane>
                </top>
@@ -135,25 +135,21 @@
                <center>
                   <AnchorPane fx:id="tableofthings" prefHeight="472.0" prefWidth="807.0" BorderPane.alignment="CENTER">
                      <children>
-                        <AnchorPane fx:id="tableblanche" layoutX="14.0" layoutY="26.0" prefHeight="513.0" prefWidth="843.0" styleClass="white-bg" stylesheets="@../java/tn/esprit/Styles/color.css">
+                        <AnchorPane fx:id="tableblanche" layoutX="14.0" layoutY="26.0" prefHeight="583.0" prefWidth="1166.0" styleClass="white-bg" stylesheets="@../java/tn/esprit/Styles/color.css">
                            <children>
                               <TextField fx:id="recherche" layoutX="32.0" layoutY="27.0" onAction="#handleSearch" prefHeight="34.0" prefWidth="279.0" promptText="recherche" styleClass="shadow" />
-                              <TableView fx:id="tabledaffichage" layoutX="17.0" layoutY="86.0" prefHeight="312.0" prefWidth="794.0" styleClass="shadow">
-                                <columns>
-
-                                  <TableColumn fx:id="colTitre" prefWidth="96.0" text="Titre" />
-                                  <TableColumn fx:id="colDesc" prefWidth="237.0" text="Description" />
-                                    <TableColumn fx:id="coldatePub" prefWidth="128.0" text="Date de publication" />
-                                    <TableColumn fx:id="coldateExp" prefWidth="119.0" text="Date d'expiration" />
-                                    <TableColumn fx:id="status" prefWidth="111.0" text="Status" />
-                                </columns>
+                              <TableView fx:id="tabledaffichage" layoutX="17.0" layoutY="86.0" prefHeight="312.0" prefWidth="1087.0" styleClass="shadow">
+                                 <columns>
+                                    <TableColumn fx:id="prenom" prefWidth="96.0" text="Prenom" />
+                                    <TableColumn fx:id="nom" prefWidth="101.0" text="Nom" />
+                                    <TableColumn fx:id="email" prefWidth="150.0" text="email" />
+                                    <TableColumn fx:id="Photo" prefWidth="133.0" text="Photo de Profile" />
+                                    <TableColumn fx:id="DatedeNaissance" prefWidth="151.0" text="Date de Naissance" />
+                                    <TableColumn fx:id="DatedePostulation" prefWidth="151.0" text="Date de Postulation" />
+                                     <TableColumn fx:id="cv" prefWidth="138.0" text="CV" />
+                                     <TableColumn fx:id="numdetele" prefWidth="164.0" text="Numero de telephone" />
+                                 </columns>
                               </TableView>
-                              <Button layoutX="634.0" layoutY="23.0" mnemonicParsing="false" onAction="#handleAjouterOffre" prefHeight="47.0" prefWidth="176.0" styleClass="gradient-button" stylesheets="@../java/tn/esprit/Styles/color.css" text="Ajouter Offre">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </Button>
-
                               <ComboBox fx:id="comboTrie" layoutX="43.0" layoutY="446.0" prefWidth="150.0" promptText="Choisir un critère">
                                  <items>
                                     <FXCollections fx:factory="observableArrayList">
@@ -169,8 +165,8 @@
                                     <Font size="14.0" />
                                  </font>
                               </ToggleButton>
-
-                           </children></AnchorPane>
+                           </children>
+                        </AnchorPane>
                      </children>
                   </AnchorPane>
                </center>

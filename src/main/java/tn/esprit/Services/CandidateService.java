@@ -1,10 +1,12 @@
 package tn.esprit.Services;
 
+import tn.esprit.Entities.Offre;
 import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Utils.MyDataBase;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -81,6 +83,42 @@ public class CandidateService implements CRUD<Utilisateur> {
 
     @Override
     public List<Utilisateur> showAll() throws SQLException {
-        return List.of();
+        List<Utilisateur> condidates = new ArrayList<>();
+
+        // SQL query to fetch users with role 'candidate'
+        String req = "SELECT `firstname`, `lastname`, `email`, `password`, `profilePhoto`, `birthdayDate`, `joiningDate`, `uploaded_cv`, `num_tel` FROM `users` WHERE role='candidate'";
+
+        try (Statement st = cnx.createStatement(); ResultSet rs = st.executeQuery(req)) {
+            while (rs.next()) {
+                Utilisateur utilisateur = new Utilisateur();
+                utilisateur.setFirstname(rs.getString("firstname"));
+                utilisateur.setLastname(rs.getString("lastname"));
+                utilisateur.setEmail(rs.getString("email"));
+                utilisateur.setPassword(rs.getString("password"));
+
+                // Set profile photo as byte array
+                byte[] profilePhoto = rs.getBytes("profilePhoto");
+                utilisateur.setProfilePhoto(profilePhoto);
+
+                // Set uploaded CV as byte array
+                byte[] uploadedCv = rs.getBytes("uploaded_cv");
+                utilisateur.setUploadedCv(uploadedCv);
+
+                utilisateur.setBirthdayDate(rs.getDate("birthdayDate"));
+                utilisateur.setJoiningDate(rs.getDate("joiningDate"));
+                utilisateur.setNum_tel(rs.getString("num_tel"));
+
+                // Add the created Utilisateur object to the candidates list
+                condidates.add(utilisateur);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Erreur lors de l'exécution de la requête SQL : " + e.getMessage());
+            throw e;  // Re-throw the exception for further handling in the controller
+        }
+
+        return condidates;
     }
+
+
 }

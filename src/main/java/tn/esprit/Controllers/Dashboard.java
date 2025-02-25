@@ -17,16 +17,18 @@ import javafx.stage.StageStyle;
 import tn.esprit.Entities.Offre;
 import tn.esprit.Services.OffreService;
 import tn.esprit.Utils.MyDataBase;
-
+import javafx.scene.control.ComboBox;
 import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import java.util.stream.Collectors;
 
 
 public class Dashboard {
@@ -47,6 +49,9 @@ public class Dashboard {
     private TableColumn<Offre, String> status;
 
     @FXML
+    private Button btnTrier;
+
+    @FXML
     private Button gestcong;
 
     @FXML
@@ -59,10 +64,19 @@ public class Dashboard {
     private Button gestrec;
 
     @FXML
+    private TextField recherche;
+
+    @FXML
     private AnchorPane gests;
 
     @FXML
     private Button gestutiliser;
+
+    @FXML
+    private ToggleButton facondetrie;
+
+    @FXML
+    private ComboBox<String> comboTrie;
 
     @FXML
     private AnchorPane logo;
@@ -89,9 +103,9 @@ public class Dashboard {
     @FXML
     private static final Logger logger = Logger.getLogger(Dashboard.class.getName());
     private Connection cnx = MyDataBase.getInstance().getCnx();
-
+    private ObservableList<Offre> filteredOffreList = FXCollections.observableArrayList();
     private final OffreService offreService = new OffreService();
-
+    ObservableList<Offre> offresList = FXCollections.observableArrayList();
     private Offre offre;  // L'offre qui sera modifiée
     @FXML
     private void loadOffres() {
@@ -117,9 +131,13 @@ public class Dashboard {
 
         // Ajouter la colonne d'actions
         addActionsColumn();
-
+        recherche.textProperty().addListener((observable, oldValue, newValue) -> handleSearch());
+        comboTrie.setOnAction(event -> handleTriOffres());
         // Charger les offres
         loadOffre();
+        offres.setAll(offresList);
+
+
     }
 
 
@@ -148,7 +166,7 @@ public class Dashboard {
 
     @FXML
     private void loadOffre() {
-        ObservableList<Offre> offresList = FXCollections.observableArrayList();
+        offresList.clear();
        // System.out.println("hi");
         String req = "SELECT `id_offre`, `titre`, `description`, `date_publication`, `date_expiration`, `status` FROM `offre`";
         try (Statement st = cnx.createStatement();
@@ -165,7 +183,7 @@ public class Dashboard {
                 Offre offre = new Offre(idOffre, titre, description, datePublication, dateExpiration, status);
                 offresList.add(offre);
             }
-
+            offres.setAll(offresList);
             tabledaffichage.setItems(offresList);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -330,6 +348,91 @@ public class Dashboard {
 
         // Forcer un rafraîchissement de la TableView
         tabledaffichage.refresh();
+    }
+    @FXML
+    private void handleSearch() {
+        // Récupère le mot-clé saisi dans le champ de recherche
+        String keyword = recherche.getText();
+
+        // Appelle la méthode de filtrage avec le mot-clé
+        filterOffres(keyword);
+
+    }
+    @FXML
+    private void filterOffres(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            tabledaffichage.setItems(offresList);
+            return;
+        }
+
+        String searchKeyword = keyword.toLowerCase();
+        System.out.println(" keyword== " +  keyword);
+        // Filtrer la liste des offres
+        List<Offre> filteredList = offres.stream()
+                .filter(offre -> offre.getTitre().toLowerCase().contains(searchKeyword)
+                        || offre.getDescription().toLowerCase().contains(searchKeyword)
+                        || String.valueOf(offre.getDatePublication()).contains(searchKeyword)
+                        || String.valueOf(offre.getDateExpiration()).contains(searchKeyword)
+                        || (offre.getStatus() != null && offre.getStatus().name().toLowerCase().contains(searchKeyword)))
+                .collect(Collectors.toList());
+
+        filteredOffreList.setAll(filteredList);
+        tabledaffichage.setItems(filteredOffreList);
+
+    }
+    @FXML
+    private void handleTriOffres() {
+        facondetrie.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            // Vérifie l'état du ToggleButton
+            boolean ascendant = newValue; // Si sélectionné, tri ascendant, sinon tri descendant
+
+            // Récupère le critère de tri choisi par l'utilisateur dans le ComboBox
+            String critere = comboTrie.getValue();
+
+            if (critere != null) {
+                trierOffres(critere, ascendant); // Appelle la méthode de tri avec le critère et l'ordre choisi
+            }
+        });
+
+    }
+
+    private void trierOffres(String critere, boolean ascendant) {
+        if (critere.equals("Titre")) {
+            Collections.sort(offresList, (o1, o2) -> {
+                String titre1 = o1.getTitre().trim(); // Enlever les espaces avant et après
+                String titre2 = o2.getTitre().trim(); // Enlever les espaces avant et après
+
+                if (ascendant) {
+                    return titre1.compareTo(titre2);
+                } else {
+                    return titre2.compareTo(titre1);
+                }
+            });
+        } else if (critere.equals("Date_Publication")) {
+            Collections.sort(offresList, (o1, o2) -> {
+                if (ascendant) {
+                    return o1.getDatePublication().compareTo(o2.getDatePublication());
+                } else {
+                    return o2.getDatePublication().compareTo(o1.getDatePublication());
+                }
+            });
+        } else if (critere.equals("Date_Expiration")) {
+            Collections.sort(offresList, (o1, o2) -> {
+                if (ascendant) {
+                    return o1.getDateExpiration().compareTo(o2.getDateExpiration());
+                } else {
+                    return o2.getDateExpiration().compareTo(o1.getDateExpiration());
+                }
+            });
+        } else if (critere.equals("Status")) {
+            Collections.sort(offresList, (o1, o2) -> {
+                if (ascendant) {
+                    return o1.getStatus().compareTo(o2.getStatus());
+                } else {
+                    return o2.getStatus().compareTo(o1.getStatus());
+                }
+            });
+        }
     }
 
 
