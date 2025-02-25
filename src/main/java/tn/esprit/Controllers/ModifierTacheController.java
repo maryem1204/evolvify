@@ -4,136 +4,100 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import tn.esprit.Entities.Tache;
-import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Services.TacheService;
-import tn.esprit.Services.UtilisateurService;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ModifierTacheController {
 
-    @FXML private TextField descriptionField;
-    @FXML private ComboBox<String> statusComboBox;
-    @FXML private DatePicker createdAtPicker;
-    @FXML private ComboBox<Utilisateur> employeComboBox;
-    @FXML private ComboBox<String> priorityComboBox;
-    @FXML private ComboBox<String> locationComboBox;
-    @FXML private Button enregistrerButton, annulerButton;
-    private TacheService tacheService = new TacheService();
-    private UtilisateurService utilisateurService = new UtilisateurService();
-    private Tache tacheToEdit;
+    @FXML
+    private TextField descriptionField;
+    @FXML
+    private ComboBox<String> priorityComboBox, statusComboBox, locationComboBox;
+    @FXML
+    private DatePicker createdAtPicker;
+    @FXML
+    private Button submitButton;
 
-    public void initialize() {
-        // Remplir le ComboBox des statuts
-        statusComboBox.getItems().addAll(
-                List.of(Tache.Status.values()).stream().map(Enum::name).toList()
-        );
+    private final TacheService tacheService = new TacheService();
+    private Tache tache; // La tâche en cours de modification
 
-        // Remplir le ComboBox des priorités
-        priorityComboBox.getItems().addAll(
-                List.of(Tache.Priority.values()).stream().map(Enum::name).toList()
-        );
+    private final Map<String, Tache.Priority> priorityMap = new HashMap<>();
+    private final Map<String, Tache.Status> statusMap = new HashMap<>();
+
+    @FXML
+    private void initialize() {
+        // Initialisation des ComboBox
+        priorityComboBox.getItems().addAll("Low", "Medium", "High");
+        statusComboBox.getItems().addAll("To Do", "In Progress", "Done", "Canceled");
         locationComboBox.getItems().addAll("Télétravail", "Présentiel");
-        locationComboBox.setValue("Télétravail");
 
-        // Charger les employés dans le ComboBox
-        chargerEmployes();
+        priorityMap.put("Low", Tache.Priority.LOW);
+        priorityMap.put("Medium", Tache.Priority.MEDIUM);
+        priorityMap.put("High", Tache.Priority.HIGH);
+
+        statusMap.put("To Do", Tache.Status.TO_DO);
+        statusMap.put("In Progress", Tache.Status.IN_PROGRESS);
+        statusMap.put("Done", Tache.Status.DONE);
+        statusMap.put("Canceled", Tache.Status.CANCELED);
     }
 
-    private void chargerEmployes() {
-        employeComboBox.getItems().clear();
-        try {
-            List<Utilisateur> utilisateurs = utilisateurService.getAllEmployees();
-            employeComboBox.getItems().addAll(utilisateurs);
-
-            employeComboBox.setCellFactory(lv -> new ListCell<>() {
-                @Override
-                protected void updateItem(Utilisateur utilisateur, boolean empty) {
-                    super.updateItem(utilisateur, empty);
-                    setText(empty ? "" : utilisateur.getFirstname() + " " + utilisateur.getLastname());
-                }
-            });
-
-            employeComboBox.setButtonCell(new ListCell<>() {
-                @Override
-                protected void updateItem(Utilisateur utilisateur, boolean empty) {
-                    super.updateItem(utilisateur, empty);
-                    setText(empty ? "" : utilisateur.getFirstname() + " " + utilisateur.getLastname());
-                }
-            });
-        } catch (SQLException e) {
-            showError("Erreur lors du chargement des employés : " + e.getMessage());
-        }
-    }
-
-    public void setTacheData(Tache tache) {
-        if (tache != null) {
-            this.tacheToEdit = tache;
-
-            descriptionField.setText(tache.getDescription());
-            createdAtPicker.setValue(tache.getCreated_at());
-            statusComboBox.setValue(tache.getStatus().name());
-            priorityComboBox.setValue(tache.getPriority().name());
-            locationComboBox.setValue(tache.getLocation());
-
-            for (Utilisateur user : employeComboBox.getItems()) {
-                if (user.getId_employe() == tache.getId_employe()) {
-                    employeComboBox.setValue(user);
-                    break;
-                }
-            }
-        }
+    // Méthode pour pré-remplir les champs avec les valeurs actuelles
+    public void setTache(Tache tache) {
+        this.tache = tache;
+        descriptionField.setText(tache.getDescription());
+        priorityComboBox.setValue(tache.getPriority().toString());
+        statusComboBox.setValue(tache.getStatus().toString());
+        locationComboBox.setValue(tache.getLocation());
+        createdAtPicker.setValue(tache.getCreated_at());
     }
 
     @FXML
     private void handleEdit() {
-        if (tacheToEdit == null) {
-            showError("Aucune tâche sélectionnée pour modification.");
-            return;
-        }
-
         String description = descriptionField.getText().trim();
-        if (description.isEmpty()) {
-            showError("Le champ Description est obligatoire.");
-            return;
-        }
-
-        Tache.Status status;
-        Tache.Priority priority;
-
-        try {
-            status = Tache.Status.valueOf(statusComboBox.getValue());
-            priority = Tache.Priority.valueOf(priorityComboBox.getValue());
-        } catch (IllegalArgumentException | NullPointerException e) {
-            showError("Veuillez sélectionner un statut et une priorité valides.");
-            return;
-        }
-
-        LocalDate createdAt = createdAtPicker.getValue();
-        Utilisateur selectedUser = employeComboBox.getValue();
+        String priorityString = priorityComboBox.getValue();
+        String statusString = statusComboBox.getValue();
         String location = locationComboBox.getValue();
+        LocalDate createdAt = createdAtPicker.getValue();
 
-        if (createdAt == null || selectedUser == null) {
-            showError("Veuillez remplir tous les champs obligatoires.");
+        if (description.isEmpty() || priorityString == null || statusString == null || location == null || createdAt == null) {
+            showError("Tous les champs doivent être remplis !");
             return;
         }
 
-        // Mise à jour des données de la tâche
-        tacheToEdit.setDescription(description);
-        tacheToEdit.setStatus(status);
-        tacheToEdit.setPriority(priority);
-        tacheToEdit.setCreated_at(createdAt);
-        tacheToEdit.setId_employe(selectedUser.getId_employe());
-        tacheToEdit.setLocation(location);
+        // Mise à jour des valeurs de la tâche
+        tache.setDescription(description);
+        tache.setPriority(priorityMap.get(priorityString));
+        tache.setStatus(statusMap.get(statusString));
+        tache.setLocation(location);
+        tache.setCreated_at(createdAt);
 
         try {
-            tacheService.update(tacheToEdit);
-            closeWindow();
+            int result = tacheService.update(tache);
+            if (result > 0) {
+                showSuccessMessage("Tâche modifiée avec succès !");
+                closeWindow();
+            }
         } catch (SQLException e) {
-            showError("Erreur lors de la mise à jour de la tâche : " + e.getMessage());
+            showError("Erreur lors de la modification de la tâche.");
         }
+    }
+
+
+    private void closeWindow() {
+        Stage stage = (Stage) submitButton.getScene().getWindow();
+        stage.close();
+    }
+
+    private void showSuccessMessage(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Succès");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     private void showError(String message) {
@@ -143,14 +107,8 @@ public class ModifierTacheController {
         alert.setContentText(message);
         alert.showAndWait();
     }
-
     @FXML
     private void handleAnnuler() {
         closeWindow();
-    }
-
-    private void closeWindow() {
-        Stage stage = (Stage) descriptionField.getScene().getWindow();
-        stage.close();
     }
 }

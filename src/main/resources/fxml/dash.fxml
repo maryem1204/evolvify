@@ -111,7 +111,7 @@
         </VBox>
 
 
-        <Button fx:id="btnProjets" onAction="#toggleSubMenuProjets" text="Gestion Projets" styleClass="sidebar-button">
+        <Button fx:id="btnProjets"  text="Gestion Projets" styleClass="sidebar-button">
             <graphic>
                 <HBox spacing="10" alignment="CENTER_LEFT">
                 <ImageView fitHeight="30.0" fitWidth="30.0">
@@ -130,8 +130,8 @@
             </graphic>
         </Button>
         <VBox fx:id="subMenuProjets" spacing="5" visible="false" managed="false">
-            <Button fx:id="btnTaches" text="Tâches" styleClass="sidebar-sub-button"/>
-            <Button fx:id="btnEquipe" text="Équipe" styleClass="sidebar-sub-button"/>
+            <Button fx:id="btnTaches" onAction="#handleGestionProjet" text="Projets" styleClass="sidebar-sub-button"/>
+            <Button fx:id="btnEquipe" onAction="#handleTache"  text="Taches" styleClass="sidebar-sub-button"/>
         </VBox>
 
         <Button fx:id="btnTransports" styleClass="sidebar-button" text=" Gestion Transports" onAction="#toggleSubMenuTransports">

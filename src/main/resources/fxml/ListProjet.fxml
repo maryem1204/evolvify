@@ -8,31 +8,29 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane style="-fx-background-color: transparent; -fx-padding: 20px;" stylesheets="@../Styles/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.ProjectListController">
+<BorderPane prefHeight="600.0" prefWidth="1200.0" style="-fx-background-color: transparent; -fx-padding: 20px;" stylesheets="@../Styles/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.ProjectListController">
 
     <!-- Header avec titre et barre de recherche -->
     <top>
         <VBox spacing="10">
-            <HBox spacing="10" style="-fx-padding: 10px;">
+            <HBox spacing="10.0" style="-fx-padding: 10px;">
                 <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #0047AB;" text="Liste des Projets" />
-                <HBox alignment="CENTER_LEFT" maxWidth="700" spacing="10" styleClass="searchBox">
-                    <TextField fx:id="recherche" maxWidth="700" prefHeight="26.0" prefWidth="306.0" promptText="Rechercher un projet..." styleClass="searchInput" />
+                <HBox alignment="CENTER_LEFT" maxWidth="700" prefHeight="47.0" prefWidth="595.0" spacing="10" styleClass="searchBox">
+                    <TextField fx:id="recherche" maxWidth="726.0" prefHeight="26.0" prefWidth="695.0" promptText="Rechercher un projet..." styleClass="searchInput" />
                 </HBox>
-                <Pane HBox.hgrow="ALWAYS" />
-                <Button onAction="#openTacheList" styleClass="gradient-button" text="Voir Tâches" />
-                <Button onAction="#exportTableViewToPDF" styleClass="gradient-button" text="+ Upload pdf" />
-                <Button onAction="#openAjoutProjetPopup" styleClass="gradient-button" text="+ Ajouter Projet" />
+                <Button onAction="#exportTableViewToPDF" prefHeight="42.0" prefWidth="158.0" styleClass="gradient-button" text="+ Upload pdf" />
+                <Button onAction="#openAjoutProjetPopup" prefHeight="42.0" prefWidth="207.0" styleClass="gradient-button" text="+ Ajouter Projet" />
             </HBox>
         </VBox>
     </top>
 
     <!-- TableView pour afficher les projets -->
     <center>
-        <AnchorPane>
-            <TableView fx:id="projectTable" prefHeight="700" prefWidth="1600" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <AnchorPane prefHeight="400.0" prefWidth="950.0">
+            <VBox VBox.vgrow="ALWAYS">
+            <TableView fx:id="projectTable" prefHeight="550.0" prefWidth="1200.0">
                 <columns>
                     <TableColumn fx:id="colName" prefWidth="150" text="Nom du Projet" />
                     <TableColumn fx:id="colAbbreviation" prefWidth="100" text="Abréviation" />
@@ -43,6 +41,7 @@
                     <TableColumn fx:id="colActions" prefWidth="200" text="Actions" />
                 </columns>
             </TableView>
+            </VBox>
         </AnchorPane>
     </center>
 

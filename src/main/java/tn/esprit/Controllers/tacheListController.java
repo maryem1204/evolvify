@@ -255,7 +255,7 @@ public class tacheListController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ModifierTache.fxml"));
             Parent root = loader.load();
             ModifierTacheController controller = loader.getController();
-            controller.setTacheData(tache);
+            controller.setTache(tache);
 
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
