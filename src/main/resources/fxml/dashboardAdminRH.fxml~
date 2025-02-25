@@ -31,7 +31,7 @@
             <HBox layoutX="20" layoutY="20" spacing="20">
                 <!-- Statistiques -->
                 <VBox prefHeight="200" prefWidth="230" styleClass="card">
-                    <Label styleClass="card-title" text="Statistiques" />
+                    <Label styleClass="card-title" text="Statistiques des Abonnements" />
                     <PieChart fx:id="pieChart" prefHeight="160" prefWidth="200" />
                 </VBox>
                 <!-- Card Projets -->

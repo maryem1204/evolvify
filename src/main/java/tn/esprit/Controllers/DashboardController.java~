@@ -26,7 +26,11 @@ public class DashboardController {
 
     @FXML
     private Label logoutlabel;
-
+    @FXML
+    private VBox subMenuConges;
+    @FXML
+    private ImageView arrowIcon;
+    private boolean isSubMenuVisible = false;
 
 
     // ✅ Méthode pour charger dynamiquement une vue dans `mainContainer`
@@ -66,5 +70,17 @@ public class DashboardController {
     public void handleDashboard(ActionEvent actionEvent) {
         loadView("/fxml/dashboardAdminRH.fxml");
     }
+    @FXML
+    private void toggleSubMenu() {
+        isSubMenuVisible = !isSubMenuVisible;
+        subMenuConges.setVisible(isSubMenuVisible);
+        subMenuConges.setManaged(isSubMenuVisible);
 
+        // Changer l'icône de la flèche (vers le haut ou bas)
+        if (isSubMenuVisible) {
+            arrowIcon.setImage(new Image(getClass().getResourceAsStream("/images/arrow-down.jpg")));
+        } else {
+            arrowIcon.setImage(new Image(getClass().getResourceAsStream("/images/arrow-down.jpg")));
+        }
+    }
 }

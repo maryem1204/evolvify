@@ -26,6 +26,7 @@
     -fx-alignment: CENTER-LEFT;
     -fx-padding: 10px;
     -fx-border-radius: 5px;
+    -fx-cursor: hand;
 }
 
 .sidebar-button:hover {
@@ -79,3 +80,46 @@
 .online-indicator {
     -fx-fill: #28A745;
 }
+.sidebar-sub-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 5px 20px;
+    -fx-alignment: CENTER_LEFT;
+}
+.sidebar-sub-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+/* Bouton sélectionné (actif) */
+.active-sidebar-button {
+    -fx-background-color: #7B61FF !important; /* Mauve foncé */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10px;
+    -fx-font-size: 14px;
+    -fx-border-radius: 5px;
+}
+.sidebar-item.active {
+    background-color: #6a0dad; /* Couleur mauve */
+    color: white;
+    font-weight: bold;
+}
+.selected {
+    -fx-background-color: #7B61FF; /* Couleur mauve */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+#subMenuConges {
+    -fx-max-height: 0;
+    -fx-opacity: 0;
+    -fx-transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+#subMenuConges.visible {
+    -fx-max-height: 100px; /* Ajustez selon la hauteur nécessaire */
+    -fx-opacity: 1;
+}
+
+
+

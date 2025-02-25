@@ -61,6 +61,13 @@ public class Utilisateur implements Serializable {
         this.gender = (gender != null) ? gender : Gender.HOMME; // 🔥 Assurer une valeur par défaut
     }
 
+    public Utilisateur(int id_employe, String email, String password, Role role) {
+        this.id_employe = id_employe;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
+
     // Getters et Setters
     public int getId_employe() {
         return id_employe;

@@ -440,20 +440,21 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
     }
 
     public Map<String, Integer> getAbonnementStatistics() {
-        Map<String, Integer> stats = new HashMap<>();
         String query = "SELECT type_Ab, COUNT(*) FROM abonnement GROUP BY type_Ab";
+        Map<String, Integer> stats = new HashMap<>();
 
-        try (PreparedStatement preparedStatement = cnx.prepareStatement(query);
-             ResultSet resultSet = preparedStatement.executeQuery()) {
+        try (PreparedStatement ps = cnx.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
 
-            while (resultSet.next()) {
-                stats.put(resultSet.getString("type_Ab"), resultSet.getInt(2));
+            while (rs.next()) {
+                stats.put(rs.getString(1), rs.getInt(2)); // Stocke le type et le nombre d'abonnements
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return stats;
     }
+
 
 }
