@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.AffichageTrajetController">
+
+    <children>
+        <AnchorPane prefHeight="600.0" prefWidth="986.0">
+            <children>
+                <BorderPane layoutX="98.0" layoutY="14.0" prefHeight="598.0" prefWidth="876.0" AnchorPane.bottomAnchor="-11.599999999999909" AnchorPane.leftAnchor="98.0" AnchorPane.rightAnchor="126.0" AnchorPane.topAnchor="14.0">
+
+                    <center>
+                        <AnchorPane fx:id="tableblanche" prefHeight="514.0" prefWidth="875.0" styleClass="shadow" stylesheets="@../Styles/color.css" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                            <children>
+                                <TableView fx:id="tableTrajet" layoutX="34.0" layoutY="128.0" prefHeight="340.0" prefWidth="790.0">
+                                    <columns>
+                                        <TableColumn fx:id="colIdT" text="ID Trajet" />
+                                        <TableColumn fx:id="colPointDep" text="Point Départ" />
+                                        <TableColumn fx:id="colPointArr" text="Point Arrivée" />
+                                        <TableColumn fx:id="colDistance" text="Distance" />
+                                        <TableColumn fx:id="colDuréeEstimé" prefWidth="124.0" text="duréeEstimé" />
+                                        <TableColumn fx:id="colIdMoyen" prefWidth="88.0" text="Id Moyen" />
+                                        <TableColumn fx:id="colIdEmploye" prefWidth="81.599853515625" text="ID Employé" />
+                                        <TableColumn fx:id="colStatus" prefWidth="64.800048828125" text="Statut" />
+                                        <TableColumn fx:id="colAction" minWidth="2.4000244140625" prefWidth="163.20001220703125" text="Action" />
+
+                                    </columns>
+                                </TableView>
+
+
+
+                                <Button fx:id="ajouter" layoutX="510.0" layoutY="49.0" mnemonicParsing="false" onAction="#handleAjouterTrajet" styleClass="gradient-button" text="Ajouter">
+                                    <stylesheets>
+                                        <URL value="@../Styles/color.css" />
+                                        <URL value="@../Styles/add_transport.css" />
+                                    </stylesheets></Button>
+
+                                <TextField fx:id="recherche" layoutX="34.0" layoutY="73.0" prefHeight="26.0" prefWidth="306.0" promptText="recherche" stylesheets="@../Styles/color.css" />
+                            </children>
+                        </AnchorPane>
+                    </center>
+                </BorderPane>
+            </children>
+        </AnchorPane>
+    </children>
+</StackPane>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import java.net.URL?>
+
+<?import javafx.scene.text.Text?>
+<AnchorPane minHeight="400.0" minWidth="600.0" prefHeight="600.0" prefWidth="1100.0"
+            stylesheets="@../Styles/front.css"
+            xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.Controllers.FrontAbonnementController">
+
+    <!-- Conteneur principal -->
+    <VBox spacing="10" alignment="TOP_CENTER">
+
+        <!-- Barre supérieure avec titre, recherche et bouton Ajouter -->
+        <HBox spacing="10" style="-fx-padding: 10px;">
+
+            <!-- Titre de la section -->
+            <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #0047AB;"
+                   text="Liste des abonnements">
+                <padding>
+                    <Insets top="10.0" />
+                </padding>
+            </Label>
+
+            <!-- Zone de recherche -->
+            <TextField fx:id="recherche" promptText="Rechercher un abonnement..."
+                       prefHeight="39.0" prefWidth="400.0" styleClass="searchInput"/>
+
+            <!-- Icône de notification avec badge -->
+            <StackPane>
+                <ImageView fx:id="notificationIcon" fitHeight="40" fitWidth="40" image="tn/esprit/Images/notification.jpg"
+                           pickOnBounds="true" preserveRatio="true" />
+
+                <!-- Badge de notification -->
+                <Label fx:id="notificationBadge" style="-fx-background-color: red;
+                                                        -fx-text-fill: white;
+                                                        -fx-font-size: 14px;
+                                                        -fx-padding: 3px 7px;
+                                                        -fx-background-radius: 50%;
+                                                        -fx-translate-x: 10;
+                                                        -fx-translate-y: -10;" />
+            </StackPane>
+
+            <!-- Bouton Ajouter un abonnement -->
+            <Button fx:id="ajouter" layoutX="633.0" layoutY="39.0" mnemonicParsing="false" onAction="#handleAjouterAbonnement" styleClass="gradient-button" text="Ajouter">
+                <stylesheets>
+                    <URL value="@../Styles/color.css" />
+                    <URL value="@../Styles/front.css" />
+                    <URL value="@../Styles/add_transport.css" />
+                </stylesheets></Button>
+
+        </HBox>
+
+        <!-- ScrollPane pour l'affichage des abonnements -->
+        <ScrollPane fitToHeight="true" fitToWidth="true"
+                    style="-fx-background-color: transparent; -fx-border-color: transparent;">
+            <VBox fx:id="vboxAbonnements" alignment="TOP_CENTER" spacing="15"
+                  style="-fx-padding: 10px;">
+
+                <!-- Exemple d'une carte d'abonnement (générée dynamiquement) -->
+                <GridPane fx:id="abonnementContainer" hgap="10" vgap="10"
+                          style="-fx-background-color: white; -fx-border-color: #ddd; -fx-border-width: 2px;
+                                 -fx-padding: 10px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 3);">
+
+                    <Text fx:id="type_Ab" styleClass="abonnement-type" text="type de l'Abonnement" />
+                    <Text fx:id="status" styleClass="status" text="Status de l'abonnement" />
+                    <Text fx:id="prix" styleClass="abonnement-prix" text="Prix : €" />
+
+                    <columnConstraints>
+                        <ColumnConstraints />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints />
+                    </rowConstraints>
+                </GridPane>
+
+            </VBox>
+        </ScrollPane>
+
+    </VBox>
+</AnchorPane>
