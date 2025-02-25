@@ -23,7 +23,7 @@
                 <BorderPane layoutX="14.0" layoutY="-14.0" prefHeight="600.0" prefWidth="1100.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="-14.0" AnchorPane.topAnchor="-14.0">
 
                     <center>
-                        <AnchorPane fx:id="tableblanche" prefHeight="472.0" prefWidth="807.0" styleClass="shadow" stylesheets="@../java/tn/esprit/Styles/color.css">
+                        <AnchorPane fx:id="tableblanche" prefHeight="472.0" prefWidth="807.0" styleClass="shadow" stylesheets="@../../java/tn/esprit/Styles/color.css">
                             <children>
 
                                 <TableView fx:id="tableMoyenTransport" layoutX="39.0" layoutY="95.0" prefHeight="289.0" prefWidth="724.0">
@@ -42,11 +42,11 @@
 
                                 <Button fx:id="ajouter" layoutX="679.0" layoutY="22.0" mnemonicParsing="false" onAction="#handleAjouterTransport" styleClass="gradient-button" text="Ajouter">
                            <stylesheets>
-                              <URL value="@../java/tn/esprit/Styles/color.css" />
-                              <URL value="@../java/tn/esprit/Styles/add_transport.css" />
+
+                              <URL value="@../Styles/add_transport.css" />
                            </stylesheets></Button>
 
-                        <TextField layoutX="64.0" fx:id="recherche" layoutY="29.0" prefHeight="26.0" prefWidth="306.0" promptText="recherche" stylesheets="@../java/tn/esprit/Styles/color.css" />
+                        <TextField layoutX="64.0" fx:id="recherche" layoutY="29.0" prefHeight="26.0" prefWidth="306.0" promptText="recherche" stylesheets="@../../java/tn/esprit/Styles/color.css" />
                             </children>
                         </AnchorPane>
                     </center>

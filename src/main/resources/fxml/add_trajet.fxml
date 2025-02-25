@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Font?>
 
 <?import java.lang.String?>
-<AnchorPane prefHeight="483.0" prefWidth="523.0" stylesheets="@../java/tn/esprit/Styles/add_transport.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.AddTrajetController">
+<AnchorPane prefHeight="483.0" prefWidth="523.0" stylesheets="@../Styles/add_transport.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.AddTrajetController">
    <children>
       <Label layoutX="171.0" layoutY="29.0" text="Ajouter votre trajet">
          <font>

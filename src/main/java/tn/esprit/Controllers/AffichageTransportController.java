@@ -93,7 +93,7 @@ public class AffichageTransportController {
 
     private void showEditPopup(MoyenTransport moyenTransport) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/modifier_transport.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/modifier_transport.fxml"));
             Parent root = loader.load();
 
             ModifierTransportController controller = loader.getController();
@@ -129,7 +129,7 @@ public class AffichageTransportController {
 
     @FXML
     void handleAjouterTransport() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/add_transport.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/add_transport.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root);
 

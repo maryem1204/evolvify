@@ -11,7 +11,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.Objects;
 
 public class MainTestAbonnement extends Application {
@@ -20,7 +19,7 @@ public class MainTestAbonnement extends Application {
     public void start(Stage stage) throws IOException {
 
         // Charger la vue initiale
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Affichage_abonnement.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Affichage_abonnement.fxml"));
         Parent root = loader.load();
 
         // Créer une scène avec la vue chargée
@@ -47,7 +46,7 @@ public class MainTestAbonnement extends Application {
 
         // Option pour ajouter un abonnement
         MenuItem ajouterAbonnement = new MenuItem("Ajouter un abonnement");
-        ajouterAbonnement.setOnAction(e -> loadView("/add_abonnement.fxml", stage));
+        ajouterAbonnement.setOnAction(e -> loadView("/fxml/add_abonnement.fxml", stage));
 
         menu.getItems().addAll(afficherAbonnement, ajouterAbonnement);
         menuBar.getMenus().add(menu);

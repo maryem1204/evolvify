@@ -20,7 +20,7 @@ public class MainTestTrajet extends Application {
 
         try {
             // Charger la vue initiale (Affichage_trajet.fxml)
-            Parent root = loadFXML("/Affichage_trajet.fxml");
+            Parent root = loadFXML("/fxml/Affichage_trajet.fxml");
 
             // Créer une scène avec la vue chargée
             Scene scene = new Scene(root);
@@ -68,11 +68,11 @@ public class MainTestTrajet extends Application {
 
         // Option pour afficher la liste des trajets
         MenuItem afficherTrajets = new MenuItem("Afficher les trajets");
-        afficherTrajets.setOnAction(e -> loadView("/Affichage_trajet.fxml", stage));
+        afficherTrajets.setOnAction(e -> loadView("/fxml/Affichage_trajet.fxml", stage));
 
         // Option pour ajouter un trajet
         MenuItem ajouterTrajet = new MenuItem("Ajouter un trajet");
-        ajouterTrajet.setOnAction(e -> loadView("/add_trajet.fxml", stage));
+        ajouterTrajet.setOnAction(e -> loadView("/fxml/add_trajet.fxml", stage));
 
         menu.getItems().addAll(afficherTrajets, ajouterTrajet);
         menuBar.getMenus().add(menu);

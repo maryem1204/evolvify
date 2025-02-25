@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane style="-fx-background-color: #1A1D2C;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.FrontTransportController">
+    <VBox prefHeight="677.0" prefWidth="1326.0" spacing="10" AnchorPane.bottomAnchor="139.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <!-- Top Bar -->
+        <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 20 40 0 40;">
+            <VBox spacing="5">
+                <Label fx:id="greetingLabel" text="Bonjour," textFill="WHITE">
+                    <font>
+                        <Font name="System Bold" size="16" />
+                    </font>
+                </Label>
+                <Label fx:id="dashboardTitleLabel" text="Gestion des Trajets" textFill="WHITE">
+                    <font>
+                        <Font name="System Bold" size="36" />
+                    </font>
+                </Label>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS" />
+            <HBox alignment="CENTER_RIGHT" spacing="10">
+                <TextField fx:id="searchField" promptText="Rechercher" style="-fx-background-color: #2A2E3C; -fx-text-fill: white; -fx-background-radius: 20;">
+                    <padding>
+                        <Insets left="10" right="10" />
+                    </padding>
+                </TextField>
+                <StackPane minHeight="30" minWidth="30" style="-fx-background-color: #3498db; -fx-background-radius: 50%;">
+                    <Label fx:id="userInitialsLabel" text="UA" textFill="WHITE" />
+                </StackPane>
+            </HBox>
+        </HBox>
+
+        <!-- Main Content -->
+        <HBox prefHeight="611.0" prefWidth="1326.0" spacing="15" style="-fx-padding: 20 40 20 40;">
+            <!-- Left Panel - Trip Statistics -->
+            <VBox maxWidth="250" minWidth="250" prefHeight="502.0" prefWidth="250.0" style="-fx-background-color: #6C5CE7; -fx-background-radius: 15;">
+                <padding>
+                    <Insets bottom="20" left="20" right="20" top="20" />
+                </padding>
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="STATISTIQUES" textFill="WHITE">
+                        <font>
+                            <Font name="System Bold" size="12" />
+                        </font>
+                    </Label>
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Label style="-fx-font-style: italic;" text="Trajets" textFill="WHITE">
+                        <font>
+                            <Font name="System Bold" size="18" />
+                        </font>
+                    </Label>
+                </HBox>
+                <StackPane alignment="CENTER" VBox.vgrow="ALWAYS">
+                    <ProgressIndicator fx:id="completionRateIndicator" maxHeight="150" minHeight="150" progress="0" style="-fx-progress-color: white;" />
+                    <VBox alignment="CENTER">
+                        <Label fx:id="completionRateLabel" text="0%" textFill="WHITE">
+                            <font>
+                                <Font name="System Bold" size="36" />
+                            </font>
+                        </Label>
+                        <Label text="Terminés" textFill="#e0e0e0">
+                            <font>
+                                <Font size="14" />
+                            </font>
+                        </Label>
+                    </VBox>
+                </StackPane>
+                <VBox alignment="CENTER" prefHeight="87.0" prefWidth="210.0" spacing="5">
+                    <Label fx:id="totalDistanceLabel" text="0 km" textFill="WHITE">
+                        <font>
+                            <Font name="System Bold" size="36" />
+                        </font>
+                    </Label>
+                    <Label text="Distance Totale" textFill="#e0e0e0">
+                        <font>
+                            <Font size="14" />
+                        </font>
+                    </Label>
+                </VBox>
+            </VBox>
+
+            <!-- Middle Panels -->
+            <VBox spacing="15" HBox.hgrow="ALWAYS">
+                <!-- Transport Means Count -->
+                <HBox minHeight="100" style="-fx-background-color: #2A2E3C; -fx-background-radius: 15;">
+                    <padding>
+                        <Insets bottom="15" left="15" right="15" top="15" />
+                    </padding>
+                    <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                        <Label text="MOYENS DE TRANSPORT" textFill="#9395A6">
+                            <font>
+                                <Font size="12" />
+                            </font>
+                        </Label>
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Label fx:id="transportCountLabel" text="0" textFill="WHITE">
+                                <font>
+                                    <Font name="System Bold" size="36" />
+                                </font>
+                            </Label>
+                            <Label text="Types" textFill="WHITE">
+                                <font>
+                                    <Font size="16" />
+                                </font>
+                            </Label>
+                        </HBox>
+                    </VBox>
+                    <LineChart fx:id="transportUsageChart" createSymbols="true" legendVisible="false" maxHeight="186.0" prefHeight="150.0" prefWidth="440.0" style="-fx-background-color: transparent;">
+                        <xAxis>
+                            <CategoryAxis side="BOTTOM" tickLabelsVisible="false" tickMarkVisible="false" />
+                        </xAxis>
+                        <yAxis>
+                            <NumberAxis side="LEFT" tickLabelsVisible="false" tickMarkVisible="false" />
+                        </yAxis>
+                    </LineChart>
+                </HBox>
+
+                <!-- Routes 24h -->
+                <HBox minHeight="100" style="-fx-background-color: #2A2E3C; -fx-background-radius: 15;">
+                    <padding>
+                        <Insets bottom="15" left="15" right="15" top="15" />
+                    </padding>
+                    <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                        <Label text="TRAJETS DERNIÈRES 24H" textFill="#9395A6">
+                            <font>
+                                <Font size="12" />
+                            </font>
+                        </Label>
+                        <Label fx:id="trips24hLabel" text="0" textFill="WHITE">
+                            <font>
+                                <Font name="System Bold" size="36" />
+                            </font>
+                        </Label>
+                    </VBox>
+                    <LineChart fx:id="trips24hChart" createSymbols="true" legendVisible="false" maxHeight="205.0" prefHeight="205.0" prefWidth="463.0" style="-fx-background-color: transparent;">
+                        <xAxis>
+                            <CategoryAxis side="BOTTOM" tickLabelsVisible="false" tickMarkVisible="false" />
+                        </xAxis>
+                        <yAxis>
+                            <NumberAxis side="LEFT" tickLabelsVisible="false" tickMarkVisible="false" />
+                        </yAxis>
+                    </LineChart>
+                </HBox>
+
+                <!-- Total Employees -->
+                <HBox minHeight="100" style="-fx-background-color: #2A2E3C; -fx-background-radius: 15;">
+                    <padding>
+                        <Insets bottom="15" left="15" right="15" top="15" />
+                    </padding>
+                    <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                        <Label text="EMPLOYÉS ACTIFS" textFill="#9395A6">
+                            <font>
+                                <Font size="12" />
+                            </font>
+                        </Label>
+                        <Label fx:id="activeEmployeesLabel" text="0" textFill="WHITE">
+                            <font>
+                                <Font name="System Bold" size="36" />
+                            </font>
+                        </Label>
+                    </VBox>
+                    <BarChart fx:id="employeeActivityChart" legendVisible="false" maxHeight="184.0" prefHeight="184.0" prefWidth="462.0" style="-fx-background-color: transparent;">
+                        <xAxis>
+                            <CategoryAxis side="BOTTOM" tickLabelsVisible="false" tickMarkVisible="false" />
+                        </xAxis>
+                        <yAxis>
+                            <NumberAxis side="LEFT" tickLabelsVisible="false" tickMarkVisible="false" />
+                        </yAxis>
+                    </BarChart>
+                </HBox>
+            </VBox>
+
+            <!-- Right Panel - Most Efficient Routes -->
+            <VBox minWidth="300" spacing="10" style="-fx-background-color: #2A2E3C; -fx-background-radius: 15;">
+                <padding>
+                    <Insets bottom="15" left="15" right="15" top="15" />
+                </padding>
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="Trajets les Plus Efficaces" textFill="WHITE">
+                        <font>
+                            <Font name="System Bold" size="18" />
+                        </font>
+                    </Label>
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Button style="-fx-background-color: #3D435A; -fx-text-fill: white; -fx-background-radius: 5;" text="PLUS">
+                        <font>
+                            <Font name="System Bold" size="10" />
+                        </font>
+                    </Button>
+                </HBox>
+                <!-- Container for dynamic route items -->
+                <VBox fx:id="efficientRoutesContainer" spacing="10">
+                    <!-- Route items will be added dynamically by the controller -->
+                </VBox>
+            </VBox>
+        </HBox>
+
+        <!-- Recent Trips Section -->
+        <VBox style="-fx-padding: 0 40 20 40;">
+            <HBox alignment="CENTER_LEFT">
+                <Label text="Trajets Récents" textFill="WHITE">
+                    <font>
+                        <Font name="System Bold" size="18" />
+                    </font>
+                </Label>
+                <Region HBox.hgrow="ALWAYS" />
+                <Button fx:id="addTrajetButton" style="-fx-background-color: #6C5CE7; -fx-text-fill: white; -fx-background-radius: 5;" text="+ NOUVEAU TRAJET">
+                    <font>
+                        <Font name="System Bold" size="12" />
+                    </font>
+                </Button>
+            </HBox>
+            <!-- Table Header -->
+            <HBox prefHeight="61.0" prefWidth="1247.0" style="-fx-padding: 10 0 5 0;">
+                <Label minWidth="130" text="DÉPART" textFill="#9395A6" HBox.hgrow="ALWAYS">
+                    <font>
+                        <Font size="12" />
+                    </font>
+                </Label>
+                <Label minWidth="130" text="ARRIVÉE" textFill="#9395A6" HBox.hgrow="ALWAYS">
+                    <font>
+                        <Font size="12" />
+                    </font>
+                </Label>
+                <Label minWidth="100" text="DISTANCE" textFill="#9395A6" HBox.hgrow="ALWAYS">
+                    <font>
+                        <Font size="12" />
+                    </font>
+                </Label>
+                <Label minWidth="100" text="DURÉE" textFill="#9395A6" HBox.hgrow="ALWAYS">
+                    <font>
+                        <Font size="12" />
+                    </font>
+                </Label>
+                <Label minWidth="120" text="TRANSPORT" textFill="#9395A6" HBox.hgrow="ALWAYS">
+                    <font>
+                        <Font size="12" />
+                    </font>
+                </Label>
+                <Label minWidth="100" text="STATUT" textFill="#9395A6" HBox.hgrow="ALWAYS">
+                    <font>
+                        <Font size="12" />
+                    </font>
+                </Label>
+                <Label alignment="CENTER_RIGHT" minWidth="100" text="ACTIONS" textFill="#9395A6" HBox.hgrow="ALWAYS">
+                    <font>
+                        <Font size="12" />
+                    </font>
+                </Label>
+            </HBox>
+            <!-- Container for dynamic trip rows -->
+            <VBox fx:id="trajetsContainer" spacing="10">
+                <!-- Trip rows will be added dynamically via the controller -->
+            </VBox>
+        </VBox>
+    </VBox>
+</AnchorPane>

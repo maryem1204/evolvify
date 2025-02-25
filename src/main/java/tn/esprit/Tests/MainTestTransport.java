@@ -18,7 +18,7 @@ public class MainTestTransport extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         // Charger la vue initiale (Affichage_transport.fxml)
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Affichage_transport.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Affichage_transport.fxml"));
         Parent root = loader.load();
 
         // Créer une scène avec la vue chargée
@@ -48,11 +48,11 @@ public class MainTestTransport extends Application {
 
         // Option pour afficher la liste des moyens de transport
         MenuItem afficherTransport = new MenuItem("Afficher les transports");
-        afficherTransport.setOnAction(e -> loadView("/Affichage_transport.fxml", borderPane));
+        afficherTransport.setOnAction(e -> loadView("/fxml/Affichage_transport.fxml", borderPane));
 
         // Option pour ajouter un moyen de transport
         MenuItem ajouterTransport = new MenuItem("Ajouter un transport");
-        ajouterTransport.setOnAction(e -> loadView("/add_transport.fxml", borderPane));
+        ajouterTransport.setOnAction(e -> loadView("/fxml/add_transport.fxml", borderPane));
 
         menu.getItems().addAll(afficherTransport, ajouterTransport);
         menuBar.getMenus().add(menu);

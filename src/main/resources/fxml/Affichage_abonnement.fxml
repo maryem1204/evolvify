@@ -24,7 +24,7 @@
 
 
                     <center>
-                        <AnchorPane fx:id="tableblanche" prefHeight="472.0" prefWidth="807.0" styleClass="shadow" stylesheets="@../java/tn/esprit/Styles/color.css">
+                        <AnchorPane fx:id="tableblanche" prefHeight="472.0" prefWidth="807.0" styleClass="shadow" stylesheets="@../../java/tn/esprit/Styles/color.css">
                             <children>
 
                                 <TableView fx:id="tableViewAbonnement" layoutX="10.0" layoutY="104.0" prefHeight="266.0" prefWidth="849.0">
@@ -43,11 +43,11 @@
 
                                 <Button fx:id="ajouter" layoutX="623.0" layoutY="15.0" mnemonicParsing="false" onAction="#handleAjouterAbonnement" styleClass="gradient-button" text="Ajouter">
                                     <stylesheets>
-                                        <URL value="@../java/tn/esprit/Styles/color.css" />
-                                        <URL value="@../java/tn/esprit/Styles/add_transport.css" />
+
+                                        <URL value="@../Styles/add_transport.css" />
                                     </stylesheets></Button>
 
-                                <TextField fx:id="recherche" layoutX="72.0" layoutY="26.0" prefHeight="26.0" prefWidth="306.0" promptText="recherche" stylesheets="@../java/tn/esprit/Styles/color.css" />
+                                <TextField fx:id="recherche" layoutX="72.0" layoutY="26.0" prefHeight="26.0" prefWidth="306.0" promptText="recherche" stylesheets="@../../java/tn/esprit/Styles/color.css" />
                             </children>
                         </AnchorPane>
                     </center>

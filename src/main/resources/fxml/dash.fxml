@@ -114,17 +114,17 @@
         <Button fx:id="btnProjets" onAction="#toggleSubMenuProjets" text="Gestion Projets" styleClass="sidebar-button">
             <graphic>
                 <HBox spacing="10" alignment="CENTER_LEFT">
-                <ImageView fitHeight="30.0" fitWidth="30.0">
-                    <image>
-                        <Image url="@/images/projet.png" />
-                    </image>
-                </ImageView>
-                <Label text="Gestion Projets" style="-fx-text-fill: white;"/>
-                <ImageView fx:id="arrowIconProjets" fitHeight="20.0" fitWidth="20.0">
-                    <image>
-                        <Image url="@/images/fleche-vers-le-bas.png" />
-                    </image>
-                </ImageView>
+                    <ImageView fitHeight="30.0" fitWidth="30.0">
+                        <image>
+                            <Image url="@/images/projet.png" />
+                        </image>
+                    </ImageView>
+                    <Label text="Gestion Projets" style="-fx-text-fill: white;"/>
+                    <ImageView fx:id="arrowIconProjets" fitHeight="20.0" fitWidth="20.0">
+                        <image>
+                            <Image url="@/images/fleche-vers-le-bas.png" />
+                        </image>
+                    </ImageView>
                 </HBox>
 
             </graphic>
@@ -152,9 +152,9 @@
             </graphic>
         </Button>
         <VBox fx:id="subMenuTransport" spacing="5" visible="false" managed="false">
-            <Button fx:id="btnTransport" text="Tâches" styleClass="sidebar-sub-button"/>
-            <Button fx:id="btnAb" text="Équipe" styleClass="sidebar-sub-button"/>
-            <Button fx:id="btnTrajet" text="Équipe" styleClass="sidebar-sub-button"/>
+            <Button fx:id="menuGererTransport" text="Gérer Transport" styleClass="sidebar-sub-button"/>
+            <Button fx:id="menuGererAbonnement" text="Gérer Abonnement" styleClass="sidebar-sub-button"/>
+            <Button fx:id="menuGererTrajet" text="Gérer Trajet" styleClass="sidebar-sub-button"/>
         </VBox>
 
         <!-- Bouton Déconnexion -->

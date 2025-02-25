@@ -12,9 +12,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import tn.esprit.Entities.MoyenTransport;
 import tn.esprit.Entities.Trajet;
-import tn.esprit.Entities.StatusTrajet; // Ajout pour utiliser l'énumération
 import tn.esprit.Services.TrajetCRUD;
 
 import java.io.IOException;
@@ -85,7 +83,7 @@ public class AffichageTrajetController {
     @FXML
     private void handleAjouterTrajet() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/add_trajet.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/add_trajet.fxml"));
             Parent root = loader.load();
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
@@ -122,7 +120,7 @@ public class AffichageTrajetController {
 
             private void showEditPopup(Trajet trajet) {
                 try {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/modifier_trajet.fxml"));
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/modifier_trajet.fxml"));
                     Parent root = loader.load();
                     ModifierTrajetController controller = loader.getController();
                     controller.setTrajet(trajet);

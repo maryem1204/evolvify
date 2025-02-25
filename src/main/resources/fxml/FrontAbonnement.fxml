@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane minHeight="600.0" minWidth="1000.0" prefHeight="800.0" prefWidth="1200.0"
+            style="-fx-background-color: #F0F4F8;"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.Controllers.FrontAbonnementController">
+
+    <!-- Center content wrapped in a ScrollPane -->
+    <center>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                    style="-fx-background-color: transparent; -fx-padding: 0;">
+            <content>
+                <VBox spacing="20.0" style="-fx-padding: 0 0 30 0;" BorderPane.alignment="CENTER">
+
+                    <!-- Header Section -->
+                    <HBox alignment="CENTER_LEFT" spacing="20.0" style="-fx-padding: 20 40 10 40;">
+                        <VBox>
+                            <Label text="Gestion des Abonnements" textFill="#333333">
+                                <font>
+                                    <Font name="System Bold" size="24.0" />
+                                </font>
+                            </Label>
+                            <Label text="Gérez et suivez tous les abonnements des employés" textFill="#666666">
+                                <font>
+                                    <Font size="14.0" />
+                                </font>
+                            </Label>
+                        </VBox>
+                        <TextField fx:id="searchField" prefHeight="40.0" prefWidth="324.0" promptText="Rechercher..."
+                                   style="-fx-background-color: #E0E0E0; -fx-background-radius: 20; -fx-text-fill: #333333; -fx-prompt-text-fill: #888888;">
+                            <padding>
+                                <Insets left="15.0" right="15.0" />
+                            </padding>
+                            <HBox.margin>
+                                <Insets left="20.0" />
+                            </HBox.margin>
+                        </TextField>
+                        <Button fx:id="addAbonnementButton" mnemonicParsing="false" prefHeight="40.0" prefWidth="180.0"
+                                style="-fx-background-color: #03A9F4; -fx-background-radius: 20;"
+                                text="+ Nouvel Abonnement" textFill="WHITE">
+                            <font>
+                                <Font name="System Bold" size="14.0" />
+                            </font>
+                        </Button>
+                        <!-- Added User Initials -->
+                        <StackPane minHeight="30" minWidth="30" style="-fx-background-color: #03A9F4; -fx-background-radius: 50%;">
+                            <Label fx:id="userInitialsLabel" text="UA" textFill="WHITE" />
+                        </StackPane>
+                    </HBox>
+
+                    <!-- Main Content -->
+                    <HBox spacing="20.0" style="-fx-padding: 0 30 0 30;">
+                        <!-- Left Side: Stats and List -->
+                        <VBox maxWidth="700.0" prefWidth="700.0" spacing="20.0" HBox.hgrow="ALWAYS">
+                            <!-- Statistics Panels -->
+                            <HBox spacing="20.0">
+                                <!-- Revenu Total Panel -->
+                                <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #FFF9C4; -fx-background-radius: 15;"
+                                      HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label text="Revenu Total" textFill="#333333">
+                                            <font>
+                                                <Font size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <Label fx:id="totalRevenueLabel" text="0 DT" textFill="#E64A19">
+                                            <font>
+                                                <Font name="System Bold" size="24.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                    <padding>
+                                        <Insets top="15.0" right="20.0" bottom="15.0" left="20.0" />
+                                    </padding>
+                                </VBox>
+                                <!-- Taux d'activité Panel -->
+                                <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #C8E6C9; -fx-background-radius: 15;"
+                                      HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label text="Taux d'activité" textFill="#333333">
+                                            <font>
+                                                <Font size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                            <children>
+                                                <Label fx:id="activeRateLabel" text="0%" textFill="#388E3C">
+                                                    <font>
+                                                        <Font name="System Bold" size="24.0" />
+                                                    </font>
+                                                </Label>
+                                                <ProgressIndicator fx:id="activeRateIndicator" progress="0.0"
+                                                                   style="-fx-progress-color: #66BB6A;" />
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                    <padding>
+                                        <Insets top="15.0" right="20.0" bottom="15.0" left="20.0" />
+                                    </padding>
+                                </VBox>
+                            </HBox>
+
+                            <!-- Liste des Abonnements Panel -->
+                            <VBox spacing="15.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 15;">
+                                <children>
+                                    <HBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-padding: 10;">
+                                        <Label text="Liste des Abonnements" textFill="#333333">
+                                            <font>
+                                                <Font name="System Bold" size="16.0" />
+                                            </font>
+                                        </Label>
+                                    </HBox>
+                                    <!-- Column Headers -->
+                                    <HBox style="-fx-background-color: #E3F2FD; -fx-background-radius: 10; -fx-padding: 10;">
+                                        <children>
+                                            <Label text="TYPE" textFill="#333333" HBox.hgrow="ALWAYS">
+                                                <font>
+                                                    <Font name="System Bold" size="12.0" />
+                                                </font>
+                                                <HBox.margin>
+                                                    <Insets right="20.0" />
+                                                </HBox.margin>
+                                            </Label>
+                                            <Label text="DÉBUT" textFill="#333333" HBox.hgrow="ALWAYS">
+                                                <font>
+                                                    <Font name="System Bold" size="12.0" />
+                                                </font>
+                                                <HBox.margin>
+                                                    <Insets right="20.0" />
+                                                </HBox.margin>
+                                            </Label>
+                                            <Label text="EXPIRATION" textFill="#333333" HBox.hgrow="ALWAYS">
+                                                <font>
+                                                    <Font name="System Bold" size="12.0" />
+                                                </font>
+                                                <HBox.margin>
+                                                    <Insets right="20.0" />
+                                                </HBox.margin>
+                                            </Label>
+                                            <Label text="PRIX" textFill="#333333" HBox.hgrow="ALWAYS">
+                                                <font>
+                                                    <Font name="System Bold" size="12.0" />
+                                                </font>
+                                                <HBox.margin>
+                                                    <Insets right="20.0" />
+                                                </HBox.margin>
+                                            </Label>
+                                            <Label text="EMPLOYÉ" textFill="#333333" HBox.hgrow="ALWAYS">
+                                                <font>
+                                                    <Font name="System Bold" size="12.0" />
+                                                </font>
+                                                <HBox.margin>
+                                                    <Insets right="20.0" />
+                                                </HBox.margin>
+                                            </Label>
+                                            <Label text="STATUT" textFill="#333333" HBox.hgrow="ALWAYS">
+                                                <font>
+                                                    <Font name="System Bold" size="12.0" />
+                                                </font>
+                                                <HBox.margin>
+                                                    <Insets right="20.0" />
+                                                </HBox.margin>
+                                            </Label>
+                                            <Label text="ACTIONS" textFill="#333333" HBox.hgrow="ALWAYS">
+                                                <font>
+                                                    <Font name="System Bold" size="12.0" />
+                                                </font>
+                                            </Label>
+                                        </children>
+                                    </HBox>
+                                    <!-- Abonnements List Container -->
+                                    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxHeight="350.0" minHeight="350.0" prefHeight="350.0"
+                                                style="-fx-background: transparent; -fx-background-color: transparent; -fx-padding: 0;">
+                                        <content>
+                                            <VBox fx:id="abonnementsContainer" spacing="10.0" style="-fx-background-color: transparent;">
+                                                <padding>
+                                                    <Insets top="5.0" right="5.0" bottom="5.0" left="5.0" />
+                                                </padding>
+                                            </VBox>
+                                        </content>
+                                    </ScrollPane>
+                                </children>
+                                <padding>
+                                    <Insets top="15.0" right="15.0" bottom="15.0" left="15.0" />
+                                </padding>
+                            </VBox>
+                        </VBox>
+
+                        <!-- Right Side: Additional Info -->
+                        <VBox maxWidth="400.0" prefWidth="400.0" spacing="20.0">
+                            <!-- Abonnements Populaires Panel -->
+                            <VBox spacing="15.0" style="-fx-background-color: #F8BBD0; -fx-background-radius: 15;">
+                                <children>
+                                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                        <Label text="Abonnements Populaires" textFill="#333333">
+                                            <font>
+                                                <Font name="System Bold" size="16.0" />
+                                            </font>
+                                        </Label>
+                                    </HBox>
+                                    <VBox fx:id="popularPlansContainer" spacing="15.0">
+                                        <!-- Popular plans will be added here dynamically -->
+                                    </VBox>
+                                </children>
+                                <padding>
+                                    <Insets top="15.0" right="15.0" bottom="15.0" left="15.0" />
+                                </padding>
+                            </VBox>
+
+                            <!-- Small Stats Panels -->
+                            <HBox spacing="15.0">
+                                <!-- Types d'abonnements -->
+                                <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0"
+                                      style="-fx-background-color: #BBDEFB; -fx-background-radius: 15;" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label fx:id="subscriptionTypesLabel" text="0" textFill="#333333">
+                                            <font>
+                                                <Font name="System Bold" size="24.0" />
+                                            </font>
+                                        </Label>
+                                        <Label text="Types d'abonnements" textFill="#666666" textAlignment="CENTER" wrapText="true">
+                                            <font>
+                                                <Font size="12.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                    <padding>
+                                        <Insets top="10.0" right="10.0" bottom="10.0" left="10.0" />
+                                    </padding>
+                                </VBox>
+                                <!-- Abonnements (30j) -->
+                                <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0"
+                                      style="-fx-background-color: #C8E6C9; -fx-background-radius: 15;" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label fx:id="subscriptions30dLabel" text="0" textFill="#333333">
+                                            <font>
+                                                <Font name="System Bold" size="24.0" />
+                                            </font>
+                                        </Label>
+                                        <Label text="Abonnements (30j)" textFill="#666666" textAlignment="CENTER" wrapText="true">
+                                            <font>
+                                                <Font size="12.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                    <padding>
+                                        <Insets top="10.0" right="10.0" bottom="10.0" left="10.0" />
+                                    </padding>
+                                </VBox>
+                                <!-- Employés actifs -->
+                                <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0"
+                                      style="-fx-background-color: #FFCCBC; -fx-background-radius: 15;" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label fx:id="activeEmployeesLabel" text="0" textFill="#333333">
+                                            <font>
+                                                <Font name="System Bold" size="24.0" />
+                                            </font>
+                                        </Label>
+                                        <Label text="Employés actifs" textFill="#666666" textAlignment="CENTER" wrapText="true">
+                                            <font>
+                                                <Font size="12.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                    <padding>
+                                        <Insets top="10.0" right="10.0" bottom="10.0" left="10.0" />
+                                    </padding>
+                                </VBox>
+                            </HBox>
+
+                            <!-- Types d'abonnements Chart -->
+                            <VBox spacing="15.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 15;" HBox.hgrow="ALWAYS">
+                                <children>
+                                    <Label text="Types d'abonnements" textFill="#333333">
+                                        <font>
+                                            <Font name="System Bold" size="16.0" />
+                                        </font>
+                                    </Label>
+                                    <LineChart fx:id="subscriptionTypeChart" createSymbols="false" legendVisible="false"
+                                               style="-fx-background-color: transparent;">
+                                        <xAxis>
+                                            <CategoryAxis side="BOTTOM" tickLabelFill="#666666" />
+                                        </xAxis>
+                                        <yAxis>
+                                            <NumberAxis side="LEFT" tickLabelFill="#666666" />
+                                        </yAxis>
+                                    </LineChart>
+                                </children>
+                                <padding>
+                                    <Insets top="15.0" right="15.0" bottom="15.0" left="15.0" />
+                                </padding>
+                            </VBox>
+                        </VBox>
+                    </HBox>
+
+                    <!-- Bottom Charts Section -->
+                    <HBox spacing="20.0" style="-fx-padding: 0 30 30 30;">
+                        <!-- Abonnements (30 derniers jours) Chart -->
+                        <VBox spacing="15.0" style="-fx-background-color: #E1BEE7; -fx-background-radius: 15;" HBox.hgrow="ALWAYS">
+                            <children>
+                                <Label text="Abonnements (30 derniers jours)" textFill="#333333">
+                                    <font>
+                                        <Font name="System Bold" size="16.0" />
+                                    </font>
+                                </Label>
+                                <LineChart fx:id="subscriptions30dChart" createSymbols="false" legendVisible="false"
+                                           style="-fx-background-color: transparent;">
+                                    <xAxis>
+                                        <CategoryAxis side="BOTTOM" tickLabelFill="#666666" />
+                                    </xAxis>
+                                    <yAxis>
+                                        <NumberAxis side="LEFT" tickLabelFill="#666666" />
+                                    </yAxis>
+                                </LineChart>
+                            </children>
+                            <padding>
+                                <Insets top="15.0" right="15.0" bottom="15.0" left="15.0" />
+                            </padding>
+                        </VBox>
+                        <!-- Activité des employés Chart -->
+                        <VBox spacing="15.0" style="-fx-background-color: #B3E5FC; -fx-background-radius: 15;" HBox.hgrow="ALWAYS">
+                            <children>
+                                <Label text="Activité des employés" textFill="#333333">
+                                    <font>
+                                        <Font name="System Bold" size="16.0" />
+                                    </font>
+                                </Label>
+                                <BarChart fx:id="employeeActivityChart" barGap="5.0" categoryGap="15.0" legendVisible="false"
+                                          style="-fx-background-color: transparent;">
+                                    <xAxis>
+                                        <CategoryAxis side="BOTTOM" tickLabelFill="#666666" />
+                                    </xAxis>
+                                    <yAxis>
+                                        <NumberAxis side="LEFT" tickLabelFill="#666666" />
+                                    </yAxis>
+                                </BarChart>
+                            </children>
+                            <padding>
+                                <Insets top="15.0" right="15.0" bottom="15.0" left="15.0" />
+                            </padding>
+                        </VBox>
+                    </HBox>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+</BorderPane>

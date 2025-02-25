@@ -43,11 +43,11 @@
             </items>
         </SplitMenuButton>
         <TextField fx:id="immatriculation" layoutX="275.0" layoutY="233.0" />
-        <Button fx:id="Ajouter" layoutX="476.0" layoutY="335.0" mnemonicParsing="false" onAction="#ajouterTransport" styleClass="gradient-button" stylesheets="@../java/tn/esprit/Styles/add_transport.css" text="Ajouter" />
+        <Button fx:id="Ajouter" layoutX="476.0" layoutY="335.0" mnemonicParsing="false" onAction="#ajouterTransport" styleClass="gradient-button" stylesheets="@../../java/tn/esprit/Styles/add_transport.css" text="Ajouter" />
         <TextField fx:id="Capacité" layoutX="276.0" layoutY="184.0" />
     </children>
    <stylesheets>
-      <URL value="@../java/tn/esprit/Styles/add_transport.css" />
-      <URL value="@../java/tn/esprit/Styles/color.css" />
+      <URL value="@../Styles/add_transport.css" />
+      <URL value="@../../java/tn/esprit/Styles/color.css" />
    </stylesheets>
 </AnchorPane>

@@ -17,7 +17,7 @@
                 <BorderPane layoutX="98.0" layoutY="14.0" prefHeight="598.0" prefWidth="876.0" AnchorPane.bottomAnchor="-11.599999999999909" AnchorPane.leftAnchor="98.0" AnchorPane.rightAnchor="126.0" AnchorPane.topAnchor="14.0">
 
                     <center>
-                        <AnchorPane fx:id="tableblanche" prefHeight="514.0" prefWidth="875.0" styleClass="shadow" stylesheets="@../java/tn/esprit/Styles/color.css" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                        <AnchorPane fx:id="tableblanche" prefHeight="514.0" prefWidth="875.0" styleClass="shadow" stylesheets="@../../java/tn/esprit/Styles/color.css" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                             <children>
                                 <TableView fx:id="tableTrajet" layoutX="34.0" layoutY="128.0" prefHeight="340.0" prefWidth="790.0">
                                     <columns>
@@ -38,11 +38,11 @@
 
                                 <Button fx:id="ajouter" layoutX="510.0" layoutY="49.0" mnemonicParsing="false" onAction="#handleAjouterTrajet" styleClass="gradient-button" text="Ajouter">
                                     <stylesheets>
-                                        <URL value="@../java/tn/esprit/Styles/color.css" />
-                                        <URL value="@../java/tn/esprit/Styles/add_transport.css" />
+                                        <URL value="@../../java/tn/esprit/Styles/color.css" />
+                                        <URL value="@../Styles/add_transport.css" />
                                     </stylesheets></Button>
 
-                                <TextField fx:id="recherche" layoutX="34.0" layoutY="73.0" prefHeight="26.0" prefWidth="306.0" promptText="recherche" stylesheets="@../java/tn/esprit/Styles/color.css" />
+                                <TextField fx:id="recherche" layoutX="34.0" layoutY="73.0" prefHeight="26.0" prefWidth="306.0" promptText="recherche" stylesheets="@../../java/tn/esprit/Styles/color.css" />
                             </children>
                         </AnchorPane>
                     </center>

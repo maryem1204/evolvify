@@ -11,7 +11,7 @@
 <?import javafx.collections.FXCollections?>
 <?import java.lang.String?>
 <AnchorPane prefHeight="502.0" prefWidth="600.0"
-            stylesheets="@../java/tn/esprit/Styles/add_transport.css"
+            stylesheets="@../Styles/add_transport.css"
             xmlns="http://javafx.com/javafx/23.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="tn.esprit.Controllers.ModifierAbonnementController">

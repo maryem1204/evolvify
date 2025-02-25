@@ -14,6 +14,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.util.Duration;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DashController {
@@ -23,25 +24,31 @@ public class DashController {
     @FXML
     private Button btnConges, btnAbsences, btnGestionConges;
     @FXML
-    private ImageView userIcon, arrowIconConges, arrowIconRecrutements, arrowIconProjets,arrowIconTransports;
+    private ImageView userIcon, arrowIconConges, arrowIconRecrutements, arrowIconProjets, arrowIconTransports;
     @FXML
     private Label username;
     @FXML
-    private VBox sidebar, subMenuConges, subMenuRecrutements, subMenuProjets,subMenuTransport;
+    private VBox sidebar, subMenuConges, subMenuRecrutements, subMenuProjets, subMenuTransport;
     @FXML
     private AnchorPane contentArea;
     @FXML
     private Pane subMenuContainer;
+
+    // Boutons du sous-menu Transports
+    @FXML
+    private Button menuGererTransport, menuGererAbonnement, menuGererTrajet;
 
     private boolean isSubMenuCongesVisible = false;
     private boolean isSubMenuRecrutementsVisible = false;
     private boolean isSubMenuProjetsVisible = false;
     private boolean isSubMenuTransportVisible = false;
 
+    // Utiliser une liste mutable pour inclure également les boutons des sous-menus
     private List<Button> sidebarButtons;
 
     @FXML
     public void initialize() {
+        // Chargement par défaut de la page du dashboard
         Platform.runLater(() -> {
             loadView("/fxml/dashboardAdminRH.fxml");
             setActiveButton(btnDashboard); // Sélection par défaut
@@ -50,23 +57,49 @@ public class DashController {
         // Chargement de l'icône utilisateur
         userIcon.setImage(new Image(getClass().getResource("/images/profileicon.png").toExternalForm(), true));
 
-        // Liste de tous les boutons du sidebar
-        sidebarButtons = List.of(btnDashboard, btnUser, btnRecrutements, btnProjets, btnTransports, btnConges, btnAbsences);
+        // Initialiser la liste des boutons principaux du sidebar
+        sidebarButtons = new ArrayList<>();
+        sidebarButtons.add(btnDashboard);
+        sidebarButtons.add(btnUser);
+        sidebarButtons.add(btnRecrutements);
+        sidebarButtons.add(btnProjets);
+        sidebarButtons.add(btnTransports);
+        sidebarButtons.add(btnConges);
+        sidebarButtons.add(btnAbsences);
+        // Ajout des boutons des sous-menus si vous souhaitez qu'ils aient aussi l'état "actif"
+        sidebarButtons.add(menuGererTransport);
+        sidebarButtons.add(menuGererAbonnement);
+        sidebarButtons.add(menuGererTrajet);
 
         // Gestion des actions des boutons principaux
-        for (Button button : sidebarButtons) {
+        for (Button button : List.of(btnDashboard, btnUser, btnRecrutements, btnProjets, btnTransports, btnConges, btnAbsences)) {
             button.setOnAction(event -> {
                 setActiveButton(button);
                 loadView(getFxmlPath(button));
             });
         }
 
-        // Gestion des sous-menus
+        // Gestion des sous-menus pour les principaux
         btnGestionConges.setOnAction(event -> toggleSubMenuConges());
         btnRecrutements.setOnAction(event -> toggleSubMenuRecrutements());
         btnProjets.setOnAction(event -> toggleSubMenuProjets());
         btnTransports.setOnAction(event -> toggleSubMenuTransports());
 
+        // Actions spécifiques pour les boutons qui se trouvent dans les sous-menus
+        menuGererTransport.setOnAction(event -> {
+            setActiveButton(menuGererTransport);
+            loadView("/fxml/Affichage_transport.fxml");
+        });
+        menuGererAbonnement.setOnAction(event -> {
+            setActiveButton(menuGererAbonnement);
+            loadView("/fxml/Affichage_abonnement.fxml");//FrontAbonnement.fxml matensehomch
+        });
+        menuGererTrajet.setOnAction(event -> {
+            setActiveButton(menuGererTrajet);
+            loadView("/fxml/Affichage_trajet.fxml");//FrontTransport.fxml
+        });
+
+        // Actions pour les autres boutons du sidebar
         btnConges.setOnAction(event -> {
             setActiveButton(btnConges);
             loadView("/fxml/conges.fxml");
@@ -78,7 +111,7 @@ public class DashController {
         });
 
         // Afficher le nom de l'utilisateur connecté
-        username.setText("Meriem Sassi");
+        username.setText("Farah Chebane");
 
         // Cacher les sous-menus au démarrage
         hideAllSubMenus();
@@ -109,7 +142,7 @@ public class DashController {
     }
 
     /**
-     * Récupère le bon FXML en fonction du bouton
+     * Récupère le bon FXML en fonction du bouton cliqué
      */
     private String getFxmlPath(Button button) {
         if (button == btnDashboard) return "/fxml/dashboardAdminRH.fxml";
@@ -127,7 +160,7 @@ public class DashController {
      */
     private void toggleSubMenu(VBox subMenu, ImageView arrowIcon, boolean isVisible) {
         boolean newState = !isVisible; // Inverser l'état actuel
-        double targetHeight = newState ? 80 : 0; // Ajuste selon le nombre de boutons
+        double targetHeight = newState ? 80 : 0; // Ajustez selon le nombre de boutons contenus dans le sous-menu
 
         Timeline timeline = new Timeline(
                 new KeyFrame(Duration.millis(200),
@@ -169,6 +202,9 @@ public class DashController {
         isSubMenuProjetsVisible = !isSubMenuProjetsVisible;
     }
 
+    /**
+     * Basculer le sous-menu Transports
+     */
     @FXML
     private void toggleSubMenuTransports() {
         toggleSubMenu(subMenuTransport, arrowIconTransports, isSubMenuTransportVisible);
@@ -185,6 +221,9 @@ public class DashController {
         subMenuRecrutements.setManaged(false);
         subMenuProjets.setVisible(false);
         subMenuProjets.setManaged(false);
+        // Si nécessaire, vous pouvez aussi cacher le sous-menu des Transports
+        subMenuTransport.setVisible(false);
+        subMenuTransport.setManaged(false);
     }
 
     @FXML

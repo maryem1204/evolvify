@@ -112,7 +112,7 @@ public class AffichageAbonnementController {
 
     private void showEditPopup(Abonnement abonnement) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/modifier_abonnement.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/modifier_abonnement.fxml"));
             Parent root = loader.load();
 
             ModifierAbonnementController controller = loader.getController();
@@ -151,7 +151,7 @@ public class AffichageAbonnementController {
 
     @FXML
     void handleAjouterAbonnement() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/add_abonnement.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/add_abonnement.fxml"));
         Parent root = loader.load();
 
         Scene scene = new Scene(root);

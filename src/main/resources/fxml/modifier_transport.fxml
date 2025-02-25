@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Font?>
 
 
-<AnchorPane fx:id="modifier_transport" prefHeight="400.0" prefWidth="600.0" stylesheets="@../java/tn/esprit/Styles/add_transport.css" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.ModifierTransportController">
+<AnchorPane fx:id="modifier_transport" prefHeight="400.0" prefWidth="600.0" stylesheets="@../Styles/add_transport.css" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.ModifierTransportController">
     <children>
         <Label layoutX="128.0" layoutY="39.0" prefHeight="46.0" prefWidth="348.0" text="Modifier le Moyen de Transport" textFill="#ef4907">
             <font>
@@ -39,7 +39,7 @@
 
         <TextField fx:id="type" layoutX="274.0" layoutY="133.0" promptText="Ex: Bus, Taxi" />
         <TextField fx:id="capacité" layoutX="276.0" layoutY="184.0" promptText="Ex: 50" />
-        <TextField fx:id="immatriculation" layoutX="275.0" layoutY="233.0" promptText="Ex: 123-XYZ-789" stylesheets="@../java/tn/esprit/Styles/add_transport.css" />
+        <TextField fx:id="immatriculation" layoutX="275.0" layoutY="233.0" promptText="Ex: 123-XYZ-789" stylesheets="@../../java/tn/esprit/Styles/add_transport.css" />
 
         <SplitMenuButton fx:id="status" layoutX="274.0" layoutY="275.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0" text="disponible">
 

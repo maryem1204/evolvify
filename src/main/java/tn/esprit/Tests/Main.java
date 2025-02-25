@@ -55,20 +55,20 @@ public class Main extends Application {
 
         // Création des options du menu
         MenuItem menuTransport = new MenuItem("Gestion des Transports");
-        menuTransport.setOnAction(e -> loadView("/Affichage_transport.fxml"));
+        menuTransport.setOnAction(e -> loadView("/fxml/Affichage_transport.fxml"));
         MenuItem ajouterTransport = new MenuItem("Ajouter un transport");
-        ajouterTransport.setOnAction(e -> loadView("/add_transport.fxml"));
+        ajouterTransport.setOnAction(e -> loadView("/fxml/add_transport.fxml"));
 
         MenuItem menuAbonnement = new MenuItem("Gestion des Abonnements");
-        menuAbonnement.setOnAction(e -> loadView("/Affichage_abonnement.fxml"));
+        menuAbonnement.setOnAction(e -> loadView("/fxml/Affichage_abonnement.fxml"));
         MenuItem ajouterAbonnement = new MenuItem("Ajouter un abonnement");
-        ajouterAbonnement.setOnAction(e -> loadView("/add_abonnement.fxml"));
+        ajouterAbonnement.setOnAction(e -> loadView("/fxml/add_abonnement.fxml"));
 
         MenuItem menuTrajet = new MenuItem("Gestion des Trajets");
-        menuTrajet.setOnAction(e -> loadView("/Affichage_trajet.fxml"));
+        menuTrajet.setOnAction(e -> loadView("/fxml/Affichage_trajet.fxml"));
         // Option pour ajouter un trajet
         MenuItem ajouterTrajet = new MenuItem("Ajouter un trajet");
-        ajouterTrajet.setOnAction(e -> loadView("/add_trajet.fxml"));
+        ajouterTrajet.setOnAction(e -> loadView("/fxml/add_trajet.fxml"));
 
         menuNavigation.getItems().addAll(menuTransport, menuAbonnement, menuTrajet);
         menuBar.getMenus().add(menuNavigation);
