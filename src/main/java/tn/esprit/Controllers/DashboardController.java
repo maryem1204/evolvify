@@ -4,8 +4,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -26,8 +24,6 @@ public class DashboardController {
 
     @FXML
     private Label logoutlabel;
-
-
 
     // ✅ Méthode pour charger dynamiquement une vue dans `mainContainer`
     private void loadView(String fxmlFile) {
@@ -66,5 +62,8 @@ public class DashboardController {
     public void handleDashboard(ActionEvent actionEvent) {
         loadView("/fxml/dashboardAdminRH.fxml");
     }
-
+    @FXML
+    public void handleGestionProjet(ActionEvent actionEvent) {
+        loadView("/fxml/ListProjet.fxml");
+    }
 }

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="657.0" prefWidth="970.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.KanbanController">
+    <VBox alignment="CENTER" spacing="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="20">
+        <!-- Barre de Recherche avec Bouton Ajouter -->
+        <HBox alignment="CENTER_LEFT" prefHeight="46.0" prefWidth="930.0" spacing="160.0">
+            <TextField fx:id="searchField" prefHeight="26.0" prefWidth="570.0" promptText="Rechercher une tâche..." />
+            <Button fx:id="addTaskButton" onAction="#openAjoutTachePopup" prefHeight="39.0" prefWidth="149.0" style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold;" text="+ Ajouter une tâche" />
+        </HBox>
+
+        <!-- Kanban Board -->
+        <HBox alignment="CENTER" spacing="10" style="-fx-background-color: #faf3fb;">
+            <!-- TO DO Column -->
+            <VBox fx:id="todoColumn" minWidth="200" spacing="10" styleClass="column">
+                <Label alignment="CENTER" maxWidth="Infinity" style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 5px; -fx-alignment: center;" text="TO DO" />
+                <VBox fx:id="todoTasks" prefHeight="318.0" prefWidth="196.0" style="-fx-background-color: #d7e6ff; -fx-padding: 10px;">
+                    <!-- Nouvelle tâche par défaut -->
+                    <Pane prefHeight="114.0" prefWidth="179.0" style="-fx-background-color: white; -fx-border-color: #ccc; -fx-padding: 10px 10px 60px 10px;">
+                        <Label text="Nouvelle Tâche" />
+                    </Pane>
+                </VBox>
+            </VBox>
+
+            <!-- IN PROGRESS Column -->
+            <VBox fx:id="inProgressColumn" minWidth="200" prefHeight="368.0" prefWidth="200.0" spacing="10" styleClass="column">
+                <Label alignment="CENTER" maxWidth="Infinity" style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-background-color: #f39c12; -fx-text-fill: white; -fx-padding: 5px; -fx-alignment: center;" text="IN PROGRESS" />
+                <VBox fx:id="inProgressTasks" prefHeight="316.0" prefWidth="200.0" style="-fx-background-color: #fff7d4; -fx-padding: 10px;">
+                    <ProgressBar fx:id="progressBar50" prefHeight="20.0" prefWidth="179.0" progress="0.5" visible="true" />
+                </VBox>
+            </VBox>
+
+            <!-- COMPLETED Column -->
+            <VBox fx:id="doneColumn" minWidth="200" spacing="10" styleClass="column">
+                <Label alignment="CENTER" maxWidth="Infinity" style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-background-color: #2ecc71; -fx-text-fill: white; -fx-padding: 5px; -fx-alignment: center;" text="DONE" />
+                <VBox fx:id="doneTasks" prefHeight="316.0" prefWidth="200.0" style="-fx-background-color: #d4f7d4; -fx-padding: 10px;">
+                    <ProgressBar fx:id="progressBar100" accessibleText="100%" prefHeight="19.0" prefWidth="179.0" progress="1.0" />
+                </VBox>
+            </VBox>
+
+            <!-- ON HOLD Column -->
+            <VBox fx:id="canceledColumn" minWidth="200" spacing="10" styleClass="column">
+                <Label alignment="CENTER" maxWidth="Infinity" style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-background-color: #8e44ad; -fx-text-fill: white; -fx-padding: 5px; -fx-alignment: center;" text="CANCELED" />
+                <VBox fx:id="canceledTasks" prefHeight="314.0" prefWidth="200.0" style="-fx-background-color: #e6e6ff; -fx-padding: 10px;" />
+            </VBox>
+        </HBox>
+    </VBox>
+</AnchorPane>

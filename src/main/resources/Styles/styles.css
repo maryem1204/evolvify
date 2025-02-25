@@ -1,0 +1,150 @@
+/* Appliquer un fond blanc */
+.root {
+    -fx-background-color: white;
+}
+
+/* Ajuster le header */
+HBox {
+    -fx-background-color: white;
+    -fx-padding: 10px;
+}
+
+/* Agrandir et styliser le tableau */
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #DDDDDD;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #DCDCDC;
+    -fx-background-radius: 5px 5px 0 0;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0047AB;
+    -fx-alignment: CENTER;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #F8F9FA;
+}
+
+.table-row-cell:even {
+    -fx-background-color: #FFFFFF;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #B0C4DE;
+    -fx-text-fill: black;
+}
+
+/* Style pour les boutons de la TableView (par exemple, ajouter ou éditer un projet) */
+.table-view .button {
+    -fx-background-color: #0047AB;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+}
+
+.table-view .button:hover {
+    -fx-background-color: #1e63c7;
+}
+
+/* Champs de texte */
+.TextField {
+    -fx-background-radius: 5;
+    -fx-pref-width: 200;
+}
+
+/* Bouton avec effet de gradient */
+.gradient-button {
+    -fx-background-color: linear-gradient(from 55% 0% to 100% 100%, #0055FF 0%, #0099FF 55%, #0055FF 90%);
+    -fx-text-fill: white;
+    -fx-padding: 10px 20px;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-border-color: transparent;
+    -fx-effect: dropshadow(three-pass-box, rgba(71, 184, 255, 0.5), 10, 0, 0, 5);
+}
+
+/* Effet au survol */
+.gradient-button:hover {
+    -fx-background-color: linear-gradient(from 55% 0% to 100% 100%, #0099FF 0%, #0055FF 55%, #0099FF 90%);
+}
+
+/* Effet lorsque le bouton est enfoncé */
+.gradient-button:pressed {
+    -fx-background-color: linear-gradient(from 55% 0% to 100% 100%, #0044CC 0%, #0077DD 55%, #0044CC 90%);
+    -fx-effect: dropshadow(three-pass-box, rgba(19, 95, 216, 0.35), 5, 0, 0, 3);
+}
+
+/* Barre de recherche */
+.search-bar {
+    -fx-background-color: #ffffff;
+    -fx-border-radius: 20px;
+    -fx-border-color: #ccc;
+    -fx-border-width: 1px;
+    -fx-padding: 10px;
+    -fx-font-size: 14px;
+    -fx-pref-width: 350px;
+    -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.2), 3, 0, 0, 1);
+}
+
+/* Focus sur la barre de recherche */
+.search-bar:focused {
+    -fx-border-color: #4CAF50;}
+
+.status-label {
+    -fx-padding: 5px 10px;
+    -fx-alignment: center;
+    -fx-text-fill: black; /* Texte en noir pour meilleure visibilité */
+    -fx-font-weight: bold;
+    -fx-background-radius: 5px;
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+}
+
+
+.status-inprogress {
+    -fx-background-color: #ffeb99;
+    -fx-border-color: #ff9900;/* Jaune */
+    -fx-text-fill: #ff9900;
+    -fx-font-weight: bold;
+    -fx-padding: 5px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.status-completed {
+    -fx-background-color: #99ff99;
+    -fx-border-color: #008000;/* Vert */
+    -fx-text-fill: #008000;
+    -fx-font-weight: bold;
+    -fx-padding: 5px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+/* overlay.css */
+
+/* Style de l'overlay (fond semi-transparent noir) */
+.overlay-pane {
+    -fx-background-color: rgba(0, 0, 0, 0.5);  /* Noir semi-transparent */
+    -fx-alignment: center;
+    -fx-opacity: 0;  /* Initialement invisible */
+    -fx-transition: opacity 0.3s ease-in-out;  /* Transition douce pour l'apparition */
+}
+
+/* Quand l'overlay est visible */
+.overlay-pane.visible {
+    -fx-opacity: 1; /* Rendre l'overlay visible */
+}
+
+
+
