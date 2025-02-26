@@ -20,7 +20,7 @@
                 <HBox alignment="CENTER_LEFT" maxWidth="700" prefHeight="47.0" prefWidth="595.0" spacing="10" styleClass="searchBox">
                     <TextField fx:id="recherche" maxWidth="726.0" prefHeight="26.0" prefWidth="558.0" promptText="Rechercher un projet..." styleClass="searchInput" />
                 </HBox>
-                <Button onAction="#exportTableViewToPDF" prefHeight="42.0" prefWidth="158.0" styleClass="gradient-button" text="+ Upload pdf" />
+                <Button onAction="#exportTableViewToPDF" prefHeight="42.0" prefWidth="158.0" styleClass="gradient-button" text="+ Extract pdf" />
                 <Button onAction="#openAjoutProjetPopup" prefHeight="42.0" prefWidth="207.0" styleClass="gradient-button" text="+ Ajouter Projet" />
             </HBox>
         </VBox>
