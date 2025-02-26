@@ -130,7 +130,7 @@ public class ProjectListWithCardsController {
             projectListContainer.add(card, col, row);
 
             col++;
-            if (col > 2) {  // Trois cartes par ligne
+            if (col > 3) {  // Trois cartes par ligne
                 col = 0;
                 row++;
             }
