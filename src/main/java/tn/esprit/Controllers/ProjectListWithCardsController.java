@@ -177,11 +177,14 @@ public class ProjectListWithCardsController {
         // Changer le curseur quand la souris passe dessus
         editIcon.setStyle("-fx-cursor: hand;");
         deleteIcon.setStyle("-fx-cursor: hand;");
-
+        eyeIcon.setStyle("-fx-cursor: hand;");
         // Actions lors du clic sur les icônes
         editIcon.setOnMouseClicked(event -> showEditPopup(projet));
         deleteIcon.setOnMouseClicked(event -> showDeleteConfirmation(projet));
-        eyeIcon.setOnMouseClicked(event -> showDetailsPopup(projet));  // Action pour afficher les détails du projet
+        eyeIcon.setOnMouseClicked(event -> {
+            afficherDetailsProjet(projet);
+        });
+        // Action pour afficher les détails du projet
         buttonBox.getChildren().addAll(editIcon, deleteIcon, eyeIcon);
         content.getChildren().addAll(nameText, descText, statusText, buttonBox);
         card.getChildren().add(content);
@@ -245,49 +248,23 @@ public class ProjectListWithCardsController {
         }
     }
 
-    private void showDetailsPopup(Projet projet) {
+    @FXML
+    private void afficherDetailsProjet(Projet projet) {
         try {
-            // Charger la fenêtre pour afficher les détails du projet
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/DetailsProjet.fxml"));
             Parent root = loader.load();
 
-            // Passer le projet aux contrôleurs correspondants
-            if (loader.getController() instanceof DetailsProjetController) {
-                DetailsProjetController controller = (DetailsProjetController) loader.getController();
-                controller.setProjet(projet);
-            }
+            DetailsProjetController controller = loader.getController();
+            controller.setProjet(projet);
 
-            // Créer et afficher la fenêtre modale
             Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initStyle(StageStyle.UNDECORATED);
-            stage.setTitle("Détails du Projet");
             stage.setScene(new Scene(root));
-            stage.showAndWait();
+            stage.setTitle("Détails du Projet");
+            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-
-    private void checkProjectDeadlines() {
-        try {
-            allProjets = projetService.showAll(); // Recharger les projets
-
-            // Filtrer les projets en retard
-            long notificationCount = allProjets.stream()
-                    .filter(projet -> projet.getEnd_date() != null && projet.getEnd_date().isBefore(LocalDate.now()))
-                    .count();
-
-            System.out.println("Projets en retard : " + notificationCount); // Vérifier la valeur
-            updateNotificationBadge((int) notificationCount);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
 
     @FXML
     private void handleNotificationClick() {
@@ -298,6 +275,23 @@ public class ProjectListWithCardsController {
         Image image = new Image(getClass().getResourceAsStream(iconPath));
         notificationIcon.setImage(image);
     }
+
+    private void checkProjectDeadlines() {
+        try {
+            allProjets = projetService.showAll(); // Recharger les projets
+
+            // Filtrer les projets ayant une deadline demain
+            long notificationCount = allProjets.stream()
+                    .filter(projet -> projet.getEnd_date() != null && projet.getEnd_date().isEqual(LocalDate.now().plus(1, ChronoUnit.DAYS)))
+                    .count();
+
+            System.out.println("Projets avec deadline demain : " + notificationCount); // Vérifier la valeur
+            updateNotificationBadge((int) notificationCount);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void updateNotificationBadge(int count) {
         Platform.runLater(() -> {

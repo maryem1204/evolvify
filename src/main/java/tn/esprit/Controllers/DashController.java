@@ -4,6 +4,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -197,5 +198,13 @@ public class DashController {
     private void handleGestionUtilisateur() {
         setActiveButton(btnUser);
         loadView("/fxml/listUsers.fxml");
+    }
+    @FXML
+    public void handleGestionProjet(ActionEvent actionEvent) {
+        loadView("/fxml/ListProjet.fxml");
+    }
+    @FXML
+    public void handleTache(ActionEvent actionEvent) {
+        loadView("/fxml/ListTacheRH.fxml");
     }
 }

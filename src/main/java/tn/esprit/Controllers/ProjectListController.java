@@ -24,8 +24,6 @@ import tn.esprit.Entities.Projet;
 import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Services.ProjetService;
 import tn.esprit.Services.UtilisateurService;
-
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -64,12 +62,9 @@ public class ProjectListController {
     }
 
     public void initialize() throws SQLException {
-        // Charger les employés AVANT de charger les projets
+
         loadUsers();
-
-
         projectTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-
 
         // 🔹 Mapper les colonnes aux attributs correspondants
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
