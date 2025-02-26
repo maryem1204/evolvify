@@ -7,15 +7,21 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.stage.Stage;
 import javafx.util.Duration;
+import tn.esprit.Entities.Utilisateur;
+import tn.esprit.Utils.SessionManager;
+
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 public class DashController {
 
@@ -33,6 +39,16 @@ public class DashController {
     private AnchorPane contentArea;
     @FXML
     private Pane subMenuContainer;
+    @FXML
+    private ScrollPane scrollSidebar;
+
+    @FXML
+    private ImageView logoImage;
+    @FXML
+    private ImageView logoutIcon; // Liaison avec l'icône de déconnexion
+
+
+
 
     private boolean isSubMenuCongesVisible = false;
     private boolean isSubMenuRecrutementsVisible = false;
@@ -45,16 +61,14 @@ public class DashController {
     public void initialize() {
         Platform.runLater(() -> {
             loadView("/fxml/dashboardAdminRH.fxml");
-            setActiveButton(btnDashboard); // Sélection par défaut
+            setActiveButton(btnDashboard);
         });
 
-        // Chargement de l'icône utilisateur
-        userIcon.setImage(new Image(getClass().getResource("/images/profileicon.png").toExternalForm(), true));
+        // Chargement des icônes
+        userIcon.setImage(new Image(getClass().getResource("/images/profile.png").toExternalForm(), true));
 
-        // Liste de tous les boutons du sidebar
         sidebarButtons = List.of(btnDashboard, btnUser, btnRecrutements, btnProjets, btnTransports, btnConges, btnAbsences);
 
-        // Gestion des actions des boutons principaux
         for (Button button : sidebarButtons) {
             button.setOnAction(event -> {
                 setActiveButton(button);
@@ -62,7 +76,7 @@ public class DashController {
             });
         }
 
-        // Gestion des sous-menus
+        // Ajout des événements de sous-menus
         btnGestionConges.setOnAction(event -> toggleSubMenuConges());
         btnRecrutements.setOnAction(event -> toggleSubMenuRecrutements());
         btnProjets.setOnAction(event -> toggleSubMenuProjets());
@@ -78,12 +92,54 @@ public class DashController {
             loadView("/fxml/absences.fxml");
         });
 
-        // Afficher le nom de l'utilisateur connecté
-        username.setText("Meriem Sassi");
-
-        // Cacher les sous-menus au démarrage
+        //username.setText("Meriem Sassi");
         hideAllSubMenus();
+
+        scrollSidebar.setFitToHeight(true);
+        scrollSidebar.setFitToWidth(true);
+        sidebar.setPrefHeight(Region.USE_COMPUTED_SIZE);
+
+        // 🔹 ÉVÉNEMENT GLOBAL : Fermer les sous-menus si on clique en dehors
+        contentArea.setOnMouseClicked(event -> closeAllSubMenus(event));
+
+        scrollSidebar.setPrefWidth(330);
+        sidebar.setPrefWidth(330);
+
+        // Récupérer l'utilisateur connecté
+        Utilisateur utilisateur = SessionManager.getInstance().getUtilisateurConnecte();
+
+        // Vérifier si un utilisateur est bien en session
+        if (utilisateur != null) {
+            // Afficher son prénom et nom dans le Label
+            username.setText(utilisateur.getFirstname() + " " + utilisateur.getLastname());
+        } else {
+            // Si aucun utilisateur, afficher un message par défaut
+            username.setText("Utilisateur non connecté");
+        }
+
+        // événement de clic à l'icône de déconnexion
+        logoutIcon.setOnMouseClicked(event -> handleLogout());
+
     }
+
+    /**
+     * 🔹 Ferme tous les sous-menus si le clic est en dehors
+     */
+    private void closeAllSubMenus(javafx.scene.input.MouseEvent event) {
+        if (isSubMenuCongesVisible && !subMenuConges.getBoundsInParent().contains(event.getX(), event.getY())) {
+            toggleSubMenuConges();
+        }
+        if (isSubMenuRecrutementsVisible && !subMenuRecrutements.getBoundsInParent().contains(event.getX(), event.getY())) {
+            toggleSubMenuRecrutements();
+        }
+        if (isSubMenuProjetsVisible && !subMenuProjets.getBoundsInParent().contains(event.getX(), event.getY())) {
+            toggleSubMenuProjets();
+        }
+        if (isSubMenuTransportVisible && !subMenuTransport.getBoundsInParent().contains(event.getX(), event.getY())) {
+            toggleSubMenuTransports();
+        }
+    }
+
 
     /**
      * Définit le bouton actif (change la couleur de fond)
@@ -115,11 +171,7 @@ public class DashController {
     private String getFxmlPath(Button button) {
         if (button == btnDashboard) return "/fxml/dashboardAdminRH.fxml";
         if (button == btnUser) return "/fxml/listUsers.fxml";
-        if (button == btnRecrutements) return "/fxml/recrutements.fxml";
-        if (button == btnProjets) return "/fxml/projets.fxml";
-        if (button == btnTransports) return "/fxml/transports.fxml";
-        if (button == btnConges) return "/fxml/conges.fxml";
-        if (button == btnAbsences) return "/fxml/absences.fxml";
+
         return null;
     }
 
@@ -199,12 +251,46 @@ public class DashController {
         setActiveButton(btnUser);
         loadView("/fxml/listUsers.fxml");
     }
+
     @FXML
-    public void handleGestionProjet(ActionEvent actionEvent) {
+    private void handleGestionProjet() {
+        setActiveButton(btnDashboard);
         loadView("/fxml/ListProjet.fxml");
     }
     @FXML
-    public void handleTache(ActionEvent actionEvent) {
+    private void handleTache() {
+        setActiveButton(btnDashboard);
         loadView("/fxml/ListTacheRH.fxml");
     }
+
+
+
+    private void handleLogout() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Déconnexion");
+        alert.setHeaderText("Confirmation");
+        alert.setContentText("Voulez-vous vraiment vous déconnecter ?");
+
+        // Attendre la réponse de l'utilisateur
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            // Fermer la session
+            SessionManager.getInstance().setUtilisateurConnecte(null);
+
+            try {
+                // Charger la scène de connexion
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Login.fxml"));
+                Parent root = loader.load();
+
+                // Récupérer la scène actuelle et la remplacer par la scène de connexion
+                Stage stage = (Stage) logoutIcon.getScene().getWindow();
+                stage.setScene(new Scene(root));
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
 }

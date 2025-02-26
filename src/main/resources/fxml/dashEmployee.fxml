@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Circle?>
+<AnchorPane maxWidth="1865.0" prefHeight="823.0" prefWidth="1865.0"
+            stylesheets="/Styles/styledash.css"
+            xmlns="http://javafx.com/javafx/19"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.Controllers.EmployeeDashController">
+    <!-- Navbar -->
+    <AnchorPane styleClass="navbar" style="-fx-background-color: white;"
+                AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"
+                prefHeight="80.0">
+        <children>
+            <HBox alignment="CENTER_RIGHT" prefHeight="80.0" spacing="10" AnchorPane.rightAnchor="20.0"
+                  AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0">
+
+                <Label text="Evolvify" styleClass="app-title" HBox.hgrow="ALWAYS" />
+
+                <Region HBox.hgrow="ALWAYS" />
+
+                <!-- User profile section -->
+                <HBox fx:id="userBox" alignment="CENTER" spacing="10">
+                    <!-- Replace image loading with a circle for now -->
+                    <StackPane>
+                        <Circle radius="25" fill="lightblue" stroke="white" strokeWidth="2" />
+                        <Label text="M" style="-fx-font-size: 18; -fx-font-weight: bold;" />
+                    </StackPane>
+
+                    <Label fx:id="username" text="Miriam Mirou" styleClass="username" />
+
+                    <Button fx:id="logoutBtn" styleClass="logout-button" text="Déconnexion" />
+                </HBox>
+            </HBox>
+        </children>
+    </AnchorPane>
+    <!-- Logo -->
+    <VBox alignment="CENTER" prefHeight="174.0" prefWidth="330.0" style="-fx-background-color: #2A1B50;" AnchorPane.topAnchor="0.0">
+        <ImageView fx:id="logoImage" fitHeight="173.0" fitWidth="230.0" layoutX="25.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@/images/evolve.png" />
+            </image>
+        </ImageView>
+    </VBox>
+
+    <!-- Scrollable Sidebar -->
+    <ScrollPane fx:id="scrollSidebar" fitToHeight="true" fitToWidth="true" prefWidth="330.0" styleClass="sidebar-scrollpane" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="173.0">
+        <VBox fx:id="sidebar" alignment="CENTER" prefWidth="330.0" spacing="25" style="-fx-background-color: #2A1B50; -fx-alignment: TOP_CENTER;">
+
+            <!-- Projets -->
+            <Button fx:id="btnProjets" onAction="#handleProjet" styleClass="sidebar-button" text="  Projets">
+                <graphic>
+                    <ImageView fitHeight="30.0" fitWidth="30.0">
+                        <image>
+                            <Image url="@/images/chef-de-projet.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+
+            <!-- Mes Congés -->
+            <Button fx:id="btnConge" onAction="#handleConge" styleClass="sidebar-button" text="  Mes Congés">
+                <graphic>
+                    <ImageView fitHeight="30.0" fitWidth="30.0">
+                        <image>
+                            <Image url="@/images/jour-de-conge.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+
+            <!-- Mes Absences -->
+            <Button fx:id="btnAbsence" onAction="#handleAbsence" styleClass="sidebar-button" text="  Mes Absences">
+                <graphic>
+                    <ImageView fitHeight="30.0" fitWidth="30.0">
+                        <image>
+                            <Image url="@/images/absenceDash.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+
+            <!-- Abonnements -->
+            <Button fx:id="btnAbonnements" onAction="#handleAbonnements" styleClass="sidebar-button" text="  Abonnements">
+                <graphic>
+                    <ImageView fitHeight="30.0" fitWidth="30.0">
+                        <image>
+                            <Image url="@/images/transportDash.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+
+            <!-- Offres -->
+            <Button fx:id="btnOffres" onAction="#handleOffres" styleClass="sidebar-button" text="  Offres">
+                <graphic>
+                    <ImageView fitHeight="30.0" fitWidth="30.0">
+                        <image>
+                            <Image url="@/images/recrutement.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+
+            <!-- Mon Profil -->
+            <Button fx:id="btnProfil" onAction="#handleProfil" styleClass="sidebar-button" text="  Mon Profil">
+                <graphic>
+                    <ImageView fitHeight="30.0" fitWidth="30.0">
+                        <image>
+                            <Image url="@/images/profile.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+        </VBox>
+    </ScrollPane>
+
+    <!-- Contenu dynamique -->
+    <AnchorPane fx:id="contentArea" layoutX="334.0" layoutY="99.0" prefHeight="717.0" prefWidth="1531.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="334.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="106.0" />
+</AnchorPane>

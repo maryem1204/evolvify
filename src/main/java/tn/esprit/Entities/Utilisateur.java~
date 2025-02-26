@@ -181,14 +181,6 @@ public class Utilisateur implements Serializable {
         this.gender = gender;
     }
 
-    public String getProfilePhotoPath() {
-        return profilePhotoPath;
-    }
-
-    public void setProfilePhotoPath(String profilePhotoPath) {
-        this.profilePhotoPath = profilePhotoPath;
-    }
-
     // Image par défaut si la photo de profil n'existe pas
     public ImageView getProfilePhotoImageView() {
         Image image;
