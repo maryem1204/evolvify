@@ -13,6 +13,8 @@ import javafx.stage.Stage;
 import tn.esprit.Entities.Role;
 import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Services.UtilisateurService;
+import tn.esprit.Utils.SessionManager;
+
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -83,6 +85,9 @@ public class LoginController {
         try {
             Utilisateur utilisateur = utilisateurService.getUserByEmail(email);
             if (utilisateur != null) {
+                // 🔥 Stocker l'utilisateur en session
+                SessionManager.getInstance().setUtilisateurConnecte(utilisateur);
+
                 redirectUser(utilisateur.getRole(), event);
             } else {
                 showAlert(Alert.AlertType.ERROR, "Erreur", "Aucun compte trouvé avec cet email.");
@@ -93,12 +98,13 @@ public class LoginController {
         }
     }
 
+
     private void redirectUser(Role role, ActionEvent event) throws IOException {
         String fxmlFile;
         if (role == Role.RESPONSABLE_RH) {
             fxmlFile = "/fxml/dash.fxml";
         } else {
-            fxmlFile = "/fxml/dashboard.fxml";
+            fxmlFile = "/fxml/dashEmployee.fxml";
         }
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));

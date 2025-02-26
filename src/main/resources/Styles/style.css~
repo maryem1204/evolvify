@@ -271,15 +271,3 @@
     -fx-stroke: #e2e8f0;
     -fx-stroke-width: 3;
 }
-
-.card .chart-pie {
-    -fx-padding: 5px;
-    -fx-background-insets: 0;
-    -fx-legend-visible: false;
-}
-
-.card .chart-content {
-    -fx-padding: 0px;
-    -fx-scale-x: 0.8;
-    -fx-scale-y: 0.8;
-}

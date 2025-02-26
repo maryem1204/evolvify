@@ -239,6 +239,25 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
         }
         return null;
     }
+    public Utilisateur findByEmail(String email) {
+        String query = "SELECT id_employe, email, password, role FROM users WHERE email = ?";
+        try (PreparedStatement pst = cnx.prepareStatement(query)) {
+            pst.setString(1, email);
+            ResultSet resultSet = pst.executeQuery();
+            if (resultSet.next()) {
+                return new Utilisateur(
+                        resultSet.getInt("id_employe"),
+                        resultSet.getString("email"),
+                        resultSet.getString("password"),
+                        Role.valueOf(resultSet.getString("role"))
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public String getEmployeNameById(int id) {
         String req = "SELECT firstname, lastname FROM Users WHERE id_employe = ?";
 
@@ -318,6 +337,7 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
         }
         return count;
     }
+    /******* ❌LOGIN *********/
 
     public Utilisateur authenticateUser(String email, String password) {
         String query = "SELECT id_employe, email, password, role FROM users WHERE email = ? AND password = ?";
@@ -473,5 +493,106 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
 
         return stats;
     }
+    /******* ❌FORGET PASSWORD *********/
+
+    public void savePasswordResetToken(int userId, String token) {
+        String query = "UPDATE users SET reset_token = ? WHERE id_employe = ?";
+        try (PreparedStatement pst = cnx.prepareStatement(query)) {
+            pst.setString(1, token);
+            pst.setInt(2, userId);
+            pst.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Utilisateur findByResetToken(String token) {
+        String query = "SELECT id_employe, email, password, role FROM users WHERE reset_token = ?";
+        try (PreparedStatement pst = cnx.prepareStatement(query)) {
+            pst.setString(1, token);
+            ResultSet resultSet = pst.executeQuery();
+            if (resultSet.next()) {
+                return new Utilisateur(
+                        resultSet.getInt("id_employe"),
+                        resultSet.getString("email"),
+                        resultSet.getString("password"),
+                        Role.valueOf(resultSet.getString("role"))
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void updatePassword(int userId, String newPassword) {
+        String query = "UPDATE users SET password = ?, reset_token = NULL WHERE id_employe = ?";
+        try (PreparedStatement pst = cnx.prepareStatement(query)) {
+            // 🔒 Hachage du mot de passe avec Bcrypt avant de l'enregistrer
+            String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+
+            pst.setString(1, hashedPassword);
+            pst.setInt(2, userId);
+            pst.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendPasswordResetEmail(String toEmail, String token) {
+        String resetLink = "myapp://reset-password?token=" + token;
+
+
+        String subject = "Réinitialisation de votre mot de passe";
+        String content = "<p>Bonjour,</p>"
+                + "<p>Vous avez demandé à réinitialiser votre mot de passe.</p>"
+                + "<p>Cliquez sur le lien ci-dessous pour le réinitialiser :</p>"
+                + "<p><a href='" + resetLink + "'>Réinitialiser mon mot de passe</a></p>"
+                + "<p>Si vous n'avez pas fait cette demande, ignorez cet email.</p>";
+
+        try {
+            Properties properties = new Properties();
+            properties.put("mail.smtp.auth", "true");
+            properties.put("mail.smtp.starttls.enable", "true");
+            properties.put("mail.smtp.host", "smtp.gmail.com");
+            properties.put("mail.smtp.port", "587");
+
+            Session session = Session.getInstance(properties, new Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication("maryemsassi.dev@gmail.com", "jlej mknk aukk iqlx");
+                }
+            });
+
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("maryemsassi.dev@gmail.com"));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
+            message.setSubject(subject);
+            message.setContent(content, "text/html");
+
+            Transport.send(message);
+            System.out.println("📧 E-mail de réinitialisation envoyé !");
+        } catch (MessagingException e) {
+            System.err.println("❌ Erreur lors de l'envoi de l'e-mail : " + e.getMessage());
+        }
+    }
+
+    /**
+     * ✅ Vérifie si un token de réinitialisation est valide.
+     */
+    public boolean isValidResetToken(int userId, String token) throws SQLException {
+        String query = "SELECT COUNT(*) FROM password_reset_tokens WHERE user_id = ? AND token = ? AND expiration > NOW()";
+        try (PreparedStatement statement = cnx.prepareStatement(query)) {
+            statement.setInt(1, userId);
+            statement.setString(2, token);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1) > 0;
+            }
+        }
+        return false;
+    }
+
+
+
 
 }
