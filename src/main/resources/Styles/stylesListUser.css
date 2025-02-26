@@ -1,214 +1,98 @@
-.gradient-button {
-    -fx-background-color: linear-gradient(to right, #af40ff, #5b42f3 50%, #00ddeb);
-    -fx-background-radius: 8px;
-    -fx-border-radius: 8px;
-    -fx-text-fill: white;
-    -fx-font-size: 16px;
-    -fx-padding: 8px 16px;
-    -fx-cursor: hand;
-    -fx-effect: dropshadow(three-pass-box, rgba(151, 65, 252, 0.4), 10, 0, 0, 5);
-}
-
-
-.gradient-button:hover {
-    -fx-background-color: rgb(5, 6, 45);
-}
-
-.gradient-button:pressed {
-    -fx-scale-x: 0.9;
-    -fx-scale-y: 0.9;
-}
-
-
-.searchBox {
-    -fx-background-color: rgba(30, 155, 244, 0.65);
-    -fx-background-radius: 25px;
-    -fx-padding: 5px;
-    -fx-spacing: 5px;
-    -fx-pref-width: 250px;  /* Largeur préférée */
-    -fx-max-width: 250px;
-}
-
-.searchInput {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
-    -fx-text-fill: white;
-    -fx-font-size: 15px;
-    -fx-padding: 3px;
-    -fx-prompt-text-fill: black;
-    -fx-pref-width: 220px;
-    -fx-max-width: 220px;
-    -fx-end-margin: 20px; /* Pas utile en JavaFX */
-}
-
-
-ImageView {
-    -fx-opacity: 0.8; /* Rend l'icône légèrement visible */
-}
-
-.searchButton {
-    -fx-background-color: linear-gradient(to right, #2AF598, #009EFD);
-    -fx-background-radius: 50%;
-    -fx-padding: 5px 15px;
-    -fx-border-color: transparent;
-    -fx-cursor: hand;
-
-}
-
-StackPane {
-    -fx-padding: 5px 10px; /* Pousse l'icône vers la droite */
-}
-
-
-.searchButton:hover {
-    -fx-background-color: #1A1A1A;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0, 0, 5);
-}
-
-.searchButton:pressed {
-    -fx-effect: none;
-}
-
-
-/* Style général */
+/* Base styles for the application */
 .root {
-    -fx-background-color: #F8F9FA;
-    -fx-font-family: "Arial";
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
+    -fx-font-size: 13px;
 }
 
-/* Titre principal */
-.label-title {
-    -fx-font-size: 20px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #0056b3;
-    -fx-padding: 10px;
-}
-
-/* Barre de recherche */
-.search-bar {
-    -fx-background-color: #343A40;
-    -fx-text-fill: white;
-    -fx-padding: 4px;
-    -fx-border-radius: 20px;
-    -fx-background-radius: 20px;
-    -fx-pref-width: 300px;
-}
-.search-bar .prompt-text {
-    -fx-text-fill: #B0B3B8;
-}
-
-/* Style du bouton Ajouter Employé */
-.button-add {
-    -fx-background-color: linear-gradient(to right, #36D1DC, #5B86E5);
-    -fx-text-fill: white;
-    -fx-font-size: 14px;
-    -fx-padding: 8px 15px;
-    -fx-background-radius: 20px;
-    -fx-font-weight: bold;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
-}
-.button-add:hover {
-    -fx-background-color: linear-gradient(to right, #1FA2FF, #12D8FA);
-}
-
-/* TableView - Style Général */
-.table-view {
-    -fx-background-color: white;
-    -fx-border-color: #DDDDDD;
-    -fx-border-radius: 5px;
+/* Modern table styling */
+.modern-table {
+    -fx-background-color: transparent;
+    -fx-table-cell-border-color: transparent;
     -fx-padding: 5px;
-    -fx-selection-bar: transparent;
-    -fx-selection-bar-non-focused: transparent;
 }
 
-.table-view .column-header-background {
-    -fx-background-color: #DCDCDC;
-    -fx-background-radius: 5px 5px 0 0;
+.modern-table .column-header-background {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 8px 8px 0 0;
+    -fx-padding: 5px 0;
 }
 
-.table-view .column-header {
+.modern-table .column-header {
     -fx-background-color: transparent;
     -fx-font-weight: bold;
-    -fx-text-fill: white;
-    -fx-alignment: CENTER;
-}
-
-.table-row-cell:odd {
-    -fx-background-color: #F8F9FA;
-}
-.table-row-cell:even {
-    -fx-background-color: #FFFFFF;
-}
-
-/*.table-row-cell:selected {
-    -fx-background-color: #B0C4DE;
-    -fx-text-fill: black;
-}*/
-
-
-/* Style des images dans la colonne Profil */
-.image-column {
-    -fx-alignment: CENTER;
-}
-.image-column .image-view {
-    -fx-fit-width: 40px;
-    -fx-fit-height: 40px;
-}
-
-.floating-button {
-    -fx-background-color: #6200EA;
-    -fx-text-fill: white;
-    -fx-shape: "M20 10V20H10V10H5V20C5 21.1 5.9 22 7 22H23C24.1 22 25 21.1 25 20V10H20Z";
+    -fx-border-color: transparent;
+    -fx-border-width: 0 0 1 0;
     -fx-padding: 10px;
-    -fx-border-radius: 50%;
-    -fx-background-radius: 50%;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
 }
 
-.floating-button:hover {
-    -fx-background-color: #3700B3;
+.modern-table .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: #f0f0f0;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 5px 0;
 }
 
-/* Styles pour améliorer la pagination */
+.modern-table .table-row-cell:odd {
+    -fx-background-color: #f9fbff;
+}
+
+.modern-table .table-row-cell:hover {
+    -fx-background-color: #eef5ff;
+}
+
+.modern-table .table-row-cell:selected {
+    -fx-background-color: #e0ecff;
+    -fx-text-fill: #0047AB;
+}
+
+/* Styled pagination for JavaFX's Pagination control */
 .styled-pagination {
-    -fx-page-information-visible: false;
+    -fx-padding: 0;
     -fx-background-color: transparent;
-    -fx-cursor: hand;
+    -fx-border-color: transparent;
 }
 
 .styled-pagination .pagination-control {
-    -fx-background-color: #E0E0E0;
-    -fx-border-radius: 10px;
-    -fx-background-radius: 10px;
-    -fx-padding: 5px;
-    -fx-cursor: hand;
+    -fx-background-color: transparent;
 }
 
 .styled-pagination .pagination-control .button {
-    -fx-background-color: rgba(74, 127, 204, 0.77);
-    -fx-text-fill: white;
-    -fx-font-size: 14px;
-    -fx-border-radius: 5px;
-    -fx-background-radius: 5px;
-    -fx-padding: 5px 10px;
-    -fx-cursor: hand;
+    -fx-background-color: #e0e0e0;
+    -fx-background-radius: 5;
+    -fx-padding: 5px;
+    -fx-min-width: 35;
+    -fx-min-height: 35;
 }
 
 .styled-pagination .pagination-control .button:hover {
-    -fx-background-color: #002F6C;
-    -fx-cursor: hand;
+    -fx-background-color: #d0d0d0;
 }
 
-.styled-pagination .pagination-control .button:disabled {
-    -fx-background-color: #B0BEC5;
-
-}
-
-.styled-pagination .pagination-control .toggle-button:selected {
-    -fx-background-color: #FF9800;
-    -fx-text-fill: white;
+.styled-pagination .pagination-control .number-button {
+    -fx-background-color: #f0f5ff;
+    -fx-background-radius: 5;
+    -fx-text-fill: #4d4d4d;
     -fx-font-weight: bold;
+    -fx-min-width: 35;
+    -fx-min-height: 35;
+}
+
+.styled-pagination .pagination-control .number-button:hover {
+    -fx-background-color: #d0d0d0;
+}
+
+.styled-pagination .pagination-control .number-button:selected {
+    -fx-background-color: #4da6ff;
+    -fx-text-fill: white;
+}
+
+/* Button styling */
+.button {
     -fx-cursor: hand;
 }
 
-
+/* Search field styling */
+.text-field {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
