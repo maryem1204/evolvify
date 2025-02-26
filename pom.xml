@@ -61,6 +61,15 @@
             <artifactId>jbcrypt</artifactId>
             <version>0.4</version>
         </dependency>
+        <!--Nous avons utiliser NanoHTTPD, une bibliothèque légère qui permet de créer un serveur HTTP en quelques lignes.-->
+        <dependency>
+            <groupId>org.nanohttpd</groupId>
+            <artifactId>nanohttpd</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+
+
+
         <!-- Google Authentication -->
         <dependency>
             <groupId>com.google.auth</groupId>
