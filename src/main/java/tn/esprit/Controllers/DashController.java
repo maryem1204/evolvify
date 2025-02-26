@@ -70,12 +70,12 @@ public class DashController {
 
         btnConges.setOnAction(event -> {
             setActiveButton(btnConges);
-            loadView("/fxml/conges.fxml");
+            loadView("/fxml/dashboardCongeRh.fxml");
         });
 
         btnAbsences.setOnAction(event -> {
             setActiveButton(btnAbsences);
-            loadView("/fxml/absences.fxml");
+            loadView("/fxml/AttendanceView.fxml");
         });
 
         // Afficher le nom de l'utilisateur connecté
@@ -100,6 +100,10 @@ public class DashController {
      */
     private void loadView(String fxmlFile) {
         try {
+            if (getClass().getResource(fxmlFile) == null) {
+                System.err.println("Cannot find resource: " + fxmlFile);
+                return;
+            }
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             Parent root = loader.load();
             contentArea.getChildren().setAll(root);
@@ -118,8 +122,8 @@ public class DashController {
         if (button == btnRecrutements) return "/fxml/recrutements.fxml";
         if (button == btnProjets) return "/fxml/projets.fxml";
         if (button == btnTransports) return "/fxml/transports.fxml";
-        if (button == btnConges) return "/fxml/conges.fxml";
-        if (button == btnAbsences) return "/fxml/absences.fxml";
+        if (button == btnConges) return "/fxml/dashboardCongeRh.fxml";
+        if (button == btnAbsences) return "/fxml/AttendanceView.fxml";
         return null;
     }
 
@@ -207,4 +211,14 @@ public class DashController {
     public void handleTache(ActionEvent actionEvent) {
         loadView("/fxml/ListTacheRH.fxml");
     }
+
+    @FXML
+    public void handleConge(ActionEvent actionEvent) {
+        loadView("/fxml/dashboardCongeRh.fxml");
+}
+    @FXML
+    public void handleAbsence(ActionEvent actionEvent) {
+        loadView("/fxml/AttendanceView.fxml");
+    }
+
 }

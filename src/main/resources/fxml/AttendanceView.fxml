@@ -5,18 +5,28 @@
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.AbsenceController" stylesheets="@../Styles/Attendance.css">
     <children>
-        <VBox spacing="20" prefWidth="860">
-            <!-- Barre de sélection du mois et de l'année -->
-            <HBox spacing="10">
-                <ComboBox fx:id="monthComboBox" prefWidth="150"/>
-                <ComboBox fx:id="yearComboBox" prefWidth="100"/>
-                <Button text="Rechercher" onAction="#loadAbsences"/>
-            </HBox>
+        <VBox spacing="20" prefWidth="900" AnchorPane.topAnchor="10" AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10">
+            <!-- En-tête avec titre et filtres de date -->
+            <BorderPane>
+                <!-- Titre à gauche -->
+                <left>
+                    <Label text="Gestion des Absences" styleClass="header-title"/>
+                </left>
 
-            <!-- Filtres -->
-            <HBox spacing="10">
+                <!-- Filtres de date à droite -->
+                <right>
+                    <HBox spacing="10" styleClass="filter-section, date-filter">
+                        <ComboBox fx:id="monthComboBox" prefWidth="150" promptText="Mois"/>
+                        <ComboBox fx:id="yearComboBox" prefWidth="100" promptText="Année"/>
+                        <Button text="Rechercher" onAction="#loadAbsences"/>
+                    </HBox>
+                </right>
+            </BorderPane>
+
+            <!-- Filtres de recherche -->
+            <HBox spacing="10" styleClass="filter-section">
                 <TextField fx:id="searchEmployeeField" promptText="Rechercher un employé..." prefWidth="200" onKeyReleased="#applyFilters"/>
-                <ComboBox fx:id="statusFilterComboBox" promptText="Filtrer par statut" onAction="#applyFilters"/>
+                <ComboBox fx:id="statusFilterComboBox" promptText="Filtrer par statut" prefWidth="150" onAction="#applyFilters"/>
             </HBox>
 
             <!-- ScrollPane pour éviter la coupure du tableau -->

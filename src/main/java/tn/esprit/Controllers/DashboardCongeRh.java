@@ -18,6 +18,7 @@ import javafx.util.Callback;
 import tn.esprit.Entities.Conge;
 import tn.esprit.Entities.Tt;
 import tn.esprit.Entities.Utilisateur;
+import tn.esprit.Entities.Statut;
 import tn.esprit.Services.CongeService;
 import tn.esprit.Services.TtService;
 import tn.esprit.Services.UtilisateurService;
@@ -27,6 +28,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class DashboardCongeRh {
 
@@ -54,7 +56,6 @@ public class DashboardCongeRh {
     @FXML
     private TextField searchField;
 
-
     private final CongeService congeService = new CongeService();
     private final TtService ttService = new TtService();
     private ObservableList<Conge> congeList = FXCollections.observableArrayList();
@@ -70,7 +71,7 @@ public class DashboardCongeRh {
         setupTtTableColumns();
         loadConges();
         loadTt();
-        //searchButton.setOnAction(event -> searchConges());
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> searchConges());
     }
 
     private void setupTableColumns() {
@@ -90,26 +91,24 @@ public class DashboardCongeRh {
             @Override
             public TableCell<Conge, String> call(TableColumn<Conge, String> param) {
                 return new TableCell<Conge, String>() {
-                    private final ImageView editIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/editIcon.png")));
-                    private final ImageView deleteIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/deleteIcon.png")));
-                    private final HBox hbox = new HBox(10, editIcon, deleteIcon);
+                    private final Button acceptButton = new Button("Accepter");
+                    private final Button rejectButton = new Button("Refuser");
+                    private final HBox hbox = new HBox(10, acceptButton, rejectButton);
 
                     {
-                        // Taille des icônes
-                        editIcon.setFitHeight(20);
-                        editIcon.setFitWidth(20);
-                        deleteIcon.setFitHeight(20);
-                        deleteIcon.setFitWidth(20);
+                        // Styles des boutons
+                        acceptButton.getStyleClass().add("accept-button");
+                        rejectButton.getStyleClass().add("reject-button");
 
-                        // Action sur le clic des icônes
-                        editIcon.setOnMouseClicked(event -> {
+                        // Action sur le clic des boutons
+                        acceptButton.setOnAction(event -> {
                             Conge conge = getTableView().getItems().get(getIndex());
-                            editConge(conge);
+                            approveConge(conge);
                         });
 
-                        deleteIcon.setOnMouseClicked(event -> {
+                        rejectButton.setOnAction(event -> {
                             Conge conge = getTableView().getItems().get(getIndex());
-                            deleteConge(conge);
+                            rejectConge(conge);
                         });
                     }
 
@@ -119,14 +118,19 @@ public class DashboardCongeRh {
                         if (empty) {
                             setGraphic(null);
                         } else {
-                            setGraphic(hbox);
+                            Conge conge = getTableView().getItems().get(getIndex());
+                            // N'afficher les boutons que si le statut est "EN_COURS"
+                            if (conge.getStatus() == Statut.EN_COURS) {
+                                setGraphic(hbox);
+                            } else {
+                                setGraphic(null);
+                            }
                         }
                     }
                 };
             }
         });
     }
-
 
     private void setupTtTableColumns() {
         colEmployeeTT.setCellValueFactory(cellData -> {
@@ -144,26 +148,24 @@ public class DashboardCongeRh {
             @Override
             public TableCell<Tt, String> call(TableColumn<Tt, String> param) {
                 return new TableCell<Tt, String>() {
-                    private final ImageView editIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/editIcon.png")));
-                    private final ImageView deleteIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/deleteIcon.png")));
-                    private final HBox hbox = new HBox(10, editIcon, deleteIcon);
+                    private final Button acceptButton = new Button("Accepter");
+                    private final Button rejectButton = new Button("Refuser");
+                    private final HBox hbox = new HBox(10, acceptButton, rejectButton);
 
                     {
-                        // Taille des icônes
-                        editIcon.setFitHeight(20);
-                        editIcon.setFitWidth(20);
-                        deleteIcon.setFitHeight(20);
-                        deleteIcon.setFitWidth(20);
+                        // Styles des boutons
+                        acceptButton.getStyleClass().add("accept-button");
+                        rejectButton.getStyleClass().add("reject-button");
 
-                        // Action sur le clic des icônes
-                        editIcon.setOnMouseClicked(event -> {
+                        // Action sur le clic des boutons
+                        acceptButton.setOnAction(event -> {
                             Tt tt = getTableView().getItems().get(getIndex());
-                            editTt(tt);
+                            approveTt(tt);
                         });
 
-                        deleteIcon.setOnMouseClicked(event -> {
+                        rejectButton.setOnAction(event -> {
                             Tt tt = getTableView().getItems().get(getIndex());
-                            deleteTt(tt);
+                            rejectTt(tt);
                         });
                     }
 
@@ -173,7 +175,13 @@ public class DashboardCongeRh {
                         if (empty) {
                             setGraphic(null);
                         } else {
-                            setGraphic(hbox);
+                            Tt tt = getTableView().getItems().get(getIndex());
+                            // N'afficher les boutons que si le statut est "EN_COURS"
+                            if (tt.getStatus() == Statut.EN_COURS) {
+                                setGraphic(hbox);
+                            } else {
+                                setGraphic(null);
+                            }
                         }
                     }
                 };
@@ -181,12 +189,10 @@ public class DashboardCongeRh {
         });
     }
 
-
     private void loadConges() {
         try {
             List<Conge> conges = congeService.showAll();
             congeList.clear();
-            ttList.clear();
             employeNames.clear();
 
             for (Conge conge : conges) {
@@ -205,7 +211,6 @@ public class DashboardCongeRh {
         try {
             List<Tt> tts = ttService.showAll();
             ttList.clear();
-            employeNames.clear();
 
             for (Tt tt : tts) {
                 ttList.add(tt);
@@ -236,57 +241,133 @@ public class DashboardCongeRh {
         leaveTable.setItems(filteredList);
     }
 
-    private void deleteConge(Conge conge) {
+    // Nouvelle méthode pour accepter une demande de congé
+    private void approveConge(Conge conge) {
         try {
-            congeService.delete(conge);
-            congeList.remove(conge);
+            // Demander confirmation
+            if (showConfirmationDialog("Accepter la demande",
+                    "Êtes-vous sûr de vouloir accepter cette demande de congé ?")) {
+
+                conge.setStatus(Statut.ACCEPTE);
+                congeService.update(conge);
+
+                // Notification de succès
+                showAlert(Alert.AlertType.INFORMATION, "Demande acceptée",
+                        "La demande de congé a été acceptée avec succès.");
+
+                loadConges(); // Rafraîchir la liste des congés
+                refreshTableView(); // Rafraîchir l'affichage immédiatement
+            }
         } catch (SQLException e) {
             e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur",
+                    "Une erreur est survenue lors de l'acceptation de la demande: " + e.getMessage());
         }
     }
 
-    private void deleteTt(Tt tt) {
+    // Nouvelle méthode pour refuser une demande de congé
+    private void rejectConge(Conge conge) {
         try {
-            ttService.delete(tt);
-            ttList.remove(tt);
+            // Demander confirmation
+            if (showConfirmationDialog("Refuser la demande",
+                    "Êtes-vous sûr de vouloir refuser cette demande de congé ?")) {
+
+                conge.setStatus(Statut.REFUSE);
+                congeService.update(conge);
+
+                // Notification de succès
+                showAlert(Alert.AlertType.INFORMATION, "Demande refusée",
+                        "La demande de congé a été refusée.");
+
+                loadConges(); // Rafraîchir la liste des congés
+                refreshTableView(); // Rafraîchir l'affichage immédiatement
+            }
         } catch (SQLException e) {
             e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur",
+                    "Une erreur est survenue lors du refus de la demande: " + e.getMessage());
         }
     }
 
-    private void editConge(Conge conge) {
+    // Nouvelle méthode pour accepter une demande de TT
+    private void approveTt(Tt tt) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EditConge.fxml"));
-            Parent root = loader.load();
-            EditCongeController controller = loader.getController();
-            controller.setConge(conge);
+            // Demander confirmation
+            if (showConfirmationDialog("Accepter la demande",
+                    "Êtes-vous sûr de vouloir accepter cette demande de télétravail ?")) {
 
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setScene(new Scene(root));
-            stage.showAndWait();
-            refreshUserList();
-        } catch (IOException e) {
+                tt.setStatus(Statut.ACCEPTE);
+                ttService.update(tt);
+
+                // Notification de succès
+                showAlert(Alert.AlertType.INFORMATION, "Demande acceptée",
+                        "La demande de télétravail a été acceptée avec succès.");
+
+                loadTt(); // Rafraîchir la liste de télétravail
+                refreshTableView(); // Rafraîchir l'affichage immédiatement
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur",
+                    "Une erreur est survenue lors de l'acceptation de la demande: " + e.getMessage());
         }
     }
 
-    private void editTt(Tt tt) {
+    // Nouvelle méthode pour refuser une demande de TT
+    private void rejectTt(Tt tt) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EditTt.fxml"));
-            Parent root = loader.load();
-            EditTtController controller = loader.getController();
-            controller.setTt(tt);
+            // Demander confirmation
+            if (showConfirmationDialog("Refuser la demande",
+                    "Êtes-vous sûr de vouloir refuser cette demande de télétravail ?")) {
 
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setScene(new Scene(root));
-            stage.showAndWait();
+                tt.setStatus(Statut.REFUSE);
+                ttService.update(tt);
 
-            loadTt();  // Rafraîchir après modification
-        } catch (IOException e) {
+                // Notification de succès
+                showAlert(Alert.AlertType.INFORMATION, "Demande refusée",
+                        "La demande de télétravail a été refusée.");
+
+                loadTt(); // Rafraîchir la liste de télétravail
+                refreshTableView(); // Rafraîchir l'affichage immédiatement
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur",
+                    "Une erreur est survenue lors du refus de la demande: " + e.getMessage());
         }
+    }
+    // Nouvelle méthode pour rafraîchir l'affichage des tableaux
+    private void refreshTableView() {
+        leaveTable.refresh();
+        leaveTt.refresh();
+
+        // Mettre à jour les observableLists pour conserver les modifications
+        if (leaveTable.isVisible()) {
+            leaveTable.setItems(FXCollections.observableArrayList(congeList));
+        }
+
+        if (leaveTt.isVisible()) {
+            leaveTt.setItems(FXCollections.observableArrayList(ttList));
+        }
+    }
+
+    // Méthode utilitaire pour afficher une boîte de dialogue de confirmation
+    private boolean showConfirmationDialog(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        Optional<ButtonType> result = alert.showAndWait();
+        return result.isPresent() && result.get() == ButtonType.OK;
+    }
+
+    // Méthode utilitaire pour afficher une alerte
+    private void showAlert(Alert.AlertType type, String title, String message) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     @FXML
@@ -334,20 +415,13 @@ public class DashboardCongeRh {
         loadTt();  // Charger le TT
     }
 
+    @FXML
     public void handleSearch(ActionEvent event) {
-        // handle search logic here
+        searchConges();
     }
 
     public void refreshUserList() {
-        try {
-            List<Conge> conges = congeService.showAll();
-            congeList.clear();
-            congeList.addAll(conges);
-
-            leaveTable.setItems(congeList);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        loadConges();
+        loadTt();
     }
-
 }

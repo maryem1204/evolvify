@@ -1,173 +1,282 @@
-/* Style général */
+/* Modern Dashboard CSS */
 .root {
-    -fx-background-color: #F8F9FA;
-    -fx-font-family: "Arial";
+    -fx-background-color: #f5f7fa;
+    -fx-font-family: 'Segoe UI', 'Arial', sans-serif;
 }
 
-/* Titre principal */
-.label-title {
-    -fx-font-size: 20px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #0056b3;
-    -fx-padding: 10px;
+/* ===== Header Section ===== */
+HBox {
+    -fx-alignment: center-right;
+    -fx-spacing: 15;
 }
 
-/* Barre latérale */
-VBox {
-    -fx-padding: 20px;
-}
-
-VBox Button {
-    -fx-pref-width: 200px;
-    -fx-background-color: #1c5bbf;
-    -fx-text-fill: white;
+/* Search field styling */
+.search-field {
+    -fx-background-color: white;
+    -fx-background-radius: 30px;
+    -fx-border-radius: 30px;
+    -fx-border-color: #e0e0e0;
+    -fx-padding: 10px 15px;
+    -fx-prompt-text-fill: #9e9e9e;
     -fx-font-size: 14px;
-    -fx-font-weight: bold;
-    -fx-background-radius: 8px;
+    -fx-pref-width: 300px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);
+    -fx-transition: all 0.3s ease;
 }
 
-VBox Button:hover {
-    -fx-background-color: #144a9c;
+.search-field:focused {
+    -fx-border-color: #4a6fdc;
+    -fx-effect: dropshadow(three-pass-box, rgba(74, 111, 220, 0.2), 8, 0, 0, 2);
 }
 
-/* Barre de recherche */
-.searchBox {
-    -fx-background-color: #2f3640;
-    -fx-background-radius: 25px;
-    -fx-padding: 5px;
-    -fx-spacing: 5px;
-    -fx-pref-width: 250px;  /* Largeur préférée */
-    -fx-max-width: 250px;
-}
-
-.searchInput {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
+/* Search button styling */
+.search-button {
+    -fx-background-color: #4a6fdc;
+    -fx-background-radius: 30px;
     -fx-text-fill: white;
-    -fx-font-size: 15px;
-    -fx-padding: 5px;
-    -fx-prompt-text-fill: rgba(255, 255, 255, 0.5);
-    -fx-pref-width: 220px;  /* Largeur préférée */
-    -fx-max-width: 220px;
-}
-
-ImageView {
-    -fx-opacity: 0.8; /* Rend l'icône légèrement visible */
-}
-
-.searchButton {
-    -fx-background-color: linear-gradient(to right, #2AF598, #009EFD);
-    -fx-background-radius: 50%;
-    -fx-padding: 5px 15px;
-    -fx-border-color: transparent;
-    -fx-cursor: hand;
-    -fx-pref-width: 47px;
-}
-
-StackPane {
-    -fx-padding: 5px 10px; /* Pousse l'icône vers la droite */
-}
-
-
-.searchButton:hover {
-    -fx-background-color: #1A1A1A;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0, 0, 5);
-}
-
-.searchButton:pressed {
-    -fx-effect: none;
-}
-
-
-.gradient-button {
-    -fx-background-color: linear-gradient(to right, #af40ff, #5b42f3 50%, #00ddeb);
-    -fx-background-radius: 8px;
-    -fx-border-radius: 8px;
-    -fx-text-fill: white;
-    -fx-font-size: 18px;
     -fx-font-weight: bold;
     -fx-padding: 10px 20px;
     -fx-cursor: hand;
-    -fx-effect: dropshadow(three-pass-box, rgba(151, 65, 252, 0.4), 10, 0, 0, 5);
-    -fx-transition: all 0.3s;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);
+    -fx-transition: all 0.2s ease;
+}
+
+.search-button:hover {
+    -fx-background-color: #3a5dc7;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 2);
+}
+
+.search-button:pressed {
+    -fx-background-color: #2c4ba3;
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+/* Add leave button - gradient style */
+.gradient-button {
+    -fx-background-color: linear-gradient(to right, #5e72e4, #825ee4);
+    -fx-background-radius: 30px;
+    -fx-border-radius: 30px;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(94, 114, 228, 0.4), 10, 0, 0, 4);
+    -fx-transition: all 0.3s ease;
 }
 
 .gradient-button:hover {
-    -fx-background-color: rgb(5, 6, 45);
+    -fx-background-color: linear-gradient(to right, #4c61c9, #704bc9);
+    -fx-effect: dropshadow(three-pass-box, rgba(94, 114, 228, 0.6), 12, 0, 0, 5);
 }
 
 .gradient-button:pressed {
-    -fx-scale-x: 0.9;
-    -fx-scale-y: 0.9;
+    -fx-scale-x: 0.97;
+    -fx-scale-y: 0.97;
+    -fx-background-color: linear-gradient(to right, #3c50a5, #5c3ca5);
 }
 
-/* TableView - Style Général */
+/* ===== Tab Pane Styling ===== */
+.tab-pane {
+    -fx-tab-min-width: 120px;
+    -fx-tab-max-width: 120px;
+    -fx-tab-min-height: 40px;
+    -fx-padding: 0 0 10px 0;
+}
+
+.tab-pane .tab-header-area {
+    -fx-padding: 0 0 10px 0;
+}
+
+.tab-pane .tab-header-background {
+    -fx-background-color: transparent;
+}
+
+.tab {
+    -fx-background-color: #f5f7fa;
+    -fx-background-radius: 8px 8px 0 0;
+    -fx-border-color: transparent;
+    -fx-padding: 8px 15px;
+    -fx-cursor: hand;
+}
+
+.tab .tab-label {
+    -fx-text-fill: #6b7c93;
+    -fx-font-size: 14px;
+    -fx-font-weight: normal;
+}
+
+.tab:selected {
+    -fx-background-color: white;
+    -fx-border-width: 1px 1px 0 1px;
+    -fx-border-color: #e0e0e0 #e0e0e0 transparent #e0e0e0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 4, 0, 0, 1);
+}
+
+.tab:selected .tab-label {
+    -fx-text-fill: #4a6fdc;
+    -fx-font-weight: bold;
+}
+
+.tab-conges, .tab-tt {
+    -fx-padding: 10px;
+}
+
+/* ===== TableView Styling ===== */
 .table-view {
     -fx-background-color: white;
-    -fx-border-color: #DDDDDD;
-    -fx-border-radius: 5px;
-    -fx-padding: 5px;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-color: #e0e0e0;
+    -fx-padding: 0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 8, 0, 0, 2);
 }
 
 .table-view .column-header-background {
-    -fx-background-color: #DCDCDC;
-    -fx-background-radius: 5px 5px 0 0;
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 10px 10px 0 0;
+    -fx-padding: 5px 0;
 }
 
-.table-view .column-header {
+.table-view .column-header, .table-view .filler {
     -fx-background-color: transparent;
+    -fx-size: 40px;
+    -fx-border-color: transparent transparent #e0e0e0 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 8px 10px;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #495057;
     -fx-font-weight: bold;
-    -fx-text-fill: white;
-    -fx-alignment: CENTER;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10px 5px;
 }
 
-.table-row-cell:odd {
-    -fx-background-color: #F8F9FA;
-}
-.table-row-cell:even {
-    -fx-background-color: #FFFFFF;
-}
-
-.table-row-cell:selected {
-    -fx-background-color: #B0C4DE;
-    -fx-text-fill: black;
+.table-view .table-row-cell {
+    -fx-border-color: transparent transparent #e0e0e0 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 5px 0;
+    -fx-cell-size: 45px;
 }
 
-/* Style du bouton Supprimer */
-.button-delete {
-    -fx-background-color: red;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
+.table-view .table-row-cell:odd {
+    -fx-background-color: #f9fafc;
+}
+
+.table-view .table-row-cell:even {
+    -fx-background-color: white;
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: #e9effd;
+    -fx-border-color: transparent transparent #d1defc transparent;
+}
+
+.table-view .table-row-cell:hover {
+    -fx-background-color: #edf2ff;
+}
+
+.table-view .table-cell {
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 8px 15px;
+    -fx-text-fill: #333;
+}
+
+/* ===== Action Buttons in TableView ===== */
+.accept-button {
+    -fx-background-color: #2ecc71;
     -fx-background-radius: 5px;
-}
-
-.button-delete:hover {
-    -fx-background-color: darkred;
-}
-
-/* Bouton flottant */
-.floating-button {
-    -fx-background-color: #6200EA;
     -fx-text-fill: white;
-    -fx-shape: "M20 10V20H10V10H5V20C5 21.1 5.9 22 7 22H23C24.1 22 25 21.1 25 20V10H20Z";
-    -fx-padding: 10px;
-    -fx-border-radius: 50%;
-    -fx-background-radius: 50%;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 6px 10px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(46, 204, 113, 0.3), 4, 0, 0, 1);
+    -fx-min-width: 80px;
 }
 
-.floating-button:hover {
-    -fx-background-color: #3700B3;
+.accept-button:hover {
+    -fx-background-color: #27ae60;
 }
-/* Barre de recherche */
-.search-bar {
-    -fx-background-color: #343A40;
+
+.accept-button:pressed {
+    -fx-background-color: #219653;
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+.reject-button {
+    -fx-background-color: #e74c3c;
+    -fx-background-radius: 5px;
     -fx-text-fill: white;
-    -fx-padding: 8px;
-    -fx-border-radius: 20px;
-    -fx-background-radius: 20px;
-    -fx-pref-width: 300px;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 6px 10px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(231, 76, 60, 0.3), 4, 0, 0, 1);
+    -fx-min-width: 80px;
 }
-.search-bar .prompt-text {
-    -fx-text-fill: #B0B3B8;
+
+.reject-button:hover {
+    -fx-background-color: #c0392b;
+}
+
+.reject-button:pressed {
+    -fx-background-color: #a93226;
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+/* Styling for different status colors in the table */
+.status-pending {
+    -fx-text-fill: #ff9800;
+    -fx-font-weight: bold;
+}
+
+.status-accepted {
+    -fx-text-fill: #2ecc71;
+    -fx-font-weight: bold;
+}
+
+.status-rejected {
+    -fx-text-fill: #e74c3c;
+    -fx-font-weight: bold;
+}
+
+/* ScrollBar styling */
+.scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 12;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #d1d1d1;
+    -fx-background-radius: 6px;
+}
+
+.scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #aaa;
+}
+
+.scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical .increment-button,
+.scroll-bar:vertical .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.scroll-bar:vertical .increment-arrow,
+.scroll-bar:vertical .decrement-arrow {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+/* Animation for buttons */
+.gradient-button, .search-button, .accept-button, .reject-button {
+    -fx-transition: all 0.2s ease;
 }

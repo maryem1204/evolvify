@@ -12,10 +12,10 @@
 
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.Pane?>
-<AnchorPane maxWidth="1865.0" prefHeight="823.0" prefWidth="1865.0" stylesheets="@../Styles/styledash.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.DashController">
+<AnchorPane maxWidth="1865.0" prefHeight="600.0" prefWidth="1000.0"  stylesheets="@../Styles/styledash.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.DashController">
 
     <!-- Navbar -->
-    <AnchorPane layoutY="-11.0" prefHeight="109.0" prefWidth="1865.0" style="-fx-background-color:#7B61FF" styleClass="navbar" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+    <AnchorPane layoutY="-11.0" prefHeight="109.0" prefWidth="1000.0" style="-fx-background-color:#7B61FF" styleClass="navbar" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
         <HBox alignment="CENTER_RIGHT" prefHeight="66.0" spacing="10">
             <Region HBox.hgrow="ALWAYS" />
         </HBox>
@@ -83,8 +83,8 @@
 
         <!-- Sous-menu Congés (Caché par défaut) -->
         <VBox fx:id="subMenuConges" visible="false" managed="false">
-            <Button fx:id="btnConges" text="Congés" styleClass="sidebar-sub-button" />
-            <Button fx:id="btnAbsences" text="Absences" styleClass="sidebar-sub-button" />
+            <Button fx:id="btnConges" onAction="#handleConge" text="Congés" styleClass="sidebar-sub-button" />
+            <Button fx:id="btnAbsences" onAction="#handleAbsence" text="Absences" styleClass="sidebar-sub-button" />
         </VBox>
 
         <Button fx:id="btnRecrutements" onAction="#toggleSubMenuRecrutements" styleClass="sidebar-button" text="Gestion Recrutements">
