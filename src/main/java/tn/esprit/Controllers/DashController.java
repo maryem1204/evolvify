@@ -84,7 +84,7 @@ public class DashController {
 
         btnConges.setOnAction(event -> {
             setActiveButton(btnConges);
-            loadView("/fxml/dashboardCongeRh.fxmll");
+            loadView("/fxml/dashboardCongeRh.fxml");
         });
 
         btnAbsences.setOnAction(event -> {
