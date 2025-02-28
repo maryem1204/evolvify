@@ -110,7 +110,7 @@ public class AffichageTrajetController {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("Ajouter Trajet");
             stage.setScene(new Scene(root));
-            stage.show();  //rajjaaha show and wait mbaaed
+            stage.show();  //rajjaaha show and wait mbaaed 
             loadTrajets();
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Erreur lors de l'ouverture de la fenêtre d'ajout", e);

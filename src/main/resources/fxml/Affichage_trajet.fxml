@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.StackPane?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.AffichageTrajetController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.AffichageTrajetController">
 
     <children>
         <AnchorPane prefHeight="600.0" prefWidth="986.0">
@@ -38,7 +38,7 @@
 
                                 <Button fx:id="ajouter" layoutX="510.0" layoutY="49.0" mnemonicParsing="false" onAction="#handleAjouterTrajet" styleClass="gradient-button" text="Ajouter">
                                     <stylesheets>
-                                        <URL value="@../../java/tn/esprit/Styles/color.css" />
+                                        <URL value="@../Styles/color.css" />
                                         <URL value="@../Styles/add_transport.css" />
                                     </stylesheets></Button>
 

@@ -8,6 +8,12 @@ import javafx.scene.image.Image;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.geometry.Rectangle2D;
+import tn.esprit.Services.AbonnementCRUD;
+import tn.esprit.Utils.MailSender;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class MainFXDash extends Application {
     @Override
@@ -41,9 +47,38 @@ public class MainFXDash extends Application {
             e.printStackTrace();
             System.out.println("Erreur lors du chargement de l'interface FXML !");
         }
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        AbonnementCRUD abonnementCRUD = new AbonnementCRUD();
+
+// Calculer le délai avant la prochaine exécution (par exemple, demain à 08:00)
+        long initialDelay = TimeUnit.HOURS.toMillis(16) - System.currentTimeMillis() % TimeUnit.DAYS.toMillis(1);
+        long period = TimeUnit.DAYS.toMillis(1);
+
+        scheduler.scheduleAtFixedRate(() -> {
+            System.out.println("🔔 Vérification des abonnements expirant...");
+            abonnementCRUD.sendExpiryNotifications();
+        }, initialDelay, period, TimeUnit.MILLISECONDS);
+    }
+    private void startAbonnementNotifier() {
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        AbonnementCRUD abonnementCRUD = new AbonnementCRUD();
+
+        scheduler.scheduleAtFixedRate(() -> {
+            try {
+                System.out.println("🔄 Vérification des abonnements expirant...");
+                abonnementCRUD.sendExpiryNotifications();
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.err.println("❌ Erreur lors de l'envoi des notifications d'abonnement.");
+            }
+        }, 0, 1, TimeUnit.DAYS);
+    }
+   /*public static void main(String[] args) {
+        int id_employe = 3; // ID de l'employé dans la base de données
+        String sujet = "Mise à jour importante";
+        String contenu = "Bonjour, voici une information importante pour vous.";
+
+        MailSender.sendEmailToEmployee(id_employe, sujet, contenu);
+    }*/
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
-}

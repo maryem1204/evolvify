@@ -1,19 +1,33 @@
 package tn.esprit.Controllers;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import tn.esprit.Entities.Trajet;
+import tn.esprit.Entities.StatusTrajet;
 import tn.esprit.Services.TrajetCRUD;
 import tn.esprit.Utils.MyDataBase;
-import tn.esprit.Entities.StatusTrajet;
+import tn.esprit.Utils.TrajetEventBus;
 
+import java.io.IOException;
 import java.sql.*;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public class AddTrajetController {
+    @FXML
+    private StackPane stackPane; // The root container of your main FXML
+    @FXML
+    private AnchorPane contentPane; // Your form container
+    @FXML
+    private StackPane dialogContainer; // Container for embedded dialogs
 
     @FXML
     private Button ajouter;
@@ -21,11 +35,13 @@ public class AddTrajetController {
     private TextField id_employe, distance, durée_estimé, pointArr, pointDep;
     @FXML
     private ComboBox<String> status, moyen_transport;
-    @FXML
-    private AnchorPane add_trajet;
 
     private final Connection cnx = MyDataBase.getInstance().getCnx();
     private final TrajetCRUD trajetCRUD = new TrajetCRUD();
+
+
+    public AddTrajetController() {
+    }
 
     @FXML
     private void initialize() {
@@ -39,7 +55,6 @@ public class AddTrajetController {
                 }
             }
         });
-
         moyen_transport.setPromptText("Sélectionner");
     }
 
@@ -80,15 +95,17 @@ public class AddTrajetController {
         if (!isInputValid()) return;
 
         try {
+            // Fetch input values
             int employeId = Integer.parseInt(id_employe.getText().trim());
             String depart = pointDep.getText().trim();
             String arrivee = pointArr.getText().trim();
+
             double dist = Double.parseDouble(distance.getText().trim());
             Time duree = parseTime(durée_estimé.getText().trim());
             String moyen = moyen_transport.getValue();
             String statusValue = status.getValue();
 
-            // Conversion du statut en enum StatusTrajet
+            // Convert status to enum
             StatusTrajet statusEnum;
             try {
                 statusEnum = StatusTrajet.valueOf(statusValue.toUpperCase());
@@ -97,27 +114,67 @@ public class AddTrajetController {
                 return;
             }
 
-            // Récupérer l'ID du moyen de transport
+            // Fetch transport ID
             int moyenId = getMoyenId(moyen);
             if (moyenId == -1) {
                 showAlert("Erreur", "Le moyen de transport sélectionné n'est pas disponible.", Alert.AlertType.ERROR);
                 return;
             }
 
-            // Création du trajet
+            // Create a new Trajet object
             Trajet trajet = new Trajet(0, depart, arrivee, dist, duree, moyenId, employeId, statusEnum);
             int id = trajetCRUD.add(trajet);
+
             if (id > 0) {
-                showAlert("Succès", "Trajet ajouté avec succès !", Alert.AlertType.INFORMATION);
+                // Fire event for map update (if other components are listening)
+              //TrajetEventBus.fireTrajetEvent(trajet);
+
+                // Clear input fields
                 clearFields();
+
+                // Show an embedded map popup (using the location from the Trajet, e.g., the departure address)
+                // You can modify this to use any address or logic you prefer.
+                showMapPopup(trajet.getPointArr());
             } else {
                 showAlert("Erreur", "L'ajout du trajet a échoué.", Alert.AlertType.ERROR);
             }
+
         } catch (NumberFormatException e) {
             showAlert("Erreur", "Veuillez entrer des valeurs valides pour l'ID employé et la distance.", Alert.AlertType.ERROR);
         } catch (SQLException e) {
             showAlert("Erreur SQL", "Une erreur est survenue lors de l'ajout du trajet.", Alert.AlertType.ERROR);
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Shows an embedded map popup using JFoenix's JFXDialog.
+     * The popup loads the map_view.fxml and displays it within the dialogContainer.
+     * This implementation ensures mouse events aren't blocked for the main form.
+     */
+    private void showMapPopup(String location) {
+        try {
+            // Charge le fichier FXML de la carte (map_view.fxml)
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/map_view.fxml"));
+            Parent mapContent = loader.load();
+
+            // Optionnel : Si votre contrôleur de carte (TrajetMapViewController) a une méthode pour régler l'adresse,
+            // vous pouvez la déclencher ici. Par exemple :
+            // TrajetMapViewController mapController = loader.getController();
+            // mapController.setLocation(location);
+
+            // Créez un nouveau Stage pour le pop-up
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Carte - " + location);
+            // Définir la taille souhaitée (par exemple, 600 x 400)
+            Scene scene = new Scene(mapContent, 600, 400);
+            stage.setScene(scene);
+            stage.centerOnScreen();
+            stage.showAndWait();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            afficherAlerte("Erreur", "Impossible d'afficher la carte.", Alert.AlertType.ERROR);
         }
     }
 
@@ -183,5 +240,13 @@ public class AddTrajetController {
         durée_estimé.clear();
         moyen_transport.getSelectionModel().clearSelection();
         status.setValue(null);
+    }
+
+    private void afficherAlerte(String titre, String message, Alert.AlertType error) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(titre);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
