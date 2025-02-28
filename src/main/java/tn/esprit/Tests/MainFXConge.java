@@ -1,5 +1,4 @@
 package tn.esprit.Tests;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -8,17 +7,16 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class MainFX extends Application {
+public class MainFXConge extends Application {
+
+
     @Override
     public void start(Stage primaryStage) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/dashEmployee.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EmployeeAbsence.fxml"));
             Parent root = loader.load();
-            primaryStage.setTitle("Dashboard");
+            primaryStage.setTitle("Conge Employe");
             primaryStage.setResizable(false);
-
-            //primaryStage.setMinWidth(1366); // Largeur minimale (ex : Full HD)
-            //primaryStage.setMinHeight(768); // Hauteur minimale       e'
 
             //primaryStage.initStyle(StageStyle.UTILITY);
             primaryStage.setScene(new Scene(root));

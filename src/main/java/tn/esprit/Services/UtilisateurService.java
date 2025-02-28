@@ -276,7 +276,33 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
     }
 
 
+    public List<Utilisateur> getAllEmployees() throws SQLException {
+        List<Utilisateur> employees = new ArrayList<>();
+        String req = "SELECT * FROM Users WHERE role = 'EMPLOYEE'";
+        Statement st = cnx.createStatement();
+        ResultSet rs = st.executeQuery(req);
 
+        while (rs.next()) {
+            employees.add(new Utilisateur(
+                    rs.getInt("id_employe"),
+                    rs.getString("firstname"),
+                    rs.getString("lastname"),
+                    rs.getString("email"),
+                    rs.getString("password"),
+                    rs.getBytes("profilePhoto"),
+                    rs.getDate("birthdayDate"),
+                    rs.getDate("joiningDate"),
+                    Role.valueOf(rs.getString("role")),
+                    rs.getInt("tt_restants"),
+                    rs.getInt("conge_restant"),
+                    rs.getBytes("uploaded_cv"),
+                    rs.getString("num_tel"),
+                    Gender.valueOf(rs.getString("gender"))
+
+            ));
+        }
+        return employees;
+    }
     public int countByGender(Gender gender) {
         int count = 0;
         String query = "SELECT COUNT(*) FROM users WHERE gender = ?";
