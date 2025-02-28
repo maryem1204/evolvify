@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.Image?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.Controllers.ResetPasswordController"
+            style="-fx-background-color: #111827;">
+
+    <VBox alignment="CENTER" prefWidth="600" prefHeight="700" spacing="10">
+        <StackPane>
+            <VBox alignment="CENTER" spacing="20" maxWidth="400"
+                  style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 40;
+                         -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 10);
+                         -fx-border-color: #9333ea; -fx-border-width: 7; -fx-border-radius: 10;">
+
+                <!-- Logo -->
+                <ImageView fitHeight="80" fitWidth="150" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@/images/logo.png" />
+                    </image>
+                </ImageView>
+
+                <!-- Titre -->
+                <Label text="Reset your password"
+                       style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #222;" />
+
+                <!-- Champs de mot de passe -->
+                <VBox spacing="12" alignment="CENTER_LEFT" maxWidth="300">
+                    <Label text="New Password" style="-fx-font-size: 16px; -fx-text-fill: #333;" />
+                    <PasswordField fx:id="newPasswordField" promptText="Enter new password"
+                                   style="-fx-font-size: 14px; -fx-padding: 12; -fx-background-radius: 8;
+                                          -fx-border-color: #ccc; -fx-border-radius: 8; -fx-pref-width: 300;" />
+
+                    <Label text="Confirm Password" style="-fx-font-size: 16px; -fx-text-fill: #333;" />
+                    <PasswordField fx:id="confirmPasswordField" promptText="Confirm your password"
+                                   style="-fx-font-size: 14px; -fx-padding: 12; -fx-background-radius: 8;
+                                          -fx-border-color: #ccc; -fx-border-radius: 8; -fx-pref-width: 300;" />
+
+                    <Label fx:id="errorLabel" text="" style="-fx-text-fill: red; -fx-font-size: 14px;" />
+                </VBox>
+
+                <!-- Bouton Reset -->
+                <Button text="Reset Password" fx:id="resetButton" onAction="#resetPassword"
+                        style="-fx-background-color: linear-gradient(to right, #3b82f6, #9333ea);
+                               -fx-text-fill: white; -fx-font-size: 18px; -fx-padding: 12;
+                               -fx-background-radius: 8; -fx-pref-width: 300; -fx-cursor: hand;" />
+            </VBox>
+        </StackPane>
+    </VBox>
+</AnchorPane>
