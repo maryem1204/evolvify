@@ -84,12 +84,12 @@ public class DashController {
 
         btnConges.setOnAction(event -> {
             setActiveButton(btnConges);
-            loadView("/fxml/conges.fxml");
+            loadView("/fxml/dashboardCongeRh.fxmll");
         });
 
         btnAbsences.setOnAction(event -> {
             setActiveButton(btnAbsences);
-            loadView("/fxml/absences.fxml");
+            loadView("/fxml/AttendanceView.fxml");
         });
 
         //username.setText("Meriem Sassi");
@@ -265,10 +265,12 @@ public class DashController {
 
     @FXML
     public void handleConge(ActionEvent actionEvent) {
+        setActiveButton(btnConges);
         loadView("/fxml/dashboardCongeRh.fxml");
     }
     @FXML
     public void handleAbsence(ActionEvent actionEvent) {
+        setActiveButton(btnAbsences);
         loadView("/fxml/AttendanceView.fxml");
     }
 
