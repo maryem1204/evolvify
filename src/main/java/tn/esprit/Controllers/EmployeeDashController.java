@@ -175,6 +175,13 @@ public class EmployeeDashController {
         loadView("/fxml/employeeProfile.fxml");
     }
 
+
+    @FXML
+    private void handleProjet() throws IOException {
+        setActiveButton(btnProjets);
+        loadView("/fxml/ProjectListWithCards.fxml");
+    }
+
     private void handleLogout() {
         try {
             // Clear any user session data

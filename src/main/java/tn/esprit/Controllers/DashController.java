@@ -61,16 +61,14 @@ public class DashController {
     public void initialize() {
         Platform.runLater(() -> {
             loadView("/fxml/dashboardAdminRH.fxml");
-            setActiveButton(btnDashboard); // Sélection par défaut
+            setActiveButton(btnDashboard);
         });
 
-        // Chargement de l'icône utilisateur
-        userIcon.setImage(new Image(getClass().getResource("/images/profileicon.png").toExternalForm(), true));
+        // Chargement des icônes
+        userIcon.setImage(new Image(getClass().getResource("/images/profile.png").toExternalForm(), true));
 
-        // Liste de tous les boutons du sidebar
         sidebarButtons = List.of(btnDashboard, btnUser, btnRecrutements, btnProjets, btnTransports, btnConges, btnAbsences);
 
-        // Gestion des actions des boutons principaux
         for (Button button : sidebarButtons) {
             button.setOnAction(event -> {
                 setActiveButton(button);
@@ -78,7 +76,7 @@ public class DashController {
             });
         }
 
-        // Gestion des sous-menus
+        // Ajout des événements de sous-menus
         btnGestionConges.setOnAction(event -> toggleSubMenuConges());
         btnRecrutements.setOnAction(event -> toggleSubMenuRecrutements());
         btnProjets.setOnAction(event -> toggleSubMenuProjets());
@@ -86,12 +84,12 @@ public class DashController {
 
         btnConges.setOnAction(event -> {
             setActiveButton(btnConges);
-            loadView("/fxml/dashboardCongeRh.fxml");
+            loadView("/fxml/conges.fxml");
         });
 
         btnAbsences.setOnAction(event -> {
             setActiveButton(btnAbsences);
-            loadView("/fxml/AttendanceView.fxml");
+            loadView("/fxml/absences.fxml");
         });
 
         //username.setText("Meriem Sassi");
@@ -123,7 +121,6 @@ public class DashController {
         logoutIcon.setOnMouseClicked(event -> handleLogout());
 
     }
-
 
     /**
      * 🔹 Ferme tous les sous-menus si le clic est en dehors
@@ -159,10 +156,6 @@ public class DashController {
      */
     private void loadView(String fxmlFile) {
         try {
-            if (getClass().getResource(fxmlFile) == null) {
-                System.err.println("Cannot find resource: " + fxmlFile);
-                return;
-            }
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             Parent root = loader.load();
             contentArea.getChildren().setAll(root);
@@ -178,11 +171,7 @@ public class DashController {
     private String getFxmlPath(Button button) {
         if (button == btnDashboard) return "/fxml/dashboardAdminRH.fxml";
         if (button == btnUser) return "/fxml/listUsers.fxml";
-        if (button == btnRecrutements) return "/fxml/recrutements.fxml";
-        if (button == btnProjets) return "/fxml/projets.fxml";
-        if (button == btnTransports) return "/fxml/transports.fxml";
-        if (button == btnConges) return "/fxml/dashboardCongeRh.fxml";
-        if (button == btnAbsences) return "/fxml/AttendanceView.fxml";
+
         return null;
     }
 
@@ -262,23 +251,19 @@ public class DashController {
         setActiveButton(btnUser);
         loadView("/fxml/listUsers.fxml");
     }
+
     @FXML
-    public void handleGestionProjet(ActionEvent actionEvent) {
+    private void handleGestionProjet() {
+        setActiveButton(btnDashboard);
         loadView("/fxml/ListProjet.fxml");
     }
     @FXML
-    public void handleTache(ActionEvent actionEvent) {
+    private void handleTache() {
+        setActiveButton(btnDashboard);
         loadView("/fxml/ListTacheRH.fxml");
     }
 
-    @FXML
-    public void handleConge(ActionEvent actionEvent) {
-        loadView("/fxml/dashboardCongeRh.fxml");
-}
-    @FXML
-    public void handleAbsence(ActionEvent actionEvent) {
-        loadView("/fxml/AttendanceView.fxml");
-    }
+
 
     private void handleLogout() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);

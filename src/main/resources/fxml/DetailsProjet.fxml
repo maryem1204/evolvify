@@ -86,7 +86,7 @@
 
     <!-- Boutons -->
     <HBox alignment="CENTER" prefHeight="56.0" prefWidth="360.0" spacing="15">
-        <Button prefHeight="46.0" prefWidth="114.0" style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10px 15px; -fx-border-radius: 5px; -fx-background-radius: 5px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 4, 0, 0, 2);" text="Voir Tâches" />
+        <Button onAction="#openListTacheChefP" prefHeight="46.0" prefWidth="114.0" style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10px 15px; -fx-border-radius: 5px; -fx-background-radius: 5px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 4, 0, 0, 2);" text="Voir Tâches" />
 
         <Button onAction="#fermerFenetre" prefHeight="46.0" prefWidth="84.0" style="-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10px 15px; -fx-border-radius: 5px; -fx-background-radius: 5px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 4, 0, 0, 2);" text="Fermer" />
       <padding>
