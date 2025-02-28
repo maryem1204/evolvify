@@ -1,5 +1,6 @@
 package tn.esprit.Controllers;
 
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -8,7 +9,6 @@ import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -62,7 +62,6 @@ public class ListUsersController {
     private Pagination pagination; // Ajout de la pagination
     @FXML
     private StackPane stackPane;
-
 
     private ObservableList<Utilisateur> users = FXCollections.observableArrayList();
     private static final int ROWS_PER_PAGE = 10;
@@ -163,8 +162,8 @@ public class ListUsersController {
             }
         });
     }
-
-    private void showEditPopup(Utilisateur utilisateur) {
+    @FXML
+    private void showEditPopup(Utilisateur user) {
         try {
             // Get the main stage
             Stage primaryStage = (Stage) stackPane.getScene().getWindow();
@@ -187,6 +186,9 @@ public class ListUsersController {
             // Load popup
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/editUser.fxml"));
             Parent root = loader.load();
+            EditUserController controller = loader.getController();
+            controller.setUserData(user);
+            controller.setListUsersController(this);
 
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
@@ -203,7 +205,6 @@ public class ListUsersController {
             e.printStackTrace();
         }
     }
-
     private void confirmDelete(Utilisateur user) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation");
