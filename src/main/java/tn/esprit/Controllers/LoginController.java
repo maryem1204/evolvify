@@ -122,17 +122,22 @@ public class LoginController {
         alert.showAndWait();
     }
 
-    @FXML
-    private void handleForgotPassword(ActionEvent event) {
+    private void switchScene(ActionEvent event, String fxmlFile) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/forgetPwd.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             Parent root = loader.load();
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page de récupération de mot de passe.");
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page : " + fxmlFile);
         }
     }
+
+    @FXML
+    private void handleForgotPassword(ActionEvent event) {
+        switchScene(event, "/fxml/forgetPwd.fxml");
+    }
+
 }

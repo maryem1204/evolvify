@@ -525,72 +525,54 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
         return null;
     }
 
-    public void updatePassword(int userId, String newPassword) {
-        String query = "UPDATE users SET password = ?, reset_token = NULL WHERE id_employe = ?";
-        try (PreparedStatement pst = cnx.prepareStatement(query)) {
-            // 🔒 Hachage du mot de passe avec Bcrypt avant de l'enregistrer
-            String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+    public void sendConfirmationCode(String email, int code) {
+        String subject = "Code de vérification";
+        String content = "<p>Votre code de vérification est : <b>" + code + "</b></p>";
 
-            pst.setString(1, hashedPassword);
-            pst.setInt(2, userId);
-            pst.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        sendEmail(email, subject, content);
     }
 
-    public void sendPasswordResetEmail(String toEmail, String token) {
-        String resetLink = "myapp://reset-password?token=" + token;
+    public void updatePassword(int userId, String newPassword) throws SQLException {
+        String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt()); // Hachage du mot de passe
+        String query = "UPDATE users SET password = ? WHERE id_employe = ?";
 
+        PreparedStatement statement = cnx.prepareStatement(query);
+        statement.setString(1, hashedPassword); // Stocke le mot de passe haché
+        statement.setInt(2, userId);
 
-        String subject = "Réinitialisation de votre mot de passe";
-        String content = "<p>Bonjour,</p>"
-                + "<p>Vous avez demandé à réinitialiser votre mot de passe.</p>"
-                + "<p>Cliquez sur le lien ci-dessous pour le réinitialiser :</p>"
-                + "<p><a href='" + resetLink + "'>Réinitialiser mon mot de passe</a></p>"
-                + "<p>Si vous n'avez pas fait cette demande, ignorez cet email.</p>";
+        statement.executeUpdate();
+    }
+
+    private void sendEmail(String toEmail, String subject, String content) {
+        final String fromEmail = "maryemsassi.dev@gmail.com";
+        final String password = "jlej mknk aukk iqlx"; // Remplacez par votre vrai mot de passe
+
+        Properties properties = new Properties();
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.smtp.host", "smtp.gmail.com");
+        properties.put("mail.smtp.port", "587");
+
+        Session session = Session.getInstance(properties, new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(fromEmail, password);
+            }
+        });
 
         try {
-            Properties properties = new Properties();
-            properties.put("mail.smtp.auth", "true");
-            properties.put("mail.smtp.starttls.enable", "true");
-            properties.put("mail.smtp.host", "smtp.gmail.com");
-            properties.put("mail.smtp.port", "587");
-
-            Session session = Session.getInstance(properties, new Authenticator() {
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication("maryemsassi.dev@gmail.com", "jlej mknk aukk iqlx");
-                }
-            });
-
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("maryemsassi.dev@gmail.com"));
+            message.setFrom(new InternetAddress(fromEmail));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
             message.setSubject(subject);
             message.setContent(content, "text/html");
 
             Transport.send(message);
-            System.out.println("📧 E-mail de réinitialisation envoyé !");
+            System.out.println("📧 E-mail envoyé !");
         } catch (MessagingException e) {
             System.err.println("❌ Erreur lors de l'envoi de l'e-mail : " + e.getMessage());
         }
     }
 
-    /**
-     * ✅ Vérifie si un token de réinitialisation est valide.
-     */
-    public boolean isValidResetToken(int userId, String token) throws SQLException {
-        String query = "SELECT COUNT(*) FROM password_reset_tokens WHERE user_id = ? AND token = ? AND expiration > NOW()";
-        try (PreparedStatement statement = cnx.prepareStatement(query)) {
-            statement.setInt(1, userId);
-            statement.setString(2, token);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getInt(1) > 0;
-            }
-        }
-        return false;
-    }
 
 
 
