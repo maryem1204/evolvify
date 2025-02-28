@@ -239,6 +239,25 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
         }
         return null;
     }
+    public Utilisateur findByEmail(String email) {
+        String query = "SELECT id_employe, email, password, role FROM users WHERE email = ?";
+        try (PreparedStatement pst = cnx.prepareStatement(query)) {
+            pst.setString(1, email);
+            ResultSet resultSet = pst.executeQuery();
+            if (resultSet.next()) {
+                return new Utilisateur(
+                        resultSet.getInt("id_employe"),
+                        resultSet.getString("email"),
+                        resultSet.getString("password"),
+                        Role.valueOf(resultSet.getString("role"))
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public String getEmployeNameById(int id) {
         String req = "SELECT firstname, lastname FROM Users WHERE id_employe = ?";
 
@@ -257,7 +276,33 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
     }
 
 
+    public List<Utilisateur> getAllEmployees() throws SQLException {
+        List<Utilisateur> employees = new ArrayList<>();
+        String req = "SELECT * FROM Users WHERE role = 'EMPLOYEE'";
+        Statement st = cnx.createStatement();
+        ResultSet rs = st.executeQuery(req);
 
+        while (rs.next()) {
+            employees.add(new Utilisateur(
+                    rs.getInt("id_employe"),
+                    rs.getString("firstname"),
+                    rs.getString("lastname"),
+                    rs.getString("email"),
+                    rs.getString("password"),
+                    rs.getBytes("profilePhoto"),
+                    rs.getDate("birthdayDate"),
+                    rs.getDate("joiningDate"),
+                    Role.valueOf(rs.getString("role")),
+                    rs.getInt("tt_restants"),
+                    rs.getInt("conge_restant"),
+                    rs.getBytes("uploaded_cv"),
+                    rs.getString("num_tel"),
+                    Gender.valueOf(rs.getString("gender"))
+
+            ));
+        }
+        return employees;
+    }
     public int countByGender(Gender gender) {
         int count = 0;
         String query = "SELECT COUNT(*) FROM users WHERE gender = ?";
@@ -318,6 +363,7 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
         }
         return count;
     }
+    /******* ❌LOGIN *********/
 
     public Utilisateur authenticateUser(String email, String password) {
         String query = "SELECT id_employe, email, password, role FROM users WHERE email = ? AND password = ?";
@@ -473,5 +519,88 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
 
         return stats;
     }
+    /******* ❌FORGET PASSWORD *********/
+
+    public void savePasswordResetToken(int userId, String token) {
+        String query = "UPDATE users SET reset_token = ? WHERE id_employe = ?";
+        try (PreparedStatement pst = cnx.prepareStatement(query)) {
+            pst.setString(1, token);
+            pst.setInt(2, userId);
+            pst.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Utilisateur findByResetToken(String token) {
+        String query = "SELECT id_employe, email, password, role FROM users WHERE reset_token = ?";
+        try (PreparedStatement pst = cnx.prepareStatement(query)) {
+            pst.setString(1, token);
+            ResultSet resultSet = pst.executeQuery();
+            if (resultSet.next()) {
+                return new Utilisateur(
+                        resultSet.getInt("id_employe"),
+                        resultSet.getString("email"),
+                        resultSet.getString("password"),
+                        Role.valueOf(resultSet.getString("role"))
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void sendConfirmationCode(String email, int code) {
+        String subject = "Code de vérification";
+        String content = "<p>Votre code de vérification est : <b>" + code + "</b></p>";
+
+        sendEmail(email, subject, content);
+    }
+
+    public void updatePassword(int userId, String newPassword) throws SQLException {
+        String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt()); // Hachage du mot de passe
+        String query = "UPDATE users SET password = ? WHERE id_employe = ?";
+
+        PreparedStatement statement = cnx.prepareStatement(query);
+        statement.setString(1, hashedPassword); // Stocke le mot de passe haché
+        statement.setInt(2, userId);
+
+        statement.executeUpdate();
+    }
+
+    private void sendEmail(String toEmail, String subject, String content) {
+        final String fromEmail = "maryemsassi.dev@gmail.com";
+        final String password = "jlej mknk aukk iqlx"; // Remplacez par votre vrai mot de passe
+
+        Properties properties = new Properties();
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.smtp.host", "smtp.gmail.com");
+        properties.put("mail.smtp.port", "587");
+
+        Session session = Session.getInstance(properties, new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(fromEmail, password);
+            }
+        });
+
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(fromEmail));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
+            message.setSubject(subject);
+            message.setContent(content, "text/html");
+
+            Transport.send(message);
+            System.out.println("📧 E-mail envoyé !");
+        } catch (MessagingException e) {
+            System.err.println("❌ Erreur lors de l'envoi de l'e-mail : " + e.getMessage());
+        }
+    }
+
+
+
+
 
 }

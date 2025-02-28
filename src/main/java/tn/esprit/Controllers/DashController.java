@@ -4,18 +4,24 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.stage.Stage;
 import javafx.util.Duration;
+import tn.esprit.Entities.Utilisateur;
+import tn.esprit.Utils.SessionManager;
+
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class DashController {
 
@@ -24,98 +30,116 @@ public class DashController {
     @FXML
     private Button btnConges, btnAbsences, btnGestionConges;
     @FXML
-    private ImageView userIcon, arrowIconConges, arrowIconRecrutements, arrowIconProjets, arrowIconTransports;
+    private ImageView userIcon, arrowIconConges, arrowIconRecrutements, arrowIconProjets,arrowIconTransports;
     @FXML
     private Label username;
     @FXML
-    private VBox sidebar, subMenuConges, subMenuRecrutements, subMenuProjets, subMenuTransport;
+    private VBox sidebar, subMenuConges, subMenuRecrutements, subMenuProjets,subMenuTransport;
     @FXML
     private AnchorPane contentArea;
     @FXML
     private Pane subMenuContainer;
-
-    // Boutons du sous-menu Transports
     @FXML
-    private Button menuGererTransport, menuGererAbonnement, menuGererTrajet;
+    private ScrollPane scrollSidebar;
+
+    @FXML
+    private ImageView logoImage;
+    @FXML
+    private ImageView logoutIcon; // Liaison avec l'icône de déconnexion
+
+
+
 
     private boolean isSubMenuCongesVisible = false;
     private boolean isSubMenuRecrutementsVisible = false;
     private boolean isSubMenuProjetsVisible = false;
     private boolean isSubMenuTransportVisible = false;
 
-    // Utiliser une liste mutable pour inclure également les boutons des sous-menus
     private List<Button> sidebarButtons;
 
     @FXML
     public void initialize() {
-        // Chargement par défaut de la page du dashboard
         Platform.runLater(() -> {
             loadView("/fxml/dashboardAdminRH.fxml");
-            setActiveButton(btnDashboard); // Sélection par défaut
+            setActiveButton(btnDashboard);
         });
 
-        // Chargement de l'icône utilisateur
-        userIcon.setImage(new Image(getClass().getResource("/images/profileicon.png").toExternalForm(), true));
+        // Chargement des icônes
+        userIcon.setImage(new Image(getClass().getResource("/images/profile.png").toExternalForm(), true));
 
-        // Initialiser la liste des boutons principaux du sidebar
-        sidebarButtons = new ArrayList<>();
-        sidebarButtons.add(btnDashboard);
-        sidebarButtons.add(btnUser);
-        sidebarButtons.add(btnRecrutements);
-        sidebarButtons.add(btnProjets);
-        sidebarButtons.add(btnTransports);
-        sidebarButtons.add(btnConges);
-        sidebarButtons.add(btnAbsences);
-        // Ajout des boutons des sous-menus si vous souhaitez qu'ils aient aussi l'état "actif"
-        sidebarButtons.add(menuGererTransport);
-        sidebarButtons.add(menuGererAbonnement);
-        sidebarButtons.add(menuGererTrajet);
+        sidebarButtons = List.of(btnDashboard, btnUser, btnRecrutements, btnProjets, btnTransports, btnConges, btnAbsences);
 
-        // Gestion des actions des boutons principaux
-        for (Button button : List.of(btnDashboard, btnUser, btnRecrutements, btnProjets, btnTransports, btnConges, btnAbsences)) {
+        for (Button button : sidebarButtons) {
             button.setOnAction(event -> {
                 setActiveButton(button);
                 loadView(getFxmlPath(button));
             });
         }
 
-        // Gestion des sous-menus pour les principaux
+        // Ajout des événements de sous-menus
         btnGestionConges.setOnAction(event -> toggleSubMenuConges());
         btnRecrutements.setOnAction(event -> toggleSubMenuRecrutements());
         btnProjets.setOnAction(event -> toggleSubMenuProjets());
         btnTransports.setOnAction(event -> toggleSubMenuTransports());
 
-        // Actions spécifiques pour les boutons qui se trouvent dans les sous-menus
-        menuGererTransport.setOnAction(event -> {
-            setActiveButton(menuGererTransport);
-            loadView("/fxml/Affichage_transport.fxml");
-        });
-        menuGererAbonnement.setOnAction(event -> {
-            setActiveButton(menuGererAbonnement);
-            loadView("/fxml/Affichage_abonnement.fxml");//FrontAbonnement.fxml matensehomch
-        });
-        menuGererTrajet.setOnAction(event -> {
-            setActiveButton(menuGererTrajet);
-            loadView("/fxml/Affichage_trajet.fxml");//FrontTransport.fxml
-        });
-
-        // Actions pour les autres boutons du sidebar
         btnConges.setOnAction(event -> {
             setActiveButton(btnConges);
-            loadView("/fxml/conges.fxml");
+            loadView("/fxml/dashboardCongeRh.fxml");
         });
 
         btnAbsences.setOnAction(event -> {
             setActiveButton(btnAbsences);
-            loadView("/fxml/absences.fxml");
+            loadView("/fxml/AttendanceView.fxml");
         });
 
-        // Afficher le nom de l'utilisateur connecté
-        username.setText("Farah Chebane");
-
-        // Cacher les sous-menus au démarrage
+        //username.setText("Meriem Sassi");
         hideAllSubMenus();
+
+        scrollSidebar.setFitToHeight(true);
+        scrollSidebar.setFitToWidth(true);
+        sidebar.setPrefHeight(Region.USE_COMPUTED_SIZE);
+
+        // 🔹 ÉVÉNEMENT GLOBAL : Fermer les sous-menus si on clique en dehors
+        contentArea.setOnMouseClicked(event -> closeAllSubMenus(event));
+
+        scrollSidebar.setPrefWidth(330);
+        sidebar.setPrefWidth(330);
+
+        // Récupérer l'utilisateur connecté
+        Utilisateur utilisateur = SessionManager.getInstance().getUtilisateurConnecte();
+
+        // Vérifier si un utilisateur est bien en session
+        if (utilisateur != null) {
+            // Afficher son prénom et nom dans le Label
+            username.setText(utilisateur.getFirstname() + " " + utilisateur.getLastname());
+        } else {
+            // Si aucun utilisateur, afficher un message par défaut
+            username.setText("Utilisateur non connecté");
+        }
+
+        // événement de clic à l'icône de déconnexion
+        logoutIcon.setOnMouseClicked(event -> handleLogout());
+
     }
+
+    /**
+     * 🔹 Ferme tous les sous-menus si le clic est en dehors
+     */
+    private void closeAllSubMenus(javafx.scene.input.MouseEvent event) {
+        if (isSubMenuCongesVisible && !subMenuConges.getBoundsInParent().contains(event.getX(), event.getY())) {
+            toggleSubMenuConges();
+        }
+        if (isSubMenuRecrutementsVisible && !subMenuRecrutements.getBoundsInParent().contains(event.getX(), event.getY())) {
+            toggleSubMenuRecrutements();
+        }
+        if (isSubMenuProjetsVisible && !subMenuProjets.getBoundsInParent().contains(event.getX(), event.getY())) {
+            toggleSubMenuProjets();
+        }
+        if (isSubMenuTransportVisible && !subMenuTransport.getBoundsInParent().contains(event.getX(), event.getY())) {
+            toggleSubMenuTransports();
+        }
+    }
+
 
     /**
      * Définit le bouton actif (change la couleur de fond)
@@ -142,16 +166,12 @@ public class DashController {
     }
 
     /**
-     * Récupère le bon FXML en fonction du bouton cliqué
+     * Récupère le bon FXML en fonction du bouton
      */
     private String getFxmlPath(Button button) {
         if (button == btnDashboard) return "/fxml/dashboardAdminRH.fxml";
         if (button == btnUser) return "/fxml/listUsers.fxml";
-        if (button == btnRecrutements) return "/fxml/recrutements.fxml";
-        if (button == btnProjets) return "/fxml/projets.fxml";
-        if (button == btnTransports) return "/fxml/transports.fxml";
-        if (button == btnConges) return "/fxml/conges.fxml";
-        if (button == btnAbsences) return "/fxml/absences.fxml";
+
         return null;
     }
 
@@ -160,7 +180,7 @@ public class DashController {
      */
     private void toggleSubMenu(VBox subMenu, ImageView arrowIcon, boolean isVisible) {
         boolean newState = !isVisible; // Inverser l'état actuel
-        double targetHeight = newState ? 80 : 0; // Ajustez selon le nombre de boutons contenus dans le sous-menu
+        double targetHeight = newState ? 80 : 0; // Ajuste selon le nombre de boutons
 
         Timeline timeline = new Timeline(
                 new KeyFrame(Duration.millis(200),
@@ -202,9 +222,6 @@ public class DashController {
         isSubMenuProjetsVisible = !isSubMenuProjetsVisible;
     }
 
-    /**
-     * Basculer le sous-menu Transports
-     */
     @FXML
     private void toggleSubMenuTransports() {
         toggleSubMenu(subMenuTransport, arrowIconTransports, isSubMenuTransportVisible);
@@ -221,9 +238,6 @@ public class DashController {
         subMenuRecrutements.setManaged(false);
         subMenuProjets.setVisible(false);
         subMenuProjets.setManaged(false);
-        // Si nécessaire, vous pouvez aussi cacher le sous-menu des Transports
-        subMenuTransport.setVisible(false);
-        subMenuTransport.setManaged(false);
     }
 
     @FXML
@@ -237,4 +251,56 @@ public class DashController {
         setActiveButton(btnUser);
         loadView("/fxml/listUsers.fxml");
     }
+
+    @FXML
+    private void handleGestionProjet() {
+        setActiveButton(btnDashboard);
+        loadView("/fxml/ListProjet.fxml");
+    }
+    @FXML
+    private void handleTache() {
+        setActiveButton(btnDashboard);
+        loadView("/fxml/ListTacheRH.fxml");
+    }
+
+    @FXML
+    public void handleConge(ActionEvent actionEvent) {
+        setActiveButton(btnConges);
+        loadView("/fxml/dashboardCongeRh.fxml");
+    }
+    @FXML
+    public void handleAbsence(ActionEvent actionEvent) {
+        setActiveButton(btnAbsences);
+        loadView("/fxml/AttendanceView.fxml");
+    }
+
+
+    private void handleLogout() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Déconnexion");
+        alert.setHeaderText("Confirmation");
+        alert.setContentText("Voulez-vous vraiment vous déconnecter ?");
+
+        // Attendre la réponse de l'utilisateur
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            // Fermer la session
+            SessionManager.getInstance().setUtilisateurConnecte(null);
+
+            try {
+                // Charger la scène de connexion
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Login.fxml"));
+                Parent root = loader.load();
+
+                // Récupérer la scène actuelle et la remplacer par la scène de connexion
+                Stage stage = (Stage) logoutIcon.getScene().getWindow();
+                stage.setScene(new Scene(root));
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
 }

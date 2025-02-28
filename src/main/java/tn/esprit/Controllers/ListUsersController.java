@@ -13,7 +13,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -57,6 +60,8 @@ public class ListUsersController {
     private TextField searchField;
     @FXML
     private Pagination pagination; // Ajout de la pagination
+    @FXML
+    private StackPane stackPane;
 
     private ObservableList<Utilisateur> users = FXCollections.observableArrayList();
     private static final int ROWS_PER_PAGE = 10;
@@ -157,9 +162,28 @@ public class ListUsersController {
             }
         });
     }
-
+    @FXML
     private void showEditPopup(Utilisateur user) {
         try {
+            // Get the main stage
+            Stage primaryStage = (Stage) stackPane.getScene().getWindow();
+            Scene primaryScene = primaryStage.getScene();
+
+            // Create a semi-transparent overlay
+            Rectangle overlay = new Rectangle();
+            overlay.setWidth(primaryScene.getWidth());
+            overlay.setHeight(primaryScene.getHeight());
+            overlay.setFill(javafx.scene.paint.Color.rgb(0, 0, 0, 0.4)); // Dark transparent gray
+
+            // Ensure overlay resizes with window
+            primaryScene.widthProperty().addListener((obs, oldVal, newVal) -> overlay.setWidth(newVal.doubleValue()));
+            primaryScene.heightProperty().addListener((obs, oldVal, newVal) -> overlay.setHeight(newVal.doubleValue()));
+
+            // Add overlay to the root container of the main stage
+            Pane rootPane = (Pane) primaryScene.getRoot();
+            rootPane.getChildren().add(overlay);
+
+            // Load popup
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/editUser.fxml"));
             Parent root = loader.load();
             EditUserController controller = loader.getController();
@@ -170,6 +194,10 @@ public class ListUsersController {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.initStyle(StageStyle.UNDECORATED);
             stage.setScene(new Scene(root));
+
+            // Remove overlay when popup is closed
+            stage.setOnHidden(e -> rootPane.getChildren().remove(overlay));
+
             stage.showAndWait();
 
             refreshUserList();
@@ -177,7 +205,6 @@ public class ListUsersController {
             e.printStackTrace();
         }
     }
-
     private void confirmDelete(Utilisateur user) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation");
@@ -198,6 +225,25 @@ public class ListUsersController {
     @FXML
     private void showAddEmployeePopup() {
         try {
+            // Get the main stage
+            Stage primaryStage = (Stage) stackPane.getScene().getWindow();
+            Scene primaryScene = primaryStage.getScene();
+
+            // Create a semi-transparent overlay
+            Rectangle overlay = new Rectangle();
+            overlay.setWidth(primaryScene.getWidth());
+            overlay.setHeight(primaryScene.getHeight());
+            overlay.setFill(javafx.scene.paint.Color.rgb(0, 0, 0, 0.4)); // Dark transparent gray
+
+            // Ensure overlay resizes with window
+            primaryScene.widthProperty().addListener((obs, oldVal, newVal) -> overlay.setWidth(newVal.doubleValue()));
+            primaryScene.heightProperty().addListener((obs, oldVal, newVal) -> overlay.setHeight(newVal.doubleValue()));
+
+            // Add overlay to the root container of the main stage
+            Pane rootPane = (Pane) primaryScene.getRoot();
+            rootPane.getChildren().add(overlay);
+
+            // Load popup
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ajouterUser.fxml"));
             Parent root = loader.load();
 
@@ -205,6 +251,10 @@ public class ListUsersController {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.initStyle(StageStyle.UNDECORATED);
             stage.setScene(new Scene(root));
+
+            // Remove overlay when popup is closed
+            stage.setOnHidden(e -> rootPane.getChildren().remove(overlay));
+
             stage.showAndWait();
 
             refreshUserList();

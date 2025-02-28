@@ -24,7 +24,9 @@ public class Utilisateur implements Serializable {
     private byte[] uploaded_cv;
     private String num_tel;
     private String profilePhotoPath;
-    private Gender gender; // Ajout du genre
+    private Gender gender; // Ajout du genreµ
+    // private boolean firstLogin = true; // Default to true for new users
+
 
     public Utilisateur() {}
 
@@ -181,11 +183,19 @@ public class Utilisateur implements Serializable {
         this.gender = gender;
     }
 
+    public String getProfilePhotoPath() {
+        return profilePhotoPath;
+    }
+
+    public void setProfilePhotoPath(String profilePhotoPath) {
+        this.profilePhotoPath = profilePhotoPath;
+    }
+
     // Image par défaut si la photo de profil n'existe pas
     public ImageView getProfilePhotoImageView() {
         Image image;
         if (profilePhotoPath == null || profilePhotoPath.isEmpty()) {
-            URL imageUrl = getClass().getResource("/images/DefaultProfilePhoto.jpg");
+            URL imageUrl = getClass().getResource("/images/profile.png");
             if (imageUrl == null) {
                 return new ImageView();
             } else {
@@ -197,14 +207,14 @@ public class Utilisateur implements Serializable {
                 if (file.exists()) {
                     image = new Image(new FileInputStream(file));
                 } else {
-                    URL imageUrl = getClass().getResource("/images/DefaultProfilePhoto.jpg");
+                    URL imageUrl = getClass().getResource("/images/profile.png");
                     if (imageUrl == null) {
                         return new ImageView();
                     }
                     image = new Image(imageUrl.toExternalForm());
                 }
             } catch (FileNotFoundException e) {
-                URL imageUrl = getClass().getResource("/images/DefaultProfilePhoto.jpg");
+                URL imageUrl = getClass().getResource("/images/profile.png");
                 if (imageUrl == null) {
                     return new ImageView();
                 }

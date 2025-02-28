@@ -76,8 +76,8 @@ public class DashAdminRHController {
         employeeTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
 
-        AnchorPane.setLeftAnchor(progressionBox, 260.0);
-        AnchorPane.setTopAnchor(progressionBox, 470.0);
+        AnchorPane.setLeftAnchor(progressionBox, 200.0);
+        AnchorPane.setTopAnchor(progressionBox, 400.0);
         AnchorPane.setLeftAnchor(employeeTable, 260.0);
         AnchorPane.setTopAnchor(employeeTable, 470.0);
 

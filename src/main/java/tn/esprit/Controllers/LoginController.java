@@ -13,6 +13,8 @@ import javafx.stage.Stage;
 import tn.esprit.Entities.Role;
 import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Services.UtilisateurService;
+import tn.esprit.Utils.SessionManager;
+
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -83,6 +85,9 @@ public class LoginController {
         try {
             Utilisateur utilisateur = utilisateurService.getUserByEmail(email);
             if (utilisateur != null) {
+                // 🔥 Stocker l'utilisateur en session
+                SessionManager.getInstance().setUtilisateurConnecte(utilisateur);
+
                 redirectUser(utilisateur.getRole(), event);
             } else {
                 showAlert(Alert.AlertType.ERROR, "Erreur", "Aucun compte trouvé avec cet email.");
@@ -93,12 +98,13 @@ public class LoginController {
         }
     }
 
+
     private void redirectUser(Role role, ActionEvent event) throws IOException {
         String fxmlFile;
         if (role == Role.RESPONSABLE_RH) {
             fxmlFile = "/fxml/dash.fxml";
         } else {
-            fxmlFile = "/fxml/dashboard.fxml";
+            fxmlFile = "/fxml/dashEmployee.fxml";
         }
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
@@ -116,17 +122,22 @@ public class LoginController {
         alert.showAndWait();
     }
 
-    @FXML
-    private void handleForgotPassword(ActionEvent event) {
+    private void switchScene(ActionEvent event, String fxmlFile) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/forgetPwd.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             Parent root = loader.load();
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page de récupération de mot de passe.");
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page : " + fxmlFile);
         }
     }
+
+    @FXML
+    private void handleForgotPassword(ActionEvent event) {
+        switchScene(event, "/fxml/forgetPwd.fxml");
+    }
+
 }
