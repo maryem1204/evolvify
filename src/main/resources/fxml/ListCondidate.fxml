@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1290.0" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.ListCandidateController">
+   <children>
+      <AnchorPane prefHeight="900.0" prefWidth="1900.0">
+         <children>
+            <BorderPane layoutX="14.0" layoutY="-14.0" prefHeight="600.0" prefWidth="1100.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="-14.0" AnchorPane.topAnchor="-14.0">
+               <center>
+                  <AnchorPane fx:id="tableofthings" prefHeight="472.0" prefWidth="807.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <TextField fx:id="recherche" layoutX="22.0" layoutY="39.0" prefHeight="34.0" prefWidth="279.0" promptText="recherche" styleClass="shadow" />
+                        <ComboBox fx:id="comboTrie" layoutX="22.0" layoutY="470.0" prefWidth="150.0" promptText="Choisir un critère">
+                           <items>
+                              <FXCollections fx:factory="observableArrayList">
+                                 <String fx:value="Titre" />
+                                 <String fx:value="Date_Publication" />
+                                 <String fx:value="Date_Expiration" />
+                                 <String fx:value="Status" />
+                              </FXCollections>
+                           </items>
+                        </ComboBox>
+                        <ToggleButton fx:id="facondetrie" layoutX="216.0" layoutY="468.0" mnemonicParsing="false" text="choisir la facon de trie">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </ToggleButton>
+                        <TableView fx:id="tabledaffichage" layoutX="22.0" layoutY="101.0" prefHeight="312.0" prefWidth="1200.0" styleClass="shadow">
+                           <columns>
+                              <TableColumn fx:id="prenom" prefWidth="86.0" text="Prenom" />
+                              <TableColumn fx:id="nom" prefWidth="95.0" text="Nom" />
+                              <TableColumn fx:id="email" prefWidth="143.0" text="email" />
+                              <TableColumn fx:id="DatedeNaissance" prefWidth="173.0" text="Date de Naissance" />
+                              <TableColumn fx:id="DatedePostulation" prefWidth="173.0" text="Date de Postulation" />
+                               <TableColumn fx:id="cv" prefWidth="163.0" text="CV" />
+                               <TableColumn fx:id="numdetele" prefWidth="195.0" text="Numero de telephone" />
+                              <TableColumn fx:id="gender" prefWidth="263.0" text="gender" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+               </center>
+            </BorderPane>
+         </children>
+      </AnchorPane>
+   </children>
+</StackPane>

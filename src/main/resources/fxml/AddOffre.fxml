@@ -8,9 +8,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="750.0" prefWidth="500.0" styleClass="backglist" stylesheets="@../java/tn/esprit/Styles/formulCond.css" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.AddOffre">
+<AnchorPane prefHeight="750.0" prefWidth="500.0" styleClass="backglist"  xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.AddOffre">
    <children>
-      <AnchorPane layoutX="8.0" layoutY="10.0" prefHeight="731.0" prefWidth="481.0" styleClass="white-bg" stylesheets="@../java/tn/esprit/Styles/color.css">
+      <AnchorPane layoutX="8.0" layoutY="10.0" prefHeight="731.0" prefWidth="481.0" styleClass="white-bg" >
          <children>
             <Label layoutX="59.0" layoutY="77.0" prefHeight="27.0" prefWidth="64.0" text="Titre">
                <font>
@@ -27,9 +27,9 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <TextField fx:id="titre" layoutX="59.0" layoutY="123.0" prefHeight="34.0" prefWidth="322.0" styleClass="shadow-effect" stylesheets="@../java/tn/esprit/Styles/formulCond.css" />
+            <TextField fx:id="titre" layoutX="59.0" layoutY="123.0" prefHeight="34.0" prefWidth="322.0" styleClass="shadow-effect"  />
             <DatePicker fx:id="datepub" layoutX="207.0" layoutY="438.0" styleClass="shadow-effect" />
-            <Button fx:id="buttonAdd" layoutX="150.0" layoutY="589.0" maxWidth="212.0" mnemonicParsing="false" onAction="#add" prefHeight="59.0" prefWidth="168.0" styleClass="gradient-button" stylesheets="@../java/tn/esprit/Styles/color.css" text="Ajouter Offre">
+            <Button fx:id="buttonAdd" layoutX="150.0" layoutY="589.0" maxWidth="212.0" mnemonicParsing="false" onAction="#add" prefHeight="59.0" prefWidth="168.0" styleClass="gradient-button"  text="Ajouter Offre">
 
             <font>
                   <Font size="18.0" />
@@ -41,7 +41,7 @@
                </font>
             </Label>
             <DatePicker fx:id="dateexp" layoutX="207.0" layoutY="501.0" styleClass="shadow-effect" />
-            <TextArea fx:id="description" layoutX="57.0" layoutY="232.0" prefHeight="179.0" prefWidth="322.0" styleClass="shadow-effect" stylesheets="@../java/tn/esprit/Styles/formulCond.css" />
+            <TextArea fx:id="description" layoutX="57.0" layoutY="232.0" prefHeight="179.0" prefWidth="322.0" styleClass="shadow-effect"  />
          </children>
       </AnchorPane>
    </children>

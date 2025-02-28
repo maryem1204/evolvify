@@ -1,14 +1,11 @@
 package tn.esprit.Controllers;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import tn.esprit.Entities.Offre;
 import tn.esprit.Services.OffreService;
-import javafx.scene.control.SplitMenuButton;
 import java.sql.Date;
 import java.sql.SQLException;
-import java.time.ZoneId;
 
 public class ModifierOffre {
 
@@ -29,44 +26,41 @@ public class ModifierOffre {
 
     @FXML
     private ChoiceBox<Offre.Status> status;
+
     @FXML
     private TextField titre;
 
-    private  Offre offre;
+    private Offre offre;
 
-    public void setOffre(Offre offre)
-    {
+    // Cette méthode est utilisée pour remplir les champs du formulaire avec les données de l'offre sélectionnée
+    public void setOffre(Offre offre) {
         if (offre != null) {
             this.offre = offre;
             titre.setText(offre.getTitre());
             description.setText(offre.getDescription());
-            /*datepub.setValue(offre.getDatePublication().toInstant()
-                    .atZone(ZoneId.systemDefault()).toLocalDate());
 
-            dateexp.setValue(offre.getDateExpiration().toInstant()
-                    .atZone(ZoneId.systemDefault()).toLocalDate());*/
 
+            // Remplir le ChoiceBox avec le statut de l'offre
             status.setValue(offre.getStatus());
         } else {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Aucune offre sélectionnée.");
         }
     }
 
-
+    // Cette méthode est appelée lors de l'initialisation pour remplir le ChoiceBox avec les valeurs de l'énumération Status
     @FXML
     private void initialize() {
-        // Remplir le ChoiceBox avec les valeurs de l'énumération Status
-        status.getItems().setAll(Offre.Status.values());  // Remplit le ChoiceBox avec toutes les valeurs de l'énumération
+        status.getItems().setAll(Offre.Status.values());  // Remplir le ChoiceBox avec toutes les valeurs de l'énumération Status
     }
 
-
+    // Cette méthode est appelée lors de l'appui sur le bouton "Modifier"
     @FXML
     private void handleModifier(ActionEvent event) {
         try {
             // Vérifie si tous les champs sont remplis
             if (titre.getText().isEmpty() || description.getText().isEmpty() ||
                     datepub.getValue() == null || dateexp.getValue() == null ||
-                    status.getValue() == null) {  // Utilisation de getValue() au lieu de getText()
+                    status.getValue() == null) {
                 showAlert(Alert.AlertType.WARNING, "Champ manquant", "Veuillez remplir tous les champs.");
                 return;
             }
@@ -80,7 +74,7 @@ public class ModifierOffre {
             // Récupère la valeur sélectionnée dans le ChoiceBox
             Offre.Status statusValue = status.getValue();  // Récupération directe de la valeur du ChoiceBox
 
-            // Mettre à jour l'offre
+            // Mettre à jour l'offre avec les nouvelles valeurs
             offre.setTitre(titreValue);
             offre.setDescription(descriptionValue);
             offre.setDatePublication(datePub);
@@ -89,7 +83,7 @@ public class ModifierOffre {
 
             // Mettre à jour l'offre dans la base de données
             OffreService crud = new OffreService();
-            int result = crud.update(offre);
+            int result = crud.update(offre);  // Assurez-vous que la méthode `update()` dans `OffreService` existe
 
             if (result > 0) {
                 showAlert(Alert.AlertType.INFORMATION, "Succès", "L'offre a été mise à jour avec succès !");

@@ -12,8 +12,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxWidth="1865.0" prefHeight="823.0" prefWidth="1865.0" stylesheets="@../Styles/styledash.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="tn.esprit.Controllers.DashController">
+<AnchorPane maxWidth="1865.0" prefHeight="823.0" prefWidth="1865.0" stylesheets="@../Styles/styledash.css" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.DashController">
 
     <!-- Navbar -->
     <AnchorPane layoutX="-17.0" layoutY="-11.0" prefHeight="106.0" prefWidth="1882.0" style="-fx-background-color: rgba(255,255,255,0.61);" styleClass="navbar" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
@@ -36,16 +35,16 @@
                 <Label fx:id="username" prefHeight="50.0" prefWidth="90.0" styleClass="username" text="Meriem Sassi" />
 
                 <Region HBox.hgrow="ALWAYS" />
-
-                <padding>
-                    <Insets bottom="10" left="10" right="10" top="30" />
-                </padding>
                 <!-- Icône Déconnexion cliquable -->
                 <ImageView fx:id="logoutIcon" fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" style="-fx-cursor: hand">
                     <image>
                         <Image url="@/images/logoutt.png" />
                     </image>
                 </ImageView>
+
+                <padding>
+                    <Insets bottom="10" left="10" right="10" top="30" />
+                </padding>
             </HBox>
         </HBox>
     </AnchorPane>
@@ -86,7 +85,7 @@
             </Button>
 
             <!-- Gestion Congés -->
-            <Button fx:id="btnGestionConges" onAction="#toggleSubMenuConges" styleClass="sidebar-button" >
+            <Button fx:id="btnGestionConges" onAction="#toggleSubMenuConges" styleClass="sidebar-button">
                 <graphic>
                     <HBox alignment="CENTER_LEFT" spacing="10">
                         <ImageView fitHeight="30.0" fitWidth="30.0">
@@ -130,12 +129,13 @@
                 </graphic>
             </Button>
             <VBox fx:id="subMenuRecrutements" managed="false" visible="false">
-                <Button fx:id="btnCandidats" styleClass="sidebar-sub-button" text="Candidats" />
-                <Button fx:id="btnEntretiens" styleClass="sidebar-sub-button" text="Entretiens" />
+                <Button fx:id="btnCandidats" onAction="#showCandidats" styleClass="sidebar-sub-button" text="Candidats" />
+                <Button fx:id="btnOffre" onAction="#showOffres" styleClass="sidebar-sub-button" text="Offre" />
+                <Button fx:id="btnEntretiens" onAction="#showListOffresCandidates" styleClass="sidebar-sub-button" text="Entretiens" />
             </VBox>
 
             <!-- Gestion Projets -->
-            <Button fx:id="btnProjets" onAction="#toggleSubMenuProjets" styleClass="sidebar-button" >
+            <Button fx:id="btnProjets" onAction="#toggleSubMenuProjets" styleClass="sidebar-button">
                 <graphic>
                     <HBox alignment="CENTER_LEFT" spacing="10">
                         <ImageView fitHeight="30.0" fitWidth="30.0">

@@ -1,5 +1,6 @@
 package tn.esprit.Services;
 
+import tn.esprit.Entities.Gender;
 import tn.esprit.Entities.Offre;
 import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Entities.Utilisateur;
@@ -86,7 +87,7 @@ public class CandidateService implements CRUD<Utilisateur> {
         List<Utilisateur> condidates = new ArrayList<>();
 
         // SQL query to fetch users with role 'candidate'
-        String req = "SELECT `firstname`, `lastname`, `email`, `password`, `profilePhoto`, `birthdayDate`, `joiningDate`, `uploaded_cv`, `num_tel` FROM `users` WHERE role='candidate'";
+        String req = "SELECT `firstname`, `lastname`, `email`, `password`, `profilePhoto`, `birthdayDate`, `joiningDate`, `uploaded_cv`, `num_tel` , `gender` FROM `users` WHERE role='condidat'";
 
         try (Statement st = cnx.createStatement(); ResultSet rs = st.executeQuery(req)) {
             while (rs.next()) {
@@ -107,6 +108,7 @@ public class CandidateService implements CRUD<Utilisateur> {
                 utilisateur.setBirthdayDate(rs.getDate("birthdayDate"));
                 utilisateur.setJoiningDate(rs.getDate("joiningDate"));
                 utilisateur.setNum_tel(rs.getString("num_tel"));
+                utilisateur.setGender(Gender.valueOf(rs.getString("gender")) );
 
                 // Add the created Utilisateur object to the candidates list
                 condidates.add(utilisateur);

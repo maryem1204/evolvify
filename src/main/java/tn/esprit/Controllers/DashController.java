@@ -277,6 +277,20 @@ public class DashController {
             }
         }
     }
+    @FXML
+    private void showCandidats() {
+        loadView("/fxml/Listcondidate.fxml");
+    }
+
+    @FXML
+    private void showOffres() {
+        loadView("/fxml/Listoffre.fxml");
+    }
+
+    @FXML
+    private void showListOffresCandidates() {
+        loadView("/fxml/listoffreCandidates.fxml");
+    }
 
 
 }

@@ -1,24 +1,16 @@
 package tn.esprit.Entities;
 
-<<<<<<< HEAD
-import java.io.Serializable;
-import java.sql.Date;
-import java.util.Objects;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-=======
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Date;
 import java.util.Arrays;
 import java.util.Objects;
->>>>>>> 87d20d2cf9ac0541c9be113376bdb238a30de2b2
 
 public class Utilisateur implements Serializable {
     private int id_employe;
@@ -34,12 +26,6 @@ public class Utilisateur implements Serializable {
     private int conge_restant;
     private byte[] uploaded_cv;
     private String num_tel;
-<<<<<<< HEAD
-
-    public Utilisateur() {}
-
-    public Utilisateur(int id_employe, String firstname, String lastname, String email, String password, byte[] profilePhoto, Date birthdayDate, Date joiningDate, Role role, int tt_restants, int conge_restant, byte[] uploaded_cv, String num_tel) {
-=======
     private String profilePhotoPath;
     private Gender gender; // Ajout du genreµ
     // private boolean firstLogin = true; // Default to true for new users
@@ -48,53 +34,43 @@ public class Utilisateur implements Serializable {
     public Utilisateur() {}
 
     public Utilisateur(int id_employe, String firstname, String lastname, String email, String password, byte[] profilePhoto, Date birthdayDate, Date joiningDate, Role role, int tt_restants, int conge_restant, byte[] uploaded_cv, String num_tel, Gender gender) {
->>>>>>> 87d20d2cf9ac0541c9be113376bdb238a30de2b2
         this.id_employe = id_employe;
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
         this.password = password;
         this.profilePhoto = profilePhoto;
-<<<<<<< HEAD
-        this.birthdayDate = birthdayDate != null ? birthdayDate : Date.valueOf("2000-01-01");
-        this.joiningDate = joiningDate != null ? joiningDate : Date.valueOf("2000-01-01");
-=======
         this.birthdayDate = birthdayDate;
         this.joiningDate = joiningDate;
->>>>>>> 87d20d2cf9ac0541c9be113376bdb238a30de2b2
         this.role = role;
         this.tt_restants = tt_restants;
         this.conge_restant = conge_restant;
         this.uploaded_cv = uploaded_cv;
         this.num_tel = num_tel;
-<<<<<<< HEAD
-    }
-
-    public Utilisateur(String firstname, String lastname, String email, String password, byte[] profilePhoto, Date birthdayDate, Date joiningDate, Role role, int tt_restants, int conge_restant, byte[] uploaded_cv, String num_tel) {
-=======
         this.gender = (gender != null) ? gender : Gender.HOMME; // 🔥 Assurer une valeur par défaut
     }
 
     public Utilisateur(String firstname, String lastname, String email, String password, byte[] profilePhoto, Date birthdayDate, Date joiningDate, Role role, int tt_restants, int conge_restant, byte[] uploaded_cv, String num_tel, Gender gender) {
->>>>>>> 87d20d2cf9ac0541c9be113376bdb238a30de2b2
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
         this.password = password;
         this.profilePhoto = profilePhoto;
-<<<<<<< HEAD
-        this.birthdayDate = birthdayDate != null ? birthdayDate : Date.valueOf("2000-01-01");
-        this.joiningDate = joiningDate != null ? joiningDate : Date.valueOf("2000-01-01");
-=======
         this.birthdayDate = birthdayDate;
         this.joiningDate = joiningDate;
->>>>>>> 87d20d2cf9ac0541c9be113376bdb238a30de2b2
         this.role = role;
         this.tt_restants = tt_restants;
         this.conge_restant = conge_restant;
         this.uploaded_cv = uploaded_cv;
         this.num_tel = num_tel;
-<<<<<<< HEAD
+        this.gender = (gender != null) ? gender : Gender.HOMME; // 🔥 Assurer une valeur par défaut
+    }
+
+    public Utilisateur(int id_employe, String email, String password, Role role) {
+        this.id_employe = id_employe;
+        this.email = email;
+        this.password = password;
+        this.role = role;
     }
     public Utilisateur(String firstname, String lastname, String email,byte[] profilePhoto,  Date birthdayDate, Date joiningDate, byte[] uploaded_cv,String num_tel) {
 
@@ -124,20 +100,7 @@ public class Utilisateur implements Serializable {
         Files.write(path, fileData);
     }
 
-
-=======
-        this.gender = (gender != null) ? gender : Gender.HOMME; // 🔥 Assurer une valeur par défaut
-    }
-
-    public Utilisateur(int id_employe, String email, String password, Role role) {
-        this.id_employe = id_employe;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-    }
-
     // Getters et Setters
->>>>>>> 87d20d2cf9ac0541c9be113376bdb238a30de2b2
     public int getId_employe() {
         return id_employe;
     }
@@ -210,21 +173,6 @@ public class Utilisateur implements Serializable {
         this.role = role;
     }
 
-<<<<<<< HEAD
-    public int getTt_restants() {
-        return tt_restants;
-    }
-
-    public void setTt_restants(int tt_restants) {
-        this.tt_restants = tt_restants;
-    }
-
-    public int getConge_restant() {
-        return conge_restant;
-    }
-
-    public void setConge_restant(int conge_restant) {
-=======
     public int getTtRestants() {
         return tt_restants;
     }
@@ -238,7 +186,6 @@ public class Utilisateur implements Serializable {
     }
 
     public void setCongeRestant(int conge_restant) {
->>>>>>> 87d20d2cf9ac0541c9be113376bdb238a30de2b2
         this.conge_restant = conge_restant;
     }
 
@@ -258,8 +205,6 @@ public class Utilisateur implements Serializable {
         this.num_tel = num_tel;
     }
 
-<<<<<<< HEAD
-=======
     public Gender getGender() {
         return gender;
     }
@@ -314,7 +259,6 @@ public class Utilisateur implements Serializable {
         return imageView;
     }
 
->>>>>>> 87d20d2cf9ac0541c9be113376bdb238a30de2b2
     @Override
     public String toString() {
         return "Utilisateur{" +
@@ -331,10 +275,7 @@ public class Utilisateur implements Serializable {
                 ", conge_restant=" + conge_restant +
                 ", uploadedCv=" + (uploaded_cv != null ? "Exists" : "Not Uploaded") +
                 ", num_tel='" + num_tel + '\'' +
-<<<<<<< HEAD
-=======
                 ", gender='" + gender + '\'' +
->>>>>>> 87d20d2cf9ac0541c9be113376bdb238a30de2b2
                 '}';
     }
 
@@ -343,31 +284,11 @@ public class Utilisateur implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Utilisateur that = (Utilisateur) o;
-<<<<<<< HEAD
-        return id_employe == that.id_employe &&
-                tt_restants == that.tt_restants &&
-                conge_restant == that.conge_restant &&
-                Objects.equals(firstname, that.firstname) &&
-                Objects.equals(lastname, that.lastname) &&
-                Objects.equals(email, that.email) &&
-                Objects.equals(password, that.password) &&
-                Objects.equals(profilePhoto, that.profilePhoto) &&
-                Objects.equals(birthdayDate, that.birthdayDate) &&
-                Objects.equals(joiningDate, that.joiningDate) &&
-                Objects.equals(role, that.role) &&
-                Objects.equals(uploaded_cv, that.uploaded_cv) &&
-                Objects.equals(num_tel, that.num_tel);
-=======
         return id_employe == that.id_employe && tt_restants == that.tt_restants && conge_restant == that.conge_restant && Objects.equals(firstname, that.firstname) && Objects.equals(lastname, that.lastname) && Objects.equals(email, that.email) && Objects.equals(password, that.password) && Objects.deepEquals(profilePhoto, that.profilePhoto) && Objects.equals(birthdayDate, that.birthdayDate) && Objects.equals(joiningDate, that.joiningDate) && role == that.role && Objects.deepEquals(uploaded_cv, that.uploaded_cv) && Objects.equals(num_tel, that.num_tel) && Objects.equals(profilePhotoPath, that.profilePhotoPath) && gender == that.gender;
->>>>>>> 87d20d2cf9ac0541c9be113376bdb238a30de2b2
     }
 
     @Override
     public int hashCode() {
-<<<<<<< HEAD
-        return Objects.hash(id_employe, firstname, lastname, email, password, profilePhoto, birthdayDate, joiningDate, role, tt_restants, conge_restant, uploaded_cv, num_tel);
-=======
         return Objects.hash(id_employe, firstname, lastname, email, password, Arrays.hashCode(profilePhoto), birthdayDate, joiningDate, role, tt_restants, conge_restant, Arrays.hashCode(uploaded_cv), num_tel, profilePhotoPath, gender);
->>>>>>> 87d20d2cf9ac0541c9be113376bdb238a30de2b2
     }
 }

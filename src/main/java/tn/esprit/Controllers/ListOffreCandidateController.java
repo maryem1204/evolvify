@@ -1,29 +1,27 @@
 package tn.esprit.Controllers;
+
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import tn.esprit.Services.ListOffreService;
 import tn.esprit.Entities.ListOffre;
+import tn.esprit.Services.ListOffreService;
 import tn.esprit.Utils.MyDataBase;
 
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.*;
+import jakarta.mail.internet.*;
+import java.util.Properties;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.Properties;
-import static com.mysql.cj.conf.PropertyKey.logger;
 
-public class DashboardListOffre {
+public class ListOffreCandidateController {
 
     @FXML
     private TableColumn<ListOffre, String> colTitre;
@@ -181,6 +179,7 @@ public class DashboardListOffre {
         alert.setContentText(message);
         alert.showAndWait();
     }
+    // Récupérer l'email du candidat (fonction non modifiée)
     private String getEmailById(int idCandidat) {
         String query = "SELECT email FROM users WHERE id_employe = ?";
         try (PreparedStatement statement = cnx.prepareStatement(query)) {
@@ -195,28 +194,34 @@ public class DashboardListOffre {
         return null;
     }
 
+    // Fonction pour envoyer l'email (modifiée pour Jakarta Mail)
     private void sendEmail(String recipientEmail, String status) {
         final String fromEmail = "cherif.sarra@esprit.tn"; // Remplacez par votre email
         final String password = "ihdr zwon zlnj ngpp"; // Remplacez par votre mot de passe
 
+        // Propriétés de la connexion SMTP
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.port", "587");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
 
+        // Créer une session d'authentification
         Session session = Session.getInstance(props, new Authenticator() {
+            @Override
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(fromEmail, password);
             }
         });
 
         try {
+            // Créer un message MIME
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(fromEmail));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
+            message.setFrom(new InternetAddress(fromEmail));  // Définir l'expéditeur
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));  // Définir le destinataire
             message.setSubject("Mise à jour de votre candidature");
 
+            // Créer le corps du message avec HTML
             String messageText = "<html><body>";
             messageText += "<p>Bonjour,</p>";
             if (status.equalsIgnoreCase("accepte")) {
@@ -227,10 +232,13 @@ public class DashboardListOffre {
             messageText += "<p>Cordialement,<br>L'équipe RH</p>";
             messageText += "</body></html>";
 
+            // Définir le contenu du message en HTML
             message.setContent(messageText, "text/html");
 
+            // Envoyer l'email
             Transport.send(message);
 
+            // Afficher une alerte pour confirmer l'envoi
             afficherAlerte("Succès", "L'email a été envoyé avec succès à " + recipientEmail);
 
         } catch (MessagingException e) {
