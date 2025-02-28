@@ -84,12 +84,12 @@ public class DashController {
 
         btnConges.setOnAction(event -> {
             setActiveButton(btnConges);
-            loadView("/fxml/conges.fxml");
+            loadView("/fxml/dashboardCongeRh.fxml");
         });
 
         btnAbsences.setOnAction(event -> {
             setActiveButton(btnAbsences);
-            loadView("/fxml/absences.fxml");
+            loadView("/fxml/AttendanceView.fxml");
         });
 
         //username.setText("Meriem Sassi");
@@ -251,6 +251,30 @@ public class DashController {
         setActiveButton(btnUser);
         loadView("/fxml/listUsers.fxml");
     }
+
+    @FXML
+    private void handleGestionProjet() {
+        setActiveButton(btnDashboard);
+        loadView("/fxml/ListProjet.fxml");
+    }
+    @FXML
+    private void handleTache() {
+        setActiveButton(btnDashboard);
+        loadView("/fxml/ListTacheRH.fxml");
+    }
+
+    @FXML
+    public void handleConge(ActionEvent actionEvent) {
+        setActiveButton(btnConges);
+        loadView("/fxml/dashboardCongeRh.fxml");
+    }
+    @FXML
+    public void handleAbsence(ActionEvent actionEvent) {
+        setActiveButton(btnAbsences);
+        loadView("/fxml/AttendanceView.fxml");
+    }
+
+
     private void handleLogout() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Déconnexion");

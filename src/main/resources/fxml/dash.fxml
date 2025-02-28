@@ -12,14 +12,13 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxWidth="1865.0" prefHeight="823.0" prefWidth="1865.0" stylesheets="@../Styles/styledash.css"
-            xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
+<AnchorPane maxWidth="1865.0" prefHeight="823.0" prefWidth="1865.0" stylesheets="@../Styles/styledash.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="tn.esprit.Controllers.DashController">
 
     <!-- Navbar -->
-    <AnchorPane prefHeight="106.0" prefWidth="1882.0" style="-fx-background-color: rgba(255,255,255,0.61);"
-                styleClass="navbar" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-        <HBox alignment="CENTER_RIGHT" layoutX="0.0" layoutY="0.0" prefHeight="106.0" AnchorPane.rightAnchor="20.0">
+    <AnchorPane layoutX="-17.0" layoutY="-11.0" prefHeight="106.0" prefWidth="1882.0" style="-fx-background-color: rgba(255,255,255,0.61);" styleClass="navbar" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+
+        <HBox alignment="CENTER_RIGHT" prefHeight="66.0" spacing="20" AnchorPane.rightAnchor="20.0">
             <Region HBox.hgrow="ALWAYS" />
 
             <!-- Profil utilisateur + Déconnexion -->
@@ -38,6 +37,9 @@
 
                 <Region HBox.hgrow="ALWAYS" />
 
+                <padding>
+                    <Insets bottom="10" left="10" right="10" top="30" />
+                </padding>
                 <!-- Icône Déconnexion cliquable -->
                 <ImageView fx:id="logoutIcon" fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" style="-fx-cursor: hand">
                     <image>
@@ -48,9 +50,10 @@
         </HBox>
     </AnchorPane>
 
+
     <!-- Logo -->
     <VBox alignment="CENTER" prefHeight="174.0" prefWidth="330.0" style="-fx-background-color: #2A1B50;" AnchorPane.topAnchor="0.0">
-        <ImageView fx:id="logoImage" fitHeight="173.0" fitWidth="230.0" pickOnBounds="true" preserveRatio="true">
+        <ImageView fx:id="logoImage" fitHeight="173.0" fitWidth="230.0" layoutX="25.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@/images/evolve.png" />
             </image>
@@ -58,10 +61,8 @@
     </VBox>
 
     <!-- Scrollable Sidebar -->
-    <ScrollPane fx:id="scrollSidebar" fitToHeight="true" fitToWidth="true" prefWidth="330.0"
-                styleClass="sidebar-scrollpane" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="173.0">
-        <VBox fx:id="sidebar" alignment="CENTER" prefWidth="330.0" spacing="25"
-              style="-fx-background-color: #2A1B50; -fx-alignment: TOP_CENTER;">
+    <ScrollPane fx:id="scrollSidebar" fitToHeight="true" fitToWidth="true" prefWidth="330.0" styleClass="sidebar-scrollpane" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="173.0">
+        <VBox fx:id="sidebar" alignment="CENTER" prefWidth="330.0" spacing="25" style="-fx-background-color: #2A1B50; -fx-alignment: TOP_CENTER;">
             <!-- Dashboard -->
             <Button fx:id="btnDashboard" onAction="#handleDashboard" styleClass="sidebar-button" text="  Dashboard">
                 <graphic>
@@ -73,7 +74,7 @@
                 </graphic>
             </Button>
 
-            <!-- Gestion Utilisateurs -->
+            <!-- Gestion Utilisateurs controle-dacces.png-->
             <Button fx:id="btnUser" onAction="#handleGestionUtilisateur" styleClass="sidebar-button" text=" Gestion Utilisateurs">
                 <graphic>
                     <ImageView fitHeight="30.0" fitWidth="30.0">
@@ -84,8 +85,8 @@
                 </graphic>
             </Button>
 
-            <!-- Bouton principal pour Gestion Congés -->
-            <Button fx:id="btnGestionConges" onAction="#toggleSubMenuConges" styleClass="sidebar-button">
+            <!-- Gestion Congés -->
+            <Button fx:id="btnGestionConges" onAction="#toggleSubMenuConges" styleClass="sidebar-button" >
                 <graphic>
                     <HBox alignment="CENTER_LEFT" spacing="10">
                         <ImageView fitHeight="30.0" fitWidth="30.0">
@@ -103,15 +104,14 @@
                     </HBox>
                 </graphic>
             </Button>
-
-            <!-- Sous-menu Congés (Caché par défaut) -->
-            <VBox fx:id="subMenuConges" visible="false" managed="false">
-                <Button fx:id="btnConges" onAction="#handleConge" text="Congés" styleClass="sidebar-sub-button" />
-                <Button fx:id="btnAbsences" onAction="#handleAbsence" text="Absences" styleClass="sidebar-sub-button" />
+            <VBox fx:id="subMenuConges" managed="false" visible="false">
+                <Button fx:id="btnConges" styleClass="sidebar-sub-button" text="Congés" />
+                <Button fx:id="btnAbsences" styleClass="sidebar-sub-button" text="Absences" />
             </VBox>
 
+
             <!-- Gestion Recrutements -->
-            <Button fx:id="btnRecrutements" onAction="#toggleSubMenuRecrutements" styleClass="sidebar-button">
+            <Button fx:id="btnRecrutements" onAction="#toggleSubMenuRecrutements" styleClass="sidebar-button" text="Gestion Recrutements">
                 <graphic>
                     <HBox alignment="CENTER_LEFT" spacing="10">
                         <ImageView fitHeight="30.0" fitWidth="30.0">
@@ -120,7 +120,7 @@
                             </image>
                         </ImageView>
                         <Label style="-fx-text-fill: white;" text="Gestion Recrutements" />
-                        <Region HBox.hgrow="ALWAYS" />
+                        <Region HBox.hgrow="ALWAYS" /> <!-- Ajout d'un espace flexible -->
                         <ImageView fx:id="arrowIconRecrutements" fitHeight="20.0" fitWidth="20.0">
                             <image>
                                 <Image url="@/images/fleche.png" />
@@ -136,7 +136,7 @@
             </VBox>
 
             <!-- Gestion Projets -->
-            <Button fx:id="btnProjets" onAction="#toggleSubMenuProjets" styleClass="sidebar-button">
+            <Button fx:id="btnProjets" onAction="#toggleSubMenuProjets" styleClass="sidebar-button" >
                 <graphic>
                     <HBox alignment="CENTER_LEFT" spacing="10">
                         <ImageView fitHeight="30.0" fitWidth="30.0">
@@ -145,7 +145,8 @@
                             </image>
                         </ImageView>
                         <Label style="-fx-text-fill: white;" text="Gestion Projets" />
-                        <Region HBox.hgrow="ALWAYS" />
+                        <Region HBox.hgrow="ALWAYS" /> <!-- Ajout d'un espace flexible -->
+
                         <ImageView fx:id="arrowIconProjets" fitHeight="20.0" fitWidth="20.0">
                             <image>
                                 <Image url="@/images/fleche.png" />
@@ -155,8 +156,8 @@
                 </graphic>
             </Button>
             <VBox fx:id="subMenuProjets" managed="false" visible="false">
-                <Button fx:id="btnTaches" onAction="#handleGestionProjet" styleClass="sidebar-sub-button" text="Projets" />
-                <Button fx:id="btnEquipe" onAction="#handleTache" styleClass="sidebar-sub-button" text="Taches" />
+                <Button fx:id="btnTaches" styleClass="sidebar-sub-button" text="Tâches" />
+                <Button fx:id="btnEquipe" styleClass="sidebar-sub-button" text="Équipe" />
             </VBox>
 
             <!-- Gestion Transports -->
@@ -169,7 +170,8 @@
                             </image>
                         </ImageView>
                         <Label style="-fx-text-fill: white;" text="Gestion Transports" />
-                        <Region HBox.hgrow="ALWAYS" />
+                        <Region HBox.hgrow="ALWAYS" /> <!-- Ajout d'un espace flexible -->
+
                         <ImageView fx:id="arrowIconTransports" fitHeight="20.0" fitWidth="20.0">
                             <image>
                                 <Image url="@/images/fleche.png" />
@@ -179,15 +181,14 @@
                 </graphic>
             </Button>
             <VBox fx:id="subMenuTransport" managed="false" visible="false">
-                <Button fx:id="btnTransport" styleClass="sidebar-sub-button" text="Transport" />
-                <Button fx:id="btnTrajet" styleClass="sidebar-sub-button" text="Trajet" />
-                <Button fx:id="btnAb" styleClass="sidebar-sub-button" text="Abonnement" />
+                <Button fx:id="btnTransport" styleClass="sidebar-sub-button" text="Tâches" />
+                <Button fx:id="btnTrajet" styleClass="sidebar-sub-button" text="Équipe" />
+                <Button fx:id="btnAb" styleClass="sidebar-sub-button" text="Équipe" />
+
             </VBox>
         </VBox>
     </ScrollPane>
 
     <!-- Contenu dynamique -->
-    <AnchorPane fx:id="contentArea" layoutX="334.0" layoutY="99.0" prefHeight="717.0" prefWidth="1531.0"
-                AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="334.0"
-                AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="106.0" />
+    <AnchorPane fx:id="contentArea" layoutX="334.0" layoutY="99.0" prefHeight="717.0" prefWidth="1531.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="334.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="106.0" />
 </AnchorPane>

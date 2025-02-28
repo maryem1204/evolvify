@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" prefHeight="200.0" prefWidth="380.0" spacing="20.0"
+      style="-fx-background-color: #fff3cd;
+             -fx-border-color: #ffc107;
+             -fx-border-width: 2;
+             -fx-border-radius: 10;
+             -fx-padding: 20;
+             -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 4);"
+      xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="tn.esprit.Controllers.DeleteProjetController">
+
+    <!-- Icône Warning -->
+    <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true"
+               style="-fx-image: url('https://cdn-icons-png.flaticon.com/512/1828/1828843.png');"/>
+
+    <!-- Message de confirmation -->
+    <Label fx:id="confirmationMessage" text="Attention ! Cette action est irréversible."
+           style="-fx-font-size: 15px;
+                  -fx-font-weight: bold;
+                  -fx-text-fill: #856404;
+                  -fx-text-alignment: center;"/>
+
+    <Label text="Êtes-vous sûr de vouloir supprimer ce projet ?"
+           style="-fx-font-size: 13px;
+                  -fx-text-fill: #856404;
+                  -fx-text-alignment: center;"/>
+
+    <!-- Boutons -->
+    <HBox alignment="CENTER" spacing="15.0">
+        <Button onAction="#handleCancelDelete" text="Annuler"
+                style="-fx-background-color: #dddddd;
+                       -fx-text-fill: #333;
+                       -fx-font-size: 13px;
+                       -fx-padding: 8 16;
+                       -fx-background-radius: 8;"/>
+
+        <Button onAction="#handleConfirmDelete" text="Supprimer"
+                style="-fx-background-color: #dc3545;
+                       -fx-text-fill: white;
+                       -fx-font-size: 13px;
+                       -fx-padding: 8 16;
+                       -fx-background-radius: 8;"/>
+    </HBox>
+
+</VBox>

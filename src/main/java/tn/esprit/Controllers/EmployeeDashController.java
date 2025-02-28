@@ -1,5 +1,6 @@
 package tn.esprit.Controllers;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -174,6 +175,13 @@ public class EmployeeDashController {
         loadView("/fxml/employeeProfile.fxml");
     }
 
+
+    @FXML
+    private void handleProjet() throws IOException {
+        setActiveButton(btnProjets);
+        loadView("/fxml/ProjectListWithCards.fxml");
+    }
+
     private void handleLogout() {
         try {
             // Clear any user session data
@@ -216,5 +224,13 @@ public class EmployeeDashController {
 
         // Set active state to the selected button
         button.getStyleClass().add("active-sidebar-button");
+    }
+    @FXML
+    public void handleConge(ActionEvent actionEvent) {
+        loadView("/fxml/CongeEmploye.fxml");
+    }
+    @FXML
+    public void handleAbsence(ActionEvent actionEvent) {
+        loadView("/fxml/EmployeAbsence.fxml");
     }
 }
