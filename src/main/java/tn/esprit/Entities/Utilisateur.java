@@ -24,7 +24,9 @@ public class Utilisateur implements Serializable {
     private byte[] uploaded_cv;
     private String num_tel;
     private String profilePhotoPath;
-    private Gender gender; // Ajout du genre
+    private Gender gender; // Ajout du genreµ
+    // private boolean firstLogin = true; // Default to true for new users
+
 
     public Utilisateur() {}
 

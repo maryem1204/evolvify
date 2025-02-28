@@ -1,105 +1,110 @@
 package tn.esprit.Controllers;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.Label;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import tn.esprit.Services.UtilisateurService;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class ResetPasswordController {
 
     @FXML
-    private PasswordField password;
-    @FXML
-    private PasswordField ConfirmedPassword;
-    @FXML
-    private Button submitButton;
+    private PasswordField newPasswordField, confirmPasswordField;
     @FXML
     private Label errorLabel;
+    @FXML
+    private Button resetButton;
 
     private final UtilisateurService utilisateurService = new UtilisateurService();
-    private int userId;  // ID de l'utilisateur concerné par la réinitialisation
-    private String token; // Token de validation
+    private int userId;  // ID de l'utilisateur à mettre à jour
 
     /**
-     * ✅ Permet de récupérer l'ID utilisateur et le token.
+     * Initialise le contrôleur avec l'ID de l'utilisateur récupéré de l'interface ForgotPasswordController.
+     * @param userId Identifiant de l'utilisateur qui veut réinitialiser son mot de passe.
      */
-    public void setResetToken(int userId, String token) {
+    public void setUserId(int userId) {
         this.userId = userId;
-        this.token = token;
     }
 
     @FXML
-    public void initialize() {
-        submitButton.setOnAction(event -> handlePasswordReset());
-    }
-
-    /**
-     * ✅ Vérifie et met à jour le mot de passe.
-     */
-    private void handlePasswordReset() {
-        String newPassword = password.getText().trim();
-        String confirmPassword = ConfirmedPassword.getText().trim();
-        errorLabel.setText(""); // Réinitialiser le message d'erreur
+    private void resetPassword() {
+        String newPassword = newPasswordField.getText().trim();
+        String confirmPassword = confirmPasswordField.getText().trim();
+        errorLabel.setText("");
 
         if (newPassword.isEmpty() || confirmPassword.isEmpty()) {
             showError("Veuillez remplir tous les champs !");
             return;
         }
-
         if (!newPassword.equals(confirmPassword)) {
             showError("Les mots de passe ne correspondent pas !");
             return;
         }
 
-        if (newPassword.length() < 6) {
-            showError("Le mot de passe doit contenir au moins 6 caractères !");
-            return;
-        }
-
         try {
-            // Vérifier si le token est valide
-            if (!utilisateurService.isValidResetToken(userId, token)) {
-                showError("Lien de réinitialisation invalide ou expiré !");
-                return;
-            }
-
-            // Mettre à jour le mot de passe
             utilisateurService.updatePassword(userId, newPassword);
-
-            // Afficher un message de succès
-            showAlert(Alert.AlertType.INFORMATION, "Succès", "Votre mot de passe a été mis à jour avec succès !");
-
-            // Fermer la fenêtre après succès
-            Stage stage = (Stage) submitButton.getScene().getWindow();
-            stage.close();
-
+            showAlert(Alert.AlertType.INFORMATION, "Succès", "Mot de passe réinitialisé avec succès !");
+            openLoginScene();  // Rediriger vers login après succès
         } catch (SQLException e) {
             showError("Erreur lors de la mise à jour du mot de passe !");
             e.printStackTrace();
         }
     }
 
-    /**
-     * ✅ Affiche une erreur dans l'interface.
-     */
     private void showError(String message) {
         errorLabel.setText(message);
         errorLabel.setStyle("-fx-text-fill: red;");
     }
 
-    /**
-     * ✅ Affiche une alerte.
-     */
     private void showAlert(Alert.AlertType type, String title, String message) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void switchScene(ActionEvent event, String fxmlFile) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page : " + fxmlFile);
+        }
+    }
+
+    /**
+     * Ouvre la page de connexion après la réinitialisation du mot de passe.
+     * Cette version ferme l'ancienne fenêtre et ouvre une nouvelle.
+     */
+    private void openLoginScene() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/loginUser.fxml"));
+            Parent root = loader.load();
+
+            // Récupérer la fenêtre actuelle
+            Stage stage = (Stage) resetButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            showError("Erreur lors de l'ouverture de la page de connexion !");
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void goToLogin(ActionEvent event) {
+        switchScene(event, "/fxml/loginUser.fxml");
     }
 }

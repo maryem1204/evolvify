@@ -7,42 +7,38 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Services.UtilisateurService;
+import tn.esprit.Tests.MainFXLogin;
 
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.UUID;
+import java.util.Random;
 
 public class ForgotPasswordController {
     @FXML
-    private Hyperlink backToLogin;
+    private TextField emailField, codeField;
     @FXML
-    private TextField emailField;
+    private Button submitButton, verifyCodeButton;
     @FXML
-    private Button submitButton;
+    private Label errorLabel, codeLabel;
     @FXML
-    private Label errorLabel;
+    private VBox codeSection;
 
     private final UtilisateurService utilisateurService = new UtilisateurService();
+    private int generatedCode;
+    private int userId;
 
     @FXML
     public void initialize() {
-        submitButton.setOnAction(event -> {
-            try {
-                handleForgotPassword();
-            } catch (SQLException e) {
-                showError("Erreur de base de données, veuillez réessayer !");
-                e.printStackTrace();
-            }
-        });
+        codeSection.setVisible(false);  // Masquer la section du code au démarrage
     }
 
     @FXML
-    private void handleForgotPassword() throws SQLException {
+    private void sendVerificationCode() {
         String email = emailField.getText().trim();
-        errorLabel.setText(""); // Réinitialise le message d'erreur
+        errorLabel.setText("");
 
         if (email.isEmpty()) {
             showError("Veuillez entrer votre email !");
@@ -55,68 +51,69 @@ public class ForgotPasswordController {
             return;
         }
 
-        // Générer un token sécurisé
-        String token = UUID.randomUUID().toString();
-        utilisateurService.savePasswordResetToken(user.getId_employe(), token);
+        userId = user.getId_employe();
+        generatedCode = new Random().nextInt(90000000) + 10000000;
+        utilisateurService.sendConfirmationCode(email, generatedCode);
 
-        utilisateurService.sendPasswordResetEmail(email, token);
+        // Afficher la section du code
+        codeSection.setVisible(true);
     }
 
-    /**
-     * Affiche une alerte avec un message.
-     */
-    private void showAlert(Alert.AlertType type, String title, String message) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+    @FXML
+    private void verifyCode() {
+        try {
+            int enteredCode = Integer.parseInt(codeField.getText().trim());
+            if (enteredCode == generatedCode) {
+                openResetPasswordWindow();
+            } else {
+                showError("Code incorrect, vérifiez votre email !");
+            }
+        } catch (NumberFormatException e) {
+            showError("Veuillez entrer un code valide !");
+        }
     }
 
-    /**
-     * Affiche un message d'erreur dans le label.
-     */
     private void showError(String message) {
         errorLabel.setText(message);
         errorLabel.setStyle("-fx-text-fill: red;");
     }
 
-    /**
-     * ✅ Ouvre la fenêtre de réinitialisation avec le token.
-     */
-    private void openResetPasswordWindow(int userId, String token) {
+    @FXML
+    private void openResetPasswordWindow() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/resetPwd.fxml"));
             Parent root = loader.load();
 
-            // Récupérer le contrôleur et passer les informations
             ResetPasswordController controller = loader.getController();
-            controller.setResetToken(userId, token);
+            controller.setUserId(userId);
 
             Stage stage = new Stage();
-            stage.setTitle("Réinitialisation du mot de passe");
             stage.setScene(new Scene(root));
             stage.show();
 
-            showAlert(Alert.AlertType.INFORMATION, "Succès", "Veuillez entrer votre nouveau mot de passe.");
+            // Fermer la fenêtre actuelle
+            Stage currentStage = (Stage) verifyCodeButton.getScene().getWindow();
+            currentStage.close();
         } catch (IOException e) {
-            showError("Erreur lors de l'ouverture de la fenêtre !");
+            showError("Erreur lors de l'ouverture de la page de réinitialisation !");
             e.printStackTrace();
         }
     }
-
-    @FXML
-    private void handleLogin(ActionEvent event) {
+    private void switchScene(ActionEvent event, String fxmlFile) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/loginUser.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             Parent root = loader.load();
-
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
-            showError("Erreur lors du chargement de la page de connexion !");
             e.printStackTrace();
+            System.out.println("ErreurImpossible de charger la page : " + fxmlFile);
         }
+    }
+
+    @FXML
+    public void goToLogin(ActionEvent event) {
+        switchScene(event, "/fxml/loginUser.fxml");
     }
 }

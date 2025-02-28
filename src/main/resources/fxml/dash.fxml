@@ -39,7 +39,7 @@
                 <Region HBox.hgrow="ALWAYS" />
 
                 <!-- Icône Déconnexion cliquable -->
-                <ImageView fx:id="logoutIcon" fitHeight="45.0" fitWidth="45.0" pickOnBounds="true">
+                <ImageView fx:id="logoutIcon" fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" style="-fx-cursor: hand">
                     <image>
                         <Image url="@/images/logoutt.png" />
                     </image>
