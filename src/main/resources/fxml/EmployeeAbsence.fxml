@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.DatePicker?>
 <StackPane styleClass="main-container" stylesheets="@../Styles/EmployeAbsence.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.EmployeeAbsenceController">
 
     <VBox fx:id="presenceContainer" spacing="20" styleClass="content-wrapper">
@@ -34,7 +35,12 @@
             <Insets top="40.0" />
          </VBox.margin>
         </VBox>
-
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Filtrer par date:" />
+            <DatePicker fx:id="filterDatePicker" />
+            <Button fx:id="applyFilterButton" text="Appliquer" />
+            <Button fx:id="resetFilterButton" text="Réinitialiser" />
+        </HBox>
         <!-- Carte d'historique -->
         <VBox styleClass="history-card" VBox.vgrow="ALWAYS">
             <Label styleClass="title-label" text="Historique de présence" />

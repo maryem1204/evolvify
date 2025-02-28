@@ -13,7 +13,7 @@ public class MainFXConge extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/CongeEmploye.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EmployeeAbsence.fxml"));
             Parent root = loader.load();
             primaryStage.setTitle("Conge Employe");
             primaryStage.setResizable(false);

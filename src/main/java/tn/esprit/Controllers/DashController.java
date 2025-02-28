@@ -124,6 +124,7 @@ public class DashController {
 
     }
 
+
     /**
      * 🔹 Ferme tous les sous-menus si le clic est en dehors
      */

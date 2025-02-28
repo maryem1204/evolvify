@@ -5,10 +5,11 @@ import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 
 public class SmsService {
+    
     // Your Twilio credentials - store these securely in a properties file
-    private static final String ACCOUNT_SID = "TWILIO_ACCOUNT_SID";
-    private static final String AUTH_TOKEN = "TWILIO_AUTH_TOKEN";
-    private static final String FROM_NUMBER = "TWILIO_FROM_NUMBER";
+    private static final String ACCOUNT_SID = "AC9b6f27261cda37833226e23a7ccf2913";
+    private static final String AUTH_TOKEN = "2c2de7d2f3f82ee7854086d7736adcab";
+    private static final String FROM_NUMBER = "+14243534350";
 
     // HR phone number - ideally this should come from a configuration or database
     private static final String HR_PHONE_NUMBER = "+21697129381"; // Format: +1234567890
@@ -32,7 +33,7 @@ public class SmsService {
                         "ID: %d\n" +
                         "Nom: %s\n" +
                         "Statut: %s\n\n" +
-                        "Répondez 'VALIDER %d' pour confirmer ou 'REJETER %d' pour refuser.",
+                        "Veuillez valider ou confirmer .",
                 employeeId, employeeName, status, employeeId, employeeId
         );
 

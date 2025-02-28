@@ -66,6 +66,12 @@ public class EmployeeAbsenceController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Vérifiez que filterDatePicker n'est pas null avant d'appeler des méthodes dessus
+        if (filterDatePicker != null) {
+            filterDatePicker.setPromptText("Choisir une date");
+        } else {
+            System.err.println("filterDatePicker est null");
+        }
         // Set column resize policy
         absenceTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
