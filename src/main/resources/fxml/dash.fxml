@@ -155,8 +155,8 @@
                 </graphic>
             </Button>
             <VBox fx:id="subMenuProjets" managed="false" visible="false">
-                <Button fx:id="btnTaches" styleClass="sidebar-sub-button" text="Tâches" />
-                <Button fx:id="btnEquipe" styleClass="sidebar-sub-button" text="Équipe" />
+                <Button fx:id="btnTaches" onAction="#handleGestionProjet" styleClass="sidebar-sub-button" text="Projets" />
+                <Button fx:id="btnEquipe" onAction="#handleTache" styleClass="sidebar-sub-button" text="Taches" />
             </VBox>
 
             <!-- Gestion Transports -->

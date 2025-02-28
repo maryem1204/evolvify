@@ -251,6 +251,20 @@ public class DashController {
         setActiveButton(btnUser);
         loadView("/fxml/listUsers.fxml");
     }
+
+    @FXML
+    private void handleGestionProjet() {
+        setActiveButton(btnDashboard);
+        loadView("/fxml/ListProjet.fxml");
+    }
+    @FXML
+    private void handleTache() {
+        setActiveButton(btnDashboard);
+        loadView("/fxml/ListTacheRH.fxml");
+    }
+
+
+
     private void handleLogout() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Déconnexion");

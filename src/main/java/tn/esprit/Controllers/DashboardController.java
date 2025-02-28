@@ -66,5 +66,8 @@ public class DashboardController {
     public void handleDashboard(ActionEvent actionEvent) {
         loadView("/fxml/dashboardAdminRH.fxml");
     }
-
+    @FXML
+    public void handleGestionProjet(ActionEvent actionEvent) {
+        loadView("/fxml/ListProjet.fxml");
+    }
 }
