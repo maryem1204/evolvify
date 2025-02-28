@@ -4,55 +4,67 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.application.Platform;
 
 import java.io.IOException;
 
 public class DashboardController {
 
     @FXML
-    private Button gestcong, gestpro, gestran, gestrec, gestutiliser, logout;
+    private Button gestcong;
+
+    @FXML
+    private Button gestpro;
+
+    @FXML
+    private Button gestran;
+
+    @FXML
+    private Button gestrec;
+
+    @FXML
+    private AnchorPane gests;
+
+    @FXML
+    private Button gestutiliser;
+
+    @FXML
+    private AnchorPane logo;
+
+    @FXML
+    private Button logout;
 
     @FXML
     private AnchorPane tableblanche;
 
     @FXML
-    private BorderPane mainContainer;
-
-    @FXML
     private Label logoutlabel;
 
-
-
-    // ✅ Méthode pour charger dynamiquement une vue dans `mainContainer`
+    // ✅ Méthode pour charger dynamiquement une vue dans `tableblanche`
     private void loadView(String fxmlFile) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
-            Parent root = loader.load();
+            Parent view = loader.load();
 
-            // ✅ Mise à jour correcte de l'interface
-            if (mainContainer != null) {
-                mainContainer.setCenter(root);
-            } else {
-                System.out.println("⚠ Erreur : mainContainer est null !");
-            }
+            tableblanche.getChildren().clear();
+            tableblanche.getChildren().add(view);
+
+            // ✅ Ajuster l'affichage pour qu'il occupe tout l'espace disponible
+            AnchorPane.setTopAnchor(view, 0.0);
+            AnchorPane.setBottomAnchor(view, 0.0);
+            AnchorPane.setLeftAnchor(view, 0.0);
+            AnchorPane.setRightAnchor(view, 0.0);
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Erreur de chargement du fichier FXML : " + fxmlFile);
         }
     }
 
     // ✅ Charger la vue par défaut au démarrage
     @FXML
     private void initialize() {
-        Platform.runLater(() -> {
-            loadView("/fxml/dashboardAdminRH.fxml"); // Charge "Gestion Utilisateur" par défaut
-        });
+        loadView("/fxml/listUsers.fxml"); // Charge "Gestion Utilisateur" par défaut
     }
 
     // ✅ Gestion du clic sur "Gestion Utilisateur"
@@ -61,13 +73,14 @@ public class DashboardController {
         loadView("/fxml/listUsers.fxml");
     }
 
-    // ✅ Gestion du clic sur "Dashboard"
+
     @FXML
-    public void handleDashboard(ActionEvent actionEvent) {
-        loadView("/fxml/dashboardAdminRH.fxml");
+    private void handleGestionConge(ActionEvent event) {
+        loadView("/fxml/dashboardCongeRh.fxml");
     }
+
     @FXML
-    public void handleGestionProjet(ActionEvent actionEvent) {
-        loadView("/fxml/ListProjet.fxml");
+    private void handleGestionAbsence(ActionEvent event) {
+        loadView("/fxml/EmployeeAbsence.fxml");
     }
 }

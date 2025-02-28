@@ -263,6 +263,14 @@ public class DashController {
         loadView("/fxml/ListTacheRH.fxml");
     }
 
+    @FXML
+    public void handleConge(ActionEvent actionEvent) {
+        loadView("/fxml/dashboardCongeRh.fxml");
+    }
+    @FXML
+    public void handleAbsence(ActionEvent actionEvent) {
+        loadView("/fxml/AttendanceView.fxml");
+    }
 
 
     private void handleLogout() {
