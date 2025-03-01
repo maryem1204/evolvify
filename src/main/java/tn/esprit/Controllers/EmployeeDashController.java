@@ -41,6 +41,9 @@ public class EmployeeDashController {
     private Button btnAbsence;
     @FXML
     private Button btnAbonnements;
+
+    @FXML
+    private Button btnTrajets;
     @FXML
     private Button btnOffres;
     @FXML
@@ -160,7 +163,12 @@ public class EmployeeDashController {
     @FXML
     private void handleAbonnements() throws IOException {
         setActiveButton(btnAbonnements);
-        //loadView("EmployeeSubscriptions.fxml");
+        loadView("/fxml/FrontAbonnement.fxml");
+    }
+    @FXML
+    private void handleTrajets() throws IOException {
+        setActiveButton(btnTrajets);
+        loadView("/fxml/FrontTransport.fxml");
     }
 
     @FXML

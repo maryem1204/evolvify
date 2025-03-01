@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import java.util.ArrayList;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -35,6 +36,9 @@ public class DashController {
     private Label username;
     @FXML
     private VBox sidebar, subMenuConges, subMenuRecrutements, subMenuProjets,subMenuTransport;
+    // Boutons du sous-menu Transports
+    @FXML
+    private Button menuGererTransport, menuGererAbonnement, menuGererTrajet;
     @FXML
     private AnchorPane contentArea;
     @FXML
@@ -67,8 +71,10 @@ public class DashController {
         // Chargement des icônes
         userIcon.setImage(new Image(getClass().getResource("/images/profile.png").toExternalForm(), true));
 
-        sidebarButtons = List.of(btnDashboard, btnUser, btnRecrutements, btnProjets, btnTransports, btnConges, btnAbsences);
-
+        sidebarButtons = new ArrayList<>(List.of(btnDashboard, btnUser, btnRecrutements, btnProjets, btnTransports, btnConges, btnAbsences));
+        sidebarButtons.add(menuGererTransport);
+        sidebarButtons.add(menuGererAbonnement);
+        sidebarButtons.add(menuGererTrajet);
         for (Button button : sidebarButtons) {
             button.setOnAction(event -> {
                 setActiveButton(button);
@@ -81,7 +87,19 @@ public class DashController {
         btnRecrutements.setOnAction(event -> toggleSubMenuRecrutements());
         btnProjets.setOnAction(event -> toggleSubMenuProjets());
         btnTransports.setOnAction(event -> toggleSubMenuTransports());
-
+        // Actions spécifiques pour les boutons qui se trouvent dans les sous-menus
+        menuGererTransport.setOnAction(event -> {
+            setActiveButton(menuGererTransport);
+            loadView("/fxml/Affichage_transport.fxml");
+        });
+        menuGererAbonnement.setOnAction(event -> {
+            setActiveButton(menuGererAbonnement);
+            loadView("/fxml/Affichage_abonnement.fxml");//FrontAbonnement.fxml matensehomch
+        });
+        menuGererTrajet.setOnAction(event -> {
+            setActiveButton(menuGererTrajet);
+            loadView("/fxml/Affichage_trajet.fxml");//FrontTransport.fxml
+        });
         btnConges.setOnAction(event -> {
             setActiveButton(btnConges);
             loadView("/fxml/dashboardCongeRh.fxml");
@@ -274,7 +292,11 @@ public class DashController {
         loadView("/fxml/AttendanceView.fxml");
     }
 
-
+    @FXML
+    public void handleAbonnement(ActionEvent actionEvent) {
+        setActiveButton(menuGererAbonnement);
+        loadView("/fxml/Affichage_abonnement.fxml");
+    }
     private void handleLogout() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Déconnexion");

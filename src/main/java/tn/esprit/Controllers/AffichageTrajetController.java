@@ -150,7 +150,7 @@ public class AffichageTrajetController {
                     stage.initModality(Modality.APPLICATION_MODAL);
                     stage.setTitle("Modifier Trajet");
                     stage.setScene(new Scene(root));
-                    stage.showAndWait();
+                    stage.show();
                     loadTrajets();
                 } catch (IOException e) {
                     logger.log(Level.SEVERE, "Erreur lors de l'ouverture de la fenêtre de modification", e);
