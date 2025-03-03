@@ -69,10 +69,10 @@ public class ModifierTrajetController {
             }
 
             double distanceValue;
-            int employeId;
+            int employeeId;
             try {
                 distanceValue = Double.parseDouble(distance.getText());
-                employeId = Integer.parseInt(id_employe.getText());
+                employeeId = Integer.parseInt(this.id_employe.getText());
             } catch (NumberFormatException e) {
                 showAlert(Alert.AlertType.ERROR, "Erreur de format", "Veuillez entrer des valeurs numériques valides pour la distance et l'ID.");
                 return;
@@ -101,7 +101,7 @@ public class ModifierTrajetController {
             trajet.setPointArr(pointArr.getText());
             trajet.setDistance(distanceValue);
             trajet.setDuréeEstimé(duree);
-            trajet.setIdEmploye(employeId);
+            trajet.setIdEmploye(employeeId);
             trajet.setIdMoyen(moyenId);
             trajet.setStatus(statusTrajet);
 
@@ -113,18 +113,33 @@ public class ModifierTrajetController {
 
                 // Récupérer le numéro de téléphone et le nom de l'employé via UserService
                 UserService userService = new UserService();
-                String phoneNumber = userService.getUserPhoneNumber(employeId);
-                String employeeName = userService.getUserName(employeId);
+                String phoneNumber = userService.getUserPhoneNumber(employeeId);
+                String employeeName = userService.getUserName(employeeId);
 
-                if (phoneNumber != null && phoneNumber.matches("^\\+216[0-9]{8}$")) {
+                System.out.println("📱 Tentative d'envoi SMS à l'employé ID: " + employeeId);
+                System.out.println("📞 Numéro de téléphone récupéré: " + phoneNumber);
+                System.out.println("👤 Nom d'employé récupéré: " + employeeName);
+
+                if (phoneNumber != null && (phoneNumber.matches("^\\+216[0-9]{8}$") || phoneNumber.matches("^[0-9]{8}$"))) {
+                    // If phone number is valid (either with +216 prefix or just 8 digits)
                     SmsService smsService = new SmsService();
-                    smsService.notifyEmployeeStatusChange(phoneNumber, employeId, employeeName, status.getValue());
+
+                    // Add +216 prefix if it's missing
+                    String formattedNumber = phoneNumber;
+                    if (phoneNumber.matches("^[0-9]{8}$")) {
+                        formattedNumber = "+216" + phoneNumber;
+                    }
+                    String messageSid = smsService.notifyEmployeeStatusChange(formattedNumber, employeeId, employeeName, status.getValue());
+                    if (messageSid != null) {
+                        System.out.println("✅ SMS envoyé avec succès, SID: " + messageSid);
+                    } else {
+                        System.err.println("⚠️ Échec de l'envoi du SMS");
+                        showAlert(Alert.AlertType.WARNING, "Attention", "Le SMS n'a pas pu être envoyé.");
+                    }
                 } else {
-                    System.err.println("⚠️ Numéro de téléphone invalide pour l'employé ID: " + employeId);
+                    System.err.println("⚠️ Numéro de téléphone invalide pour l'employé ID: " + id_employe + " - " + phoneNumber);
                     showAlert(Alert.AlertType.WARNING, "Attention", "Numéro de téléphone invalide ou introuvable.");
                 }
-
-
 
                 ((Stage) modifier.getScene().getWindow()).close();
             } else {

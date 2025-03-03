@@ -22,6 +22,7 @@ public class SmsService {
     /**
      * Sends an SMS notification to HR when an employee registers attendance
      *
+     *
      * @param employeeId The ID of the employee
      * @param employeeName The name of the employee
      * @param status The attendance status recorded
