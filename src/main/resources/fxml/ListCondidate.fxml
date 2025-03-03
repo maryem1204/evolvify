@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1290.0" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.ListCandidateController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1290.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.ListCandidateController">
    <children>
       <AnchorPane prefHeight="900.0" prefWidth="1900.0">
          <children>
@@ -20,8 +20,8 @@
                <center>
                   <AnchorPane fx:id="tableofthings" prefHeight="472.0" prefWidth="807.0" BorderPane.alignment="CENTER">
                      <children>
-                        <TextField fx:id="recherche" layoutX="22.0" layoutY="39.0" prefHeight="34.0" prefWidth="279.0" promptText="recherche" styleClass="shadow" />
-                        <ComboBox fx:id="comboTrie" layoutX="22.0" layoutY="470.0" prefWidth="150.0" promptText="Choisir un critère">
+                        <TextField fx:id="recherche" layoutX="22.0" layoutY="39.0" prefHeight="34.0" prefWidth="279.0" promptText="recherche" styleClass="search-bar" stylesheets="@../Styles/styles.css" />
+                        <ComboBox fx:id="comboTrie" layoutX="38.0" layoutY="477.0" prefWidth="150.0" promptText="Choisir un critère">
                            <items>
                               <FXCollections fx:factory="observableArrayList">
                                  <String fx:value="Titre" />
@@ -31,7 +31,7 @@
                               </FXCollections>
                            </items>
                         </ComboBox>
-                        <ToggleButton fx:id="facondetrie" layoutX="216.0" layoutY="468.0" mnemonicParsing="false" text="choisir la facon de trie">
+                        <ToggleButton fx:id="facondetrie" layoutX="216.0" layoutY="468.0" mnemonicParsing="false" styleClass="gradient-button" stylesheets="@../Styles/styles.css" text="choisir la facon de trie">
                            <font>
                               <Font size="14.0" />
                            </font>

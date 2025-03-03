@@ -1,8 +1,5 @@
 package tn.esprit.Services;
 
-import tn.esprit.Entities.Gender;
-import tn.esprit.Entities.Offre;
-import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Utils.MyDataBase;
 
@@ -84,22 +81,22 @@ public class CandidateService implements CRUD<Utilisateur> {
 
     @Override
     public List<Utilisateur> showAll() throws SQLException {
-        List<Utilisateur> condidates = new ArrayList<>();
 
+        List<Utilisateur> condidates = new ArrayList<>();
+        System.out.println("hellos");
         // SQL query to fetch users with role 'candidate'
-        String req = "SELECT `firstname`, `lastname`, `email`, `password`, `profilePhoto`, `birthdayDate`, `joiningDate`, `uploaded_cv`, `num_tel` , `gender` FROM `users` WHERE role='condidat'";
+        String req = "SELECT `firstname`, `lastname`, `email`, `password`, `birthdayDate`, `joiningDate`, `uploaded_cv`, `num_tel` FROM `users` ";
+        System.out.println("Exécution de la requête : " + req);
 
         try (Statement st = cnx.createStatement(); ResultSet rs = st.executeQuery(req)) {
             while (rs.next()) {
+                System.out.println("rsnext");
                 Utilisateur utilisateur = new Utilisateur();
                 utilisateur.setFirstname(rs.getString("firstname"));
                 utilisateur.setLastname(rs.getString("lastname"));
                 utilisateur.setEmail(rs.getString("email"));
                 utilisateur.setPassword(rs.getString("password"));
 
-                // Set profile photo as byte array
-                byte[] profilePhoto = rs.getBytes("profilePhoto");
-                utilisateur.setProfilePhoto(profilePhoto);
 
                 // Set uploaded CV as byte array
                 byte[] uploadedCv = rs.getBytes("uploaded_cv");
@@ -108,7 +105,6 @@ public class CandidateService implements CRUD<Utilisateur> {
                 utilisateur.setBirthdayDate(rs.getDate("birthdayDate"));
                 utilisateur.setJoiningDate(rs.getDate("joiningDate"));
                 utilisateur.setNum_tel(rs.getString("num_tel"));
-                utilisateur.setGender(Gender.valueOf(rs.getString("gender")) );
 
                 // Add the created Utilisateur object to the candidates list
                 condidates.add(utilisateur);

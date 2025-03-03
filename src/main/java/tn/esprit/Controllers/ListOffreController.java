@@ -10,11 +10,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import tn.esprit.Entities.Offre;
+import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Services.OffreService;
 import tn.esprit.Utils.MyDataBase;
 
@@ -188,59 +191,65 @@ public class ListOffreController {
     }
 
 
-
-
-
     @FXML
     private void addActionsColumn() {
-        TableColumn<Offre, Void> Action = new TableColumn<>("Actions");
-        Action.setCellFactory(param -> new TableCell<Offre, Void>() {
-            private final Button btnEdit = new Button("Modifier");
-            private final Button btnDelete = new Button("Supprimer");
-            private final HBox hbox = new HBox(10, btnEdit, btnDelete);
+        TableColumn<Offre, Void> actionColumn = new TableColumn<>("Actions");
+
+        actionColumn.setCellFactory(param -> new TableCell<Offre, Void>() {
+            private final ImageView editIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/editIcon.png")));
+            private final ImageView deleteIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/deleteIcon.png")));
+            private final HBox hbox = new HBox(10, editIcon, deleteIcon);
 
             {
-                btnEdit.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
-                btnDelete.setStyle("-fx-background-color: #f44336; -fx-text-fill: white;");
+                // Définition des tailles des icônes
+                editIcon.setFitWidth(25);
+                editIcon.setFitHeight(25);
+                deleteIcon.setFitWidth(25);
+                deleteIcon.setFitHeight(25);
 
-                btnEdit.setOnAction(event -> {
-                    Offre offre = getTableView().getItems().get(getIndex());
-                    showEditPopup(offre);
-                    reloadTableData();
+                // Appliquer un style "main" au survol
+                editIcon.setStyle("-fx-cursor: hand;");
+                deleteIcon.setStyle("-fx-cursor: hand;");
+
+                // Gestion de l'édition
+                editIcon.setOnMouseClicked(event -> {
+                    Offre offre = getTableRow().getItem();
+                    if (offre != null) {
+                        System.out.println("Modification de l'offre: " + offre);
+                        showEditPopup(offre);
+                        reloadTableData();
+                    } else {
+                        System.err.println("Aucune offre sélectionnée pour l'édition.");
+                    }
                 });
 
-                btnDelete.setOnAction(event -> {
-                    Offre offre = getTableView().getItems().get(getIndex());
-                    Offre selectedOffre = tabledaffichage.getSelectionModel().getSelectedItem();
-
-                    if (selectedOffre == null) {
-                        System.out.println("Aucune offre sélectionnée !");
-                        afficherAlerte("Erreur", "Veuillez sélectionner une offre à supprimer.");
-                        return;
+                // Gestion de la suppression
+                deleteIcon.setOnMouseClicked(event -> {
+                    Offre offre = getTableRow().getItem();
+                    if (offre != null) {
+                        System.out.println("Suppression de l'offre: " + offre);
+                        confirmDelete(offre);
+                    } else {
+                        System.err.println("Aucune offre sélectionnée pour la suppression.");
                     }
-                    System.out.println("DEBUG - Offre sélectionnée: " + selectedOffre);
-                    System.out.println("Offre sélectionnée: ID=" + selectedOffre.getIdOffre() + ", Titre=" + selectedOffre.getTitre());
-
-
-                    confirmDelete(offre);
                 });
             }
 
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) {
+                if (empty || getTableRow().getItem() == null) {
                     setGraphic(null);
                 } else {
-                    System.out.println("Ajout des boutons dans la cellule");
                     setGraphic(hbox);
                 }
             }
-
         });
-        // Ajouter la colonne Action à la TableView
-        tabledaffichage.getColumns().add(Action);
+
+        // Ajout de la colonne dans la TableView
+        tabledaffichage.getColumns().add(actionColumn);
     }
+
 
     private void showEditPopup(Offre offre) {
         try {

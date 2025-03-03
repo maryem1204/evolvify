@@ -4,6 +4,8 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import tn.esprit.Entities.ListOffre;
@@ -98,34 +100,44 @@ public class ListOffreCandidateController {
     @FXML
     private void addActionsColumn() {
         TableColumn<ListOffre, Void> actionColumn = new TableColumn<>("Actions");
+
         actionColumn.setCellFactory(param -> new TableCell<ListOffre, Void>() {
-            private final Button btnOk = new Button("OK");
-            private final Button btnNotOk = new Button("Not OK");
-            private final HBox hbox = new HBox(10, btnOk, btnNotOk);
+            private final ImageView okIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/Accepte.png")));
+            private final ImageView notOkIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/Refuse.png")));
+            private final HBox hbox = new HBox(10, okIcon, notOkIcon);
 
             {
-                // Style des boutons
-                btnOk.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
-                btnNotOk.setStyle("-fx-background-color: #f44336; -fx-text-fill: white;");
+                // Définition des tailles des icônes
+                okIcon.setFitWidth(25);
+                okIcon.setFitHeight(25);
+                notOkIcon.setFitWidth(25);
+                notOkIcon.setFitHeight(25);
+
+                // Appliquer un curseur "main" pour l'interaction
+                okIcon.setStyle("-fx-cursor: hand;");
+                notOkIcon.setStyle("-fx-cursor: hand;");
 
                 // Action du bouton "OK" -> Change le statut en "accepté"
-                btnOk.setOnAction(event -> {
-                    ListOffre offre = getTableView().getItems().get(getIndex());
-                    updateStatus(offre, "accepte");
-
+                okIcon.setOnMouseClicked(event -> {
+                    ListOffre offre = getTableRow().getItem();
+                    if (offre != null) {
+                        updateStatus(offre, "accepte");
+                    }
                 });
 
                 // Action du bouton "Not OK" -> Change le statut en "refusé"
-                btnNotOk.setOnAction(event -> {
-                    ListOffre offre = getTableView().getItems().get(getIndex());
-                    updateStatus(offre, "refuse");
+                notOkIcon.setOnMouseClicked(event -> {
+                    ListOffre offre = getTableRow().getItem();
+                    if (offre != null) {
+                        updateStatus(offre, "refuse");
+                    }
                 });
             }
 
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) {
+                if (empty || getTableRow().getItem() == null) {
                     setGraphic(null);
                 } else {
                     setGraphic(hbox);
@@ -133,11 +145,10 @@ public class ListOffreCandidateController {
             }
         });
 
-
         // Ajouter la colonne Action à la TableView
         tabledeliste.getColumns().add(actionColumn);
-        tabledeliste.refresh();  // Rafraîchit la TableView pour montrer les changements
     }
+
 
     private void updateStatus(ListOffre offre, String newStatus) {
         // Convertir la chaîne de caractères en un statut de l'énumération

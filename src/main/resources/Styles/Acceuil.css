@@ -1,0 +1,32 @@
+/* les 5 buttons */
+.button2 {
+    -fx-background-color: #e8e8e8;
+    -fx-text-fill: #090909;
+    -fx-padding: 10px 20px;
+    -fx-font-size: 14px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-border-color: #e8e8e8;
+    -fx-effect: dropshadow(three-pass-box, #c5c5c5, 6, 0, 6, 6),
+    dropshadow(three-pass-box, #ffffff, 6, 0, -6, -6);
+    -fx-cursor: hand;
+}
+
+.button2:pressed {
+    -fx-text-fill: #666;
+    -fx-effect: innershadow(three-pass-box, #c5c5c5, 4, 0, 4, 4),
+    innershadow(three-pass-box, #ffffff, 4, 0, -4, -4);
+}
+
+.button2:hover {
+    -fx-text-fill: #ffffff;
+    -fx-background-color: #0F82E6;
+    -fx-border-color: #0047AB;
+}
+/* Shadow pour l'image */
+.image-shadow {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0.5, 5, 5);
+}
+
+
+

@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.ListOffreController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="629.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.ListOffreController">
 
     <children>
       <AnchorPane prefHeight="200.0" prefWidth="200.0">
@@ -22,23 +22,23 @@
                <center>
                   <AnchorPane fx:id="tableofthings" prefHeight="472.0" prefWidth="807.0" BorderPane.alignment="CENTER">
                      <children>
-                        <TableView fx:id="tabledaffichage" layoutX="45.0" layoutY="123.0" prefHeight="348.0" prefWidth="982.0" styleClass="shadow">
+                        <TableView fx:id="tabledaffichage" layoutX="45.0" layoutY="123.0" prefHeight="362.0" prefWidth="961.0" styleClass="shadow">
                           <columns>
 
                             <TableColumn fx:id="colTitre" prefWidth="96.0" text="Titre" />
-                            <TableColumn fx:id="colDesc" prefWidth="237.0" text="Description" />
-                              <TableColumn fx:id="coldatePub" prefWidth="173.0" text="Date de publication" />
-                              <TableColumn fx:id="coldateExp" prefWidth="163.0" text="Date d'expiration" />
-                              <TableColumn fx:id="status" prefWidth="141.0" text="Status" />
+                            <TableColumn fx:id="colDesc" prefWidth="248.0" text="Description" />
+                              <TableColumn fx:id="coldatePub" prefWidth="162.0" text="Date de publication" />
+                              <TableColumn fx:id="coldateExp" prefWidth="176.0" text="Date d'expiration" />
+                              <TableColumn fx:id="status" prefWidth="159.0" text="Status" />
                           </columns>
                         </TableView>
-                        <Button layoutX="880.0" layoutY="37.0" mnemonicParsing="false" onAction="#handleAjouterOffre" prefHeight="47.0" prefWidth="176.0" styleClass="gradient-button"  text="Ajouter Offre">
+                        <Button layoutX="880.0" layoutY="37.0" mnemonicParsing="false" onAction="#handleAjouterOffre" prefHeight="47.0" prefWidth="176.0" styleClass="gradient-button" stylesheets="@../Styles/styles.css" text="Ajouter Offre">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Button>
 
-                        <ComboBox fx:id="comboTrie" layoutX="54.0" layoutY="502.0" prefWidth="150.0" promptText="Choisir un critère">
+                        <ComboBox fx:id="comboTrie" layoutX="51.0" layoutY="541.0" prefWidth="150.0" promptText="Choisir un critère">
                            <items>
                               <FXCollections fx:factory="observableArrayList">
                                  <String fx:value="Titre" />
@@ -48,12 +48,12 @@
                               </FXCollections>
                            </items>
                         </ComboBox>
-                        <ToggleButton fx:id="facondetrie" layoutX="237.0" layoutY="499.0" mnemonicParsing="false" text="choisir la facon de trie">
+                        <ToggleButton fx:id="facondetrie" layoutX="233.0" layoutY="533.0" mnemonicParsing="false" styleClass="gradient-button" stylesheets="@../Styles/styles.css" text="choisir la facon de trie">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </ToggleButton>
-                        <TextField fx:id="recherche" layoutX="20.0" layoutY="60.0" onAction="#handleSearch" prefHeight="34.0" prefWidth="279.0" promptText="recherche" styleClass="shadow" />
+                        <TextField fx:id="recherche" layoutX="20.0" layoutY="60.0" onAction="#handleSearch" prefHeight="34.0" prefWidth="279.0" promptText="recherche" styleClass="search-bar" stylesheets="@../Styles/styles.css" />
                      </children>
                   </AnchorPane>
                </center>

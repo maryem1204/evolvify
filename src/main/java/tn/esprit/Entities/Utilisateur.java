@@ -72,13 +72,13 @@ public class Utilisateur implements Serializable {
         this.password = password;
         this.role = role;
     }
-    public Utilisateur(String firstname, String lastname, String email,byte[] profilePhoto,  Date birthdayDate, Date joiningDate, byte[] uploaded_cv,String num_tel) {
+    public Utilisateur(String firstname, String lastname, String email,  Date birthdayDate, Date joiningDate, byte[] uploaded_cv, String num_tel) {
 
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
         this.password="";
-        this.profilePhoto = profilePhoto;
+
         this.birthdayDate = birthdayDate != null ? birthdayDate : Date.valueOf("2000-01-01");
         this.joiningDate = joiningDate != null ? joiningDate : Date.valueOf("2000-01-01");
 
