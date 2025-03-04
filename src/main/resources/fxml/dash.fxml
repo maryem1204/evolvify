@@ -33,7 +33,7 @@
                     </image>
                 </ImageView>
 
-                <Label fx:id="username" prefHeight="50.0" prefWidth="90.0" styleClass="username" text="Meriem Sassi" />
+                <Label fx:id="username" prefHeight="50.0" maxWidth="Infinity" styleClass="username" text="Meriem Sassi" />
 
                 <Region HBox.hgrow="ALWAYS" />
 
@@ -155,8 +155,8 @@
                 </graphic>
             </Button>
             <VBox fx:id="subMenuProjets" managed="false" visible="false">
-                <Button fx:id="btnTaches" onAction="#handleGestionProjet" styleClass="sidebar-sub-button" text="Projets" />
-                <Button fx:id="btnEquipe" onAction="#handleTache" styleClass="sidebar-sub-button" text="Taches" />
+                <Button fx:id="btnTaches" styleClass="sidebar-sub-button" text="Projets" />
+                <Button fx:id="btnEquipe" styleClass="sidebar-sub-button" text="Taches" />
             </VBox>
 
             <!-- Gestion Transports -->
@@ -189,5 +189,7 @@
     </ScrollPane>
 
     <!-- Contenu dynamique -->
-    <AnchorPane fx:id="contentArea" layoutX="334.0" layoutY="99.0" prefHeight="717.0" prefWidth="1531.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="334.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="106.0" />
+    <AnchorPane fx:id="contentArea" style="-fx-background-color: white;"
+                AnchorPane.topAnchor="106.0" AnchorPane.bottomAnchor="0.0"
+                AnchorPane.leftAnchor="330.0" AnchorPane.rightAnchor="0.0" />
 </AnchorPane>

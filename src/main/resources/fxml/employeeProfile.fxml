@@ -10,10 +10,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
-<?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="650.0" prefWidth="900.0" stylesheets="@../Styles/profileStyles.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="tn.esprit.Controllers.EmployeeProfileController">
+<BorderPane prefHeight="650.0" prefWidth="900.0" stylesheets="@../Styles/profileStyles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.EmployeeProfileController">
     <center>
         <AnchorPane styleClass="main-content" BorderPane.alignment="CENTER">
             <children>
@@ -21,7 +19,7 @@
                     <children>
                         <HBox alignment="CENTER_LEFT" spacing="20.0" styleClass="profile-header">
                             <children>
-                                <AnchorPane maxHeight="150.0" maxWidth="150.0" minHeight="150.0" minWidth="150.0" styleClass="image-container">
+                                <AnchorPane maxHeight="150.0" maxWidth="1.7976931348623157E308" minHeight="150.0" minWidth="150.0" styleClass="image-container">
                                     <children>
                                         <Circle fx:id="profilePhotoCircle" centerX="75.0" centerY="75.0" radius="70.0" styleClass="photo-circle" />
                                         <ImageView fx:id="profileImageView" fitHeight="140.0" fitWidth="140.0" layoutX="5.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0" />
@@ -34,7 +32,7 @@
                                         <Label fx:id="emailLabel" styleClass="email-label" text="email@example.com" />
                                         <HBox alignment="CENTER_LEFT" spacing="15.0">
                                             <children>
-                                                <Button fx:id="editProfileBtn" mnemonicParsing="false" styleClass="action-button" text="Edit Profile" />
+                                                <Button fx:id="editProfileBtn" mnemonicParsing="false" onAction="#handleEditProfile" styleClass="action-button" text="Edit Profile" />
                                                 <Button fx:id="downloadCvBtn" mnemonicParsing="false" styleClass="action-button" text="Download CV" />
                                             </children>
                                             <VBox.margin>

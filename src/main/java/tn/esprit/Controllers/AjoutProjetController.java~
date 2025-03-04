@@ -84,7 +84,7 @@ public class AjoutProjetController {
                         rs.getString("lastname"),
                         rs.getString("email"),
                         rs.getString("password"),
-                        rs.getString("profilePhoto"),
+                        rs.getBytes("profilePhoto"),
                         rs.getDate("birthdayDate"),
                         rs.getDate("joiningDate"),
                         null,

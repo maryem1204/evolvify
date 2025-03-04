@@ -70,14 +70,12 @@
 .user-icon {
     -fx-clip-shape: circle;
     -fx-border-radius: 50%;
-    -fx-cursor: hand;
 }
 
 .username {
     -fx-text-fill: #00060b;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
-    -fx-cursor: hand;
 }
 .online-indicator {
     -fx-fill: #28A745;

@@ -26,8 +26,7 @@ import tn.esprit.Services.UtilisateurService;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ListUsersController {
@@ -63,7 +62,13 @@ public class ListUsersController {
     @FXML
     private StackPane stackPane;
 
+    @FXML
+    private ComboBox<Integer> yearFilterComboBox;
+    private Integer selectedYear = null;
+
     private ObservableList<Utilisateur> users = FXCollections.observableArrayList();
+    private List<Utilisateur> filteredUsers = new ArrayList<>();
+
     private static final int ROWS_PER_PAGE = 10;
 
     private static ListUsersController instance;
@@ -83,6 +88,8 @@ public class ListUsersController {
 
         loadUsers();
         configureTable();
+        initializeYearFilter(); // Initialize the year filter
+
         pagination.setPageCount((int) Math.ceil((double) users.size() / ROWS_PER_PAGE));
         pagination.setCurrentPageIndex(0);
         pagination.currentPageIndexProperty().addListener((obs, oldIndex, newIndex) -> updateTable(newIndex.intValue()));
@@ -91,16 +98,104 @@ public class ListUsersController {
         searchField.textProperty().addListener((observable, oldValue, newValue) -> handleSearch());
 
         employeeTable.setSelectionModel(null);
-
     }
 
+    private void initializeYearFilter() {
+        // Create a fixed set of years to display
+        Set<Integer> years = new HashSet<>();
+        years.add(2025);
+        years.add(2024);
+        years.add(2023);
+        years.add(2022);
+
+        // Also add any years from existing user data
+        for (Utilisateur user : users) {
+            if (user.getJoiningDate() != null) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(user.getJoiningDate());
+                years.add(calendar.get(Calendar.YEAR));
+            }
+        }
+
+        // Sort years in descending order (most recent first)
+        List<Integer> yearsList = new ArrayList<>(years);
+        Collections.sort(yearsList, Collections.reverseOrder());
+
+        // Create the ComboBox items with "Tous" option
+        ObservableList<Integer> yearOptions = FXCollections.observableArrayList();
+        yearOptions.add(null); // null represents "All years"
+        yearOptions.addAll(yearsList);
+
+        yearFilterComboBox.setItems(yearOptions);
+
+        // Set up cell factory to display "Tous" for null value
+        yearFilterComboBox.setCellFactory(lv -> new ListCell<Integer>() {
+            @Override
+            protected void updateItem(Integer item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText("Tous");
+                } else {
+                    setText(item.toString());
+                }
+            }
+        });
+
+        // Set up button cell to display "Tous" for null value
+        yearFilterComboBox.setButtonCell(new ListCell<Integer>() {
+            @Override
+            protected void updateItem(Integer item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText("Tous");
+                } else {
+                    setText(item.toString());
+                }
+            }
+        });
+
+        // Set the default selected value to 2025
+        yearFilterComboBox.setValue(2025);
+        selectedYear = 2025;
+
+        // Apply the filter immediately to show only 2025 employees by default
+        applyFilters();
+    }
+    @FXML
+    private void handleYearFilter() {
+        selectedYear = yearFilterComboBox.getValue();
+        applyFilters(); // Apply both year and search filters
+    }
+    private void applyFilters() {
+        String searchText = searchField.getText().toLowerCase().trim();
+
+        // Apply both filters
+        filteredUsers = users.stream()
+                .filter(user -> {
+                    // Apply year filter if a year is selected
+                    boolean matchesYear = selectedYear == null ||
+                            (user.getJoiningDate() != null && getYearFromDate(user.getJoiningDate()) == selectedYear);
+
+                    // Apply search filter if search text is not empty
+                    boolean matchesSearch = searchText.isEmpty() ||
+                            matchesSearchCriteria(user, searchText);
+
+                    return matchesYear && matchesSearch;
+                })
+                .collect(Collectors.toList());
+
+        // Update pagination
+        pagination.setPageCount(Math.max(1, (int) Math.ceil((double) filteredUsers.size() / ROWS_PER_PAGE)));
+        pagination.setCurrentPageIndex(0);
+        updateTable(0);
+    }
     private void loadUsers() {
         try {
             UtilisateurService userService = new UtilisateurService();
             users.clear();
             List<Utilisateur> userList = userService.showAll();
             for (Utilisateur user : userList) {
-                byte[] profilePhoto = userService.getProfilePhoto(user.getId_employe());
+                String profilePhoto = userService.getProfilePhoto(user.getId_employe());
                 user.setProfilePhoto(profilePhoto);
                 users.add(user);
             }
@@ -126,11 +221,14 @@ public class ListUsersController {
 
     private void updateTable(int pageIndex) {
         int fromIndex = pageIndex * ROWS_PER_PAGE;
-        int toIndex = Math.min(fromIndex + ROWS_PER_PAGE, users.size());
-        employeeTable.setItems(FXCollections.observableArrayList(users.subList(fromIndex, toIndex)));
+        int toIndex = Math.min(fromIndex + ROWS_PER_PAGE, filteredUsers.size());
 
-        addActionsColumn(); // Rafraîchir la colonne des actions
-        employeeTable.refresh();
+        // Create a sublist for the current page
+        List<Utilisateur> pageItems = filteredUsers.isEmpty() ?
+                Collections.emptyList() :
+                filteredUsers.subList(fromIndex, toIndex);
+
+        employeeTable.setItems(FXCollections.observableArrayList(pageItems));
     }
 
 
@@ -272,6 +370,20 @@ public class ListUsersController {
     }
 
 
+
+    private boolean matchesSearchCriteria(Utilisateur user, String searchText) {
+        // Customize this method based on your search requirements
+        return user.getFirstname().toLowerCase().contains(searchText) ||
+                user.getLastname().toLowerCase().contains(searchText) ||
+                user.getEmail().toLowerCase().contains(searchText) ||
+                user.getRole().toString().toLowerCase().contains(searchText);
+    }
+
+    private int getYearFromDate(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar.get(Calendar.YEAR);
+    }
     @FXML
     private void handleSearch() {
         String keyword = searchField.getText().toLowerCase();

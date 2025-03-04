@@ -6,7 +6,7 @@ public class SessionManager {
     private static SessionManager instance;
     private static Utilisateur utilisateurConnecte;
 
-    private SessionManager() {} // Constructeur privé pour le Singleton
+    private SessionManager() {}
 
     public static SessionManager getInstance() {
         if (instance == null) {
@@ -23,9 +23,14 @@ public class SessionManager {
         return utilisateurConnecte;
     }
 
+    public boolean isUserLoggedIn() {
+        return utilisateurConnecte != null;
+    }
+
     public void logout() {
-        utilisateurConnecte = null; // Déconnecter l'utilisateur
+        utilisateurConnecte = null;
     }
 
     /*******Cette classe stockera l'utilisateur actuellement connecté et permettra d'y accéder partout dans l'application.********/
+
 }
