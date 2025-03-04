@@ -1,12 +1,18 @@
 package tn.esprit.Services;
 
+import tn.esprit.Entities.Gender;
 import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Utils.MyDataBase;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.io.*;
+import java.sql.*;
 
 public class CandidateService implements CRUD<Utilisateur> {
 
@@ -62,13 +68,6 @@ public class CandidateService implements CRUD<Utilisateur> {
     }
 
 
-
-
-
-
-
-
-
     @Override
     public int update(Utilisateur user) throws SQLException {
         return 0;
@@ -81,42 +80,55 @@ public class CandidateService implements CRUD<Utilisateur> {
 
     @Override
     public List<Utilisateur> showAll() throws SQLException {
-
         List<Utilisateur> condidates = new ArrayList<>();
         System.out.println("hellos");
-        // SQL query to fetch users with role 'candidate'
-        String req = "SELECT `firstname`, `lastname`, `email`, `password`, `birthdayDate`, `joiningDate`, `uploaded_cv`, `num_tel` FROM `users` ";
+        String req = "SELECT id_employe,firstname, lastname, email, password, birthdayDate, joiningDate, uploaded_cv, num_tel ,gender FROM users WHERE role='CONDIDAT'";
         System.out.println("Exécution de la requête : " + req);
 
         try (Statement st = cnx.createStatement(); ResultSet rs = st.executeQuery(req)) {
             while (rs.next()) {
-                System.out.println("rsnext");
                 Utilisateur utilisateur = new Utilisateur();
+                utilisateur.setId_employe(rs.getInt("id_employe"));
                 utilisateur.setFirstname(rs.getString("firstname"));
                 utilisateur.setLastname(rs.getString("lastname"));
                 utilisateur.setEmail(rs.getString("email"));
                 utilisateur.setPassword(rs.getString("password"));
-
-
-                // Set uploaded CV as byte array
-                byte[] uploadedCv = rs.getBytes("uploaded_cv");
-                utilisateur.setUploadedCv(uploadedCv);
-
+                utilisateur.setUploadedCv(rs.getBytes("uploaded_cv"));
                 utilisateur.setBirthdayDate(rs.getDate("birthdayDate"));
                 utilisateur.setJoiningDate(rs.getDate("joiningDate"));
                 utilisateur.setNum_tel(rs.getString("num_tel"));
+                Gender.valueOf(rs.getString("gender"));
 
-                // Add the created Utilisateur object to the candidates list
                 condidates.add(utilisateur);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
             System.out.println("Erreur lors de l'exécution de la requête SQL : " + e.getMessage());
-            throw e;  // Re-throw the exception for further handling in the controller
+            throw e;
         }
-
         return condidates;
     }
 
+    public File retrieveCVFromDatabase(int candidateId, Connection conn) throws SQLException, IOException {
+        String query = "SELECT uploaded_cv FROM users WHERE id_employe = ?";
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, candidateId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    InputStream inputStream = rs.getBinaryStream("uploaded_cv"); // Vérification du bon nom de colonne
+                    File tempFile = File.createTempFile("cv_", ".pdf"); // Génère un fichier temporaire unique
+                    try (OutputStream outputStream = new FileOutputStream(tempFile)) {
+                        byte[] buffer = new byte[1024];
+                        int bytesRead;
+                        while ((bytesRead = inputStream.read(buffer)) != -1) {
+                            outputStream.write(buffer, 0, bytesRead);
+                        }
+                    }
+                    return tempFile;
+                } else {
+                    throw new SQLException("CV non trouvé pour cet utilisateur.");
+                }
+            }
+        }
+    }
 
 }
