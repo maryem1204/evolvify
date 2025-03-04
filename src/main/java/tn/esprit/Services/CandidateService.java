@@ -21,8 +21,8 @@ public class CandidateService implements CRUD<Utilisateur> {
     private PreparedStatement ps ;
     @Override
     public int add(Utilisateur user) throws SQLException {
-        String req = "INSERT INTO `users`(`firstname`, `lastname`, `email`, `password`, `profilePhoto`, `birthdayDate`, `joiningDate`,  `tt_restants`, `conge_restant`, `uploaded_cv`, `num_tel`) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?)";
+        String req = "INSERT INTO `users`(`firstname`, `lastname`, `email`, `password`, `profilePhoto`, `birthdayDate`, `joiningDate`,  `tt_restants`, `conge_restant`, `uploaded_cv`, `num_tel`, `role`) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?,?)";
 
         ps = cnx.prepareStatement(req, PreparedStatement.RETURN_GENERATED_KEYS);
 
@@ -37,7 +37,7 @@ public class CandidateService implements CRUD<Utilisateur> {
         ps.setInt(9, 0);
         ps.setBytes(10, user.getUploadedCv());
         ps.setString(11, user.getNum_tel());
-
+        ps.setString(12, "CONDIDAT");
         // Afficher la requête pour débogage
         System.out.println("SQL Query: " + req);
 

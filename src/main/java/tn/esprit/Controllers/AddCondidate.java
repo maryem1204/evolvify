@@ -110,11 +110,29 @@ public class AddCondidate {
                 || datenaissancetextfield.getValue() == null || datedepotTextfield.getValue() == null) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Error");
+            alert.setContentText("Tous les champs doivent être remplis.");
             alert.show();
         } else {
-
+            // Contrôle de saisie pour l'email
+            String email = emailTextfield.getText();
+            String emailPattern = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+            if (!email.matches(emailPattern)) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Erreur de saisie");
+                alert.setContentText("L'email n'est pas valide.");
+                alert.show();
+                return; // Empêche l'ajout si l'email est invalide
+            }
 
             byte[] cvBytes = this.cvBytes; // Cette variable contient le CV sous forme de byte[]
+            // Vérification que le CV n'est pas vide
+            if (cvBytes == null || cvBytes.length == 0) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Erreur de CV");
+                alert.setContentText("Le CV ne peut pas être vide.");
+                alert.show();
+                return; // Empêche l'ajout si le CV est vide
+            }
             // Récupérer les dates de naissance et de dépôt depuis les DatePicker
             LocalDate localDateNaissance = datenaissancetextfield.getValue();
             LocalDate localDateDepot = datedepotTextfield.getValue();
@@ -123,8 +141,7 @@ public class AddCondidate {
             Date dateNaissance = Date.valueOf(localDateNaissance);
             Date dateDepot = Date.valueOf(localDateDepot);
 
-
-            Utilisateur condidate = new Utilisateur(nomTextfield.getText(), prenomTextfield.getText(), emailTextfield.getText(), dateNaissance, dateDepot, cvBytes,  numtextfield.getText());
+            Utilisateur condidate = new Utilisateur(nomTextfield.getText(), prenomTextfield.getText(), email, dateNaissance, dateDepot, cvBytes, numtextfield.getText());
             CandidateService ps = new CandidateService();
 
             try {
@@ -141,19 +158,15 @@ public class AddCondidate {
                 System.out.println("*********ID employé utilisé ******** : " + lo.getIdCondidate());
                 System.out.println("********Date d'inscription utilisée ******: " + lo.getDatePostulation());
 
-
                 if (rowsAffected > 0) {
                     if (lo == null) {
                         System.out.println("Objet ListOffre (lo) est null !");
                     } else {
                         System.out.println("ID de l'offre à insérer : " + lo.getIdOffre());
                         System.out.println("ID de condidate à insérer : " + lo.getIdCondidate());
-                        System.out.println("date  à insérer : " + lo.getDatePostulation());
+                        System.out.println("date à insérer : " + lo.getDatePostulation());
                         addToListOffre(lo);
                     }
-
-
-
                 } else {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Error");
@@ -166,12 +179,9 @@ public class AddCondidate {
                 alert.setContentText("Erreur lors de l'ajout du candidat : " + e.getMessage());
                 alert.show();
             }
-
-
-
-
         }
     }
+
     private void addToListOffre(ListOffre lo)
     {
         System.out.println("ID de l'offre utilisé : " + lo.getIdOffre());
