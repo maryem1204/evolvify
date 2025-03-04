@@ -15,7 +15,7 @@ public class MainFXDash extends Application {
         try {
             primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/logo1.png")));
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/dash.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/dashEmployee.fxml"));
             Parent root = loader.load();
             primaryStage.setTitle("Dashboard");
 

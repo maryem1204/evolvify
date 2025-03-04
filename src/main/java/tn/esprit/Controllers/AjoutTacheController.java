@@ -81,7 +81,7 @@ public class AjoutTacheController {
                     rs.getString("lastname"),
                     rs.getString("email"),
                     rs.getString("password"),
-                    rs.getBytes("profilePhoto"),
+                    rs.getString("profilePhoto"),
                     rs.getDate("birthdayDate"),
                     rs.getDate("joiningDate"),
                     null,
