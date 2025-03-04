@@ -21,6 +21,8 @@ import tn.esprit.Services.TacheService;
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,8 +46,14 @@ public class tacheListController {
     private TableColumn<Tache, Void> colActions;
     @FXML
     private TextField recherche;
-    private Projet projetActuel;
+    @FXML
+    private ComboBox<String> monthFilter;
+    @FXML
+    private ComboBox<Integer> yearFilter;
+    @FXML
+    private Button filterButton;
 
+    private Projet projetActuel;
 
     private ObservableList<Tache> taches = FXCollections.observableArrayList();
     private ObservableList<Tache> filteredTache = FXCollections.observableArrayList();
@@ -71,9 +79,98 @@ public class tacheListController {
         colLocation.setCellValueFactory(new PropertyValueFactory<>("location"));
         setupPriorityColumn();
 
+        // Initialize date filters
+        setupDateFilters();
+
         loadTaches();
         addActionsColumn();
         setUpSearchListener();
+    }
+
+    private void setupDateFilters() {
+        // Month filter setup
+        String[] months = {"Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+                "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"};
+        monthFilter.setItems(FXCollections.observableArrayList(months));
+        monthFilter.setValue(months[LocalDate.now().getMonthValue() - 1]); // Current month
+
+        // Year filter setup - let's provide current year and 4 previous years
+        int currentYear = LocalDate.now().getYear();
+        ObservableList<Integer> years = FXCollections.observableArrayList();
+        for (int i = 0; i < 5; i++) {
+            years.add(currentYear - i);
+        }
+        yearFilter.setItems(years);
+        yearFilter.setValue(currentYear); // Current year
+
+        // Add filter button action
+        filterButton.setOnAction(event -> applyDateFilter());
+    }
+
+    @FXML
+    private void applyDateFilter() {
+        String selectedMonth = monthFilter.getValue();
+        Integer selectedYear = yearFilter.getValue();
+
+        if (selectedMonth == null || selectedYear == null) {
+            return; // No filtering if either is not selected
+        }
+
+        // Map selected month name to month number (1-12)
+        int monthNumber = monthFilter.getItems().indexOf(selectedMonth) + 1;
+
+        filterTachesByDate(monthNumber, selectedYear);
+    }
+
+    private void filterTachesByDate(int month, int year) {
+        try {
+            // First, reload all tasks to clear any previous filtering
+            List<Tache> allTaches = tacheService.showAll();
+
+            // Filter the tasks by the selected month and year
+            List<Tache> dateFilteredList = allTaches.stream()
+                    .filter(tache -> {
+                        LocalDate tacheDate = tache.getCreated_at();
+                        if (tacheDate == null) return false;
+
+                        return tacheDate.getMonthValue() == month && tacheDate.getYear() == year;
+                    })
+                    .collect(Collectors.toList());
+
+            // Update the table
+            taches.setAll(dateFilteredList);
+            tacheTable.setItems(taches);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Erreur lors du filtrage par date", "Une erreur est survenue lors du filtrage des tâches.");
+        }
+    }
+
+    @FXML
+    private void resetFilters() {
+        try {
+            // Reset date filters to current month/year
+            monthFilter.getSelectionModel().select("Mars"); // Assuming current month
+            yearFilter.getSelectionModel().select(Integer.valueOf(2025)); // Assuming current year
+
+            // Clear search field
+            recherche.clear();
+
+            // Reload all tasks
+            loadTaches();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Erreur lors de la réinitialisation", "Une erreur est survenue lors de la réinitialisation des filtres.");
+        }
+    }
+
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
     public void setProjet(Projet projet) throws SQLException {
@@ -145,9 +242,7 @@ public class tacheListController {
                 }
             }
         });
-
-}
-
+    }
 
     private void setUpSearchListener() {
         recherche.textProperty().addListener((observable, oldValue, newValue) -> handleSearch());
@@ -211,7 +306,6 @@ public class tacheListController {
                 });
             }
 
-
             @Override
             public void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
@@ -219,18 +313,24 @@ public class tacheListController {
             }
         });
     }
-    @FXML private void openAjoutTachePopup()
-    { try { FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AjoutTache.fxml"));
-        Parent root = loader.load(); Stage popupStage = new Stage();
-        popupStage.initModality(Modality.APPLICATION_MODAL);
-        popupStage.initStyle(StageStyle.UNDECORATED);
-        popupStage.setTitle("Ajouter une tache");
-        popupStage.setScene(new Scene(root));
-        popupStage.showAndWait();
-        refreshTacheList(); }
-    catch (IOException e) { e.printStackTrace(); } }
 
-
+    @FXML
+    private void openAjoutTachePopup() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AjoutTache.fxml"));
+            Parent root = loader.load();
+            Stage popupStage = new Stage();
+            popupStage.initModality(Modality.APPLICATION_MODAL);
+            popupStage.initStyle(StageStyle.UNDECORATED);
+            popupStage.setTitle("Ajouter une tache");
+            popupStage.setScene(new Scene(root));
+            popupStage.showAndWait();
+            refreshTacheList();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     private void showDeleteConfirmation(Tache tache) {
         try {
@@ -259,7 +359,7 @@ public class tacheListController {
 
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initStyle(StageStyle.UNDECORATED);  // Applique le même style que pour la suppression
+            stage.initStyle(StageStyle.UNDECORATED);
             stage.setTitle("Modification de Tâche");
             stage.setScene(new Scene(root));
             stage.showAndWait();
@@ -269,7 +369,6 @@ public class tacheListController {
             e.printStackTrace();
         }
     }
-
 
     public void refreshTacheList() {
         try {
@@ -281,4 +380,3 @@ public class tacheListController {
         }
     }
 }
-

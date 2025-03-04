@@ -187,7 +187,7 @@ public class EmployeeDashController {
             // Clear any user session data
 
             // Load the login screen
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/login.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/loginUser.fxml"));
             Parent root = loader.load();
 
             // Replace current scene with login scene
@@ -227,10 +227,12 @@ public class EmployeeDashController {
     }
     @FXML
     public void handleConge(ActionEvent actionEvent) {
-        loadView("/fxml/CongeEmploye.fxml");
+        setActiveButton(btnConge);
+        loadView("/fxml/testConge.fxml");
     }
     @FXML
     public void handleAbsence(ActionEvent actionEvent) {
-        loadView("/fxml/EmployeAbsence.fxml");
+        setActiveButton(btnAbsence);
+        loadView("/fxml/EmployeeAbsence.fxml");
     }
 }

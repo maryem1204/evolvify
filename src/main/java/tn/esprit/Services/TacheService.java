@@ -109,5 +109,32 @@ public class TacheService implements CRUD<Tache> {
 
     }
 
+    public List<Tache> getTachesByProjetId(int projetId) throws SQLException {
+        List<Tache> taches = new ArrayList<>();
+        Connection connection = MyDataBase.getInstance().getCnx();
+        String query = "SELECT * FROM Tache WHERE id_projet = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, projetId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Tache tache = new Tache();
+                tache.setId_tache(rs.getInt("id_tache"));
+                tache.setDescription(rs.getString("description"));
+                tache.setStatus(Tache.Status.valueOf(rs.getString("status")));
+                tache.setCreated_at(rs.getDate("created_at").toLocalDate());
+                tache.setId_employe(rs.getInt("id_employe"));
+                tache.setId_projet(rs.getInt("id_projet"));
+                tache.setPriority(Tache.Priority.valueOf(rs.getString("priority")));
+                tache.setLocation(rs.getString("location"));
+
+                taches.add(tache);
+            }
+        }
+
+        return taches;
+    }
+
 
 }

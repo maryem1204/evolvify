@@ -5,7 +5,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import tn.esprit.Entities.Projet;
 
 import java.io.IOException;
@@ -75,7 +77,15 @@ public class DetailsProjetController {
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ListTacheChefP.fxml"));
             Parent root = loader.load();
+            // Get the controller and pass the project ID
+            KanbanController kanbanController = loader.getController();
+            kanbanController.setProjectId(projet.getId_projet());
+
+            // Load tasks for this specific project
+            kanbanController.loadTachesForProject(projet.getId_projet());
             Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initStyle(StageStyle.UNDECORATED);
             stage.setTitle("Liste des Tâches du Chef");
             stage.setScene(new Scene(root));
             stage.show();

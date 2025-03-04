@@ -289,7 +289,7 @@ public class DashController {
 
             try {
                 // Charger la scène de connexion
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Login.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/loginUser.fxml"));
                 Parent root = loader.load();
 
                 // Récupérer la scène actuelle et la remplacer par la scène de connexion

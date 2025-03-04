@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="600.0" prefWidth="800.0" stylesheets="@../Styles/Requests.css"
+            xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.Controllers.CongeEmployeController">
+    <!-- Main Content -->
+    <center>
+        <ScrollPane fitToWidth="true">
+            <AnchorPane>
+                <VBox spacing="20" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="20.0">
+                    <!-- Form Title -->
+                    <Label text="Telecommuting Request">
+                        <font>
+                            <Font size="22" />
+                        </font>
+                    </Label>
+
+                    <!-- Form Container -->
+                    <HBox spacing="20">
+                        <!-- Left Form Fields -->
+                        <VBox spacing="15" prefWidth="300">
+                            <!-- Start Date Field -->
+                            <Label text="Leave Start Date" />
+                            <DatePicker fx:id="leaveStartDate" promptText="dd/MM/yyyy" />
+
+                            <!-- End Date Field -->
+                            <Label text="Leave End Date" />
+                            <DatePicker fx:id="leaveEndDate" promptText="dd/MM/yyyy" />
+
+                            <!-- Number of Days Field -->
+                            <Label text="Number of Days" />
+                            <TextField fx:id="numberOfDays" promptText="0" />
+
+                            <!-- Status Field -->
+                            <Label text="Status" />
+                            <ComboBox fx:id="statusComboBox" promptText="EN_COURS" />
+
+                            <!-- Container for Cancel and Submit buttons (populated programmatically) -->
+                            <VBox fx:id="telecommutingFormContainer" spacing="10" />
+                        </VBox>
+
+                        <!-- Calendar Container -->
+                        <VBox spacing="10" prefWidth="250">
+                            <HBox spacing="10" alignment="CENTER">
+                                <Button fx:id="prevMonthButton" text="&lt;" />
+                                <Label fx:id="monthLabel" text="March 2025" />
+                                <Button fx:id="nextMonthButton" text="&gt;" />
+                            </HBox>
+                            <GridPane fx:id="calendarGrid" hgap="2" vgap="2" />
+                        </VBox>
+                    </HBox>
+                </VBox>
+            </AnchorPane>
+        </ScrollPane>
+    </center>
+</BorderPane>

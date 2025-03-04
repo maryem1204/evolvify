@@ -146,5 +146,37 @@ HBox {
     -fx-opacity: 1; /* Rendre l'overlay visible */
 }
 
+/* Add these styles to your existing CSS file */
 
+.filter-combo {
+    -fx-background-color: white;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 4px;
+    -fx-padding: 5px;
+}
+
+.filter-button {
+    -fx-background-color: #4e73df;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+    -fx-border-radius: 4px;
+    -fx-cursor: hand;
+}
+
+.filter-button:hover {
+    -fx-background-color: #375ad3;
+}
+
+.reset-button {
+    -fx-background-color: #e0e0e0;
+    -fx-text-fill: #333;
+    -fx-padding: 8px 15px;
+    -fx-border-radius: 4px;
+    -fx-cursor: hand;
+}
+
+.reset-button:hover {
+    -fx-background-color: #d0d0d0;
+}
 

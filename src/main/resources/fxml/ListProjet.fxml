@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="600.0" prefWidth="1200.0" style="-fx-background-color: transparent; -fx-padding: 20px;" stylesheets="@../Styles/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.ProjectListController">
+<BorderPane prefHeight="658.0" prefWidth="1170.0" style="-fx-background-color: transparent; -fx-padding: 20px;" stylesheets="@../Styles/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.ProjectListController">
 
     <!-- Header avec titre et barre de recherche -->
     <top>
@@ -28,9 +28,9 @@
 
     <!-- TableView pour afficher les projets -->
     <center>
-        <AnchorPane prefHeight="400.0" prefWidth="950.0">
+        <AnchorPane prefHeight="550.0" prefWidth="1170.0">
             <VBox VBox.vgrow="ALWAYS">
-            <TableView fx:id="projectTable" prefHeight="550.0" prefWidth="1200.0">
+            <TableView fx:id="projectTable" prefHeight="550.0" prefWidth="1170.0">
                 <columns>
                     <TableColumn fx:id="colName" prefWidth="150" text="Nom du Projet" />
                     <TableColumn fx:id="colAbbreviation" prefWidth="100" text="Abréviation" />
