@@ -7,6 +7,11 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.json.JSONArray;
 import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Services.CandidateService;
 import tn.esprit.Utils.MyDataBase;
@@ -145,56 +150,36 @@ public class ListCandidateController {
 
     // Analyse du CV avec EdenAI
     private void analyzeCVWithEdenAI(File cvFile) {
-        try {
-            String cvText = extractTextFromPDF(cvFile);
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            String url = "https://api.edenai.run/v2/ocr/resume_parser";
+            HttpPost postRequest = new HttpPost(url);
+            postRequest.setHeader("Authorization", "Bearer " + API_KEY);
 
-            if (cvText == null || cvText.isEmpty()) {
-                afficherAlerte("Erreur d'analyse", "Le texte extrait du CV est vide ou invalide.");
-                return;
+            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+            builder.addBinaryBody("file", cvFile, ContentType.APPLICATION_OCTET_STREAM, cvFile.getName());
+            builder.addTextBody("language", "fr", ContentType.TEXT_PLAIN); // Langue du CV
+            builder.addTextBody("providers", "affinda", ContentType.TEXT_PLAIN);// Fournisseur d'analyse
+
+            HttpEntity multipart = builder.build();
+            postRequest.setEntity(multipart);
+
+            CloseableHttpResponse response = client.execute(postRequest);
+            int statusCode = response.getStatusLine().getStatusCode();
+            String responseString = EntityUtils.toString(response.getEntity());
+
+            if (statusCode == 200) {
+                afficherResultatsIA(responseString);
+            } else {
+                afficherAlerte("Erreur API", "Erreur de l'API EdenAI : " + statusCode + "\nRéponse : " + responseString);
             }
 
-            // Remplacez ici par le chemin du fichier sur le bureau
-            String filePath = "C:/Users/HP/Desktop/cv.pdf"; // Remplacez par votre chemin
-
-            File file = new File(filePath);
-            if (!file.exists()) {
-                afficherAlerte("Erreur", "Le fichier n'existe pas.");
-                return;
-            }
-
-            try (CloseableHttpClient client = HttpClients.createDefault()) {
-                String url = "https://app.edenai.run/bricks/ocr/resume-parser"; // URL de l'API EdenAI
-                HttpPost postRequest = new HttpPost(url);
-                postRequest.setHeader("Authorization", "Bearer " + API_KEY);
-                postRequest.setHeader("Content-Type", "application/json");
-
-                // Préparation des paramètres JSON
-                JSONObject jsonPayload = new JSONObject();
-                jsonPayload.put("file", encodeFileToBase64(file)); // Encodage du fichier en base64
-                jsonPayload.put("language", "fr"); // Langue du CV (français ici)
-
-                StringEntity params = new StringEntity(jsonPayload.toString());
-                postRequest.setEntity(params);
-                int statusCode = client.execute(postRequest).getStatusLine().getStatusCode();
-                if (statusCode != 200) {
-                    afficherAlerte("Erreur", "Erreur de communication avec l'API : " + statusCode);
-                    return;
-                }
-
-                // Exécuter la requête et obtenir la réponse
-                String response = EntityUtils.toString(client.execute(postRequest).getEntity());
-
-                afficherResultatsIA(response); // Afficher les résultats
-
-            } catch (Exception e) {
-                afficherAlerte("Erreur d'analyse", "Erreur lors de l'analyse avec EdenAI : " + e.getMessage());
-                logger.log(Level.SEVERE, "Erreur lors de l'analyse avec EdenAI", e);
-            }
-        } catch (IOException e) {
-            afficherAlerte("Erreur d'extraction", "Erreur lors de l'extraction du texte du CV : " + e.getMessage());
-            logger.log(Level.SEVERE, "Erreur lors de l'extraction du texte du CV", e);
+        } catch (Exception e) {
+            afficherAlerte("Erreur", "Erreur lors de l'analyse avec EdenAI : " + e.getMessage());
+            logger.log(Level.SEVERE, "Erreur lors de l'analyse avec EdenAI", e);
         }
     }
+
+
 
     // Méthode pour encoder un fichier en base64
     private String encodeFileToBase64(File file) throws IOException {
@@ -219,23 +204,55 @@ public class ListCandidateController {
     // Afficher les résultats de l'IA
     private void afficherResultatsIA(String response) {
         try {
-            if (response.startsWith("{")) {
-                JSONObject jsonResponse = new JSONObject(response);
-                // Extraire les données pertinentes de la réponse JSON
-                String extractedText = jsonResponse.getString("extracted_text");
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Résultats de l'Analyse IA");
-                alert.setHeaderText(null);
-                alert.setContentText("Texte extrait du CV :\n" + extractedText);
-                alert.showAndWait();
-                // Traitement normal
-            } else {
-                afficherAlerte("Erreur de l'API", "Réponse invalide de l'API : " + response);
+            System.out.println("Réponse complète de l'API EdenAI : " + response);
+
+            JSONObject jsonResponse = new JSONObject(response);
+
+            // Vérification des résultats
+            if (jsonResponse.has("affinda")) {
+                JSONObject affinda = jsonResponse.getJSONObject("affinda");
+
+                // Vérification si des données extraites existent
+                if (affinda.has("extracted_data")) {
+                    JSONObject extractedData = affinda.getJSONObject("extracted_data");
+                    JSONObject personalInfos = extractedData.getJSONObject("personal_infos");
+                    JSONArray skillsArray = extractedData.getJSONArray("skills");
+
+                    StringBuilder extractedText = new StringBuilder();
+                    // Extraction des informations personnelles
+                    String firstName = personalInfos.optJSONObject("name").optString("first_name", "Non disponible");
+                    String lastName = personalInfos.optJSONObject("name").optString("last_name", "Non disponible");
+                    String fullName = firstName + " " + lastName;
+                    String email = personalInfos.optJSONArray("mails").optString(0, "Non disponible");
+                    String phone = personalInfos.optJSONArray("phones").optString(0, "Non disponible");
+
+                    extractedText.append("Nom: ").append(fullName).append("\n");
+                    extractedText.append("Email: ").append(email).append("\n");
+                    extractedText.append("Téléphone: ").append(phone).append("\n");
+
+                    // Extraction des compétences
+                    extractedText.append("Compétences: \n");
+                    for (int i = 0; i < skillsArray.length(); i++) {
+                        extractedText.append("- ").append(skillsArray.getJSONObject(i).optString("name", "Non disponible")).append("\n");
+                    }
+
+                    // Affichage des résultats dans un pop-up
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Résultats de l'Analyse IA");
+                    alert.setHeaderText(null);
+                    alert.setContentText(extractedText.toString());
+                    alert.showAndWait();
+                    return;
+                }
             }
+
+            // Si aucun résultat valide n'est trouvé
+            afficherAlerte("Erreur de l'API", "Aucune donnée trouvée dans la réponse.");
 
         } catch (Exception e) {
             afficherAlerte("Erreur", "Erreur lors de l'affichage des résultats.");
             logger.log(Level.SEVERE, "Erreur lors du traitement de la réponse de l'API EdenAI", e);
         }
     }
+
 }

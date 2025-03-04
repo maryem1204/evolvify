@@ -97,7 +97,8 @@ public class CandidateService implements CRUD<Utilisateur> {
                 utilisateur.setBirthdayDate(rs.getDate("birthdayDate"));
                 utilisateur.setJoiningDate(rs.getDate("joiningDate"));
                 utilisateur.setNum_tel(rs.getString("num_tel"));
-                Gender.valueOf(rs.getString("gender"));
+                utilisateur.setGender(Gender.valueOf(rs.getString("gender")));
+
 
                 condidates.add(utilisateur);
             }
