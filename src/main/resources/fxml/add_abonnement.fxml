@@ -52,8 +52,9 @@
                     </HBox>
 
                     <HBox spacing="10" alignment="CENTER_LEFT">
-                        <Label prefWidth="150" text="Id_Employé" />
-                        <TextField fx:id="id_employe" prefWidth="176" />
+                        <Label prefWidth="150" text="Employé : " />
+                        <TextField fx:id="id_employe" prefWidth="176" editable="false" />
+
                     </HBox>
 
                     <HBox spacing="10" alignment="CENTER_LEFT">

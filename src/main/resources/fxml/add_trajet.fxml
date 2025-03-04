@@ -30,7 +30,7 @@
          <TextField fx:id="distance" layoutX="278.0" layoutY="176.0" />
          <Label layoutX="42.0" layoutY="232.0" text="Durée estimée (HH:mm:ss) :" />
          <TextField fx:id="durée_estimé" layoutX="278.0" layoutY="224.0" />
-         <Label layoutX="44.0" layoutY="279.0" text="ID Employé :" />
+         <Label layoutX="44.0" layoutY="279.0" text="Employé :" />
          <TextField fx:id="id_employe" layoutX="278.0" layoutY="271.0" />
          <Label layoutX="26.0" layoutY="318.0" text="Moyen de transport associé :" />
          <ComboBox fx:id="moyen_transport" layoutX="278.0" layoutY="315.0" prefHeight="26.0" prefWidth="177.0"/>

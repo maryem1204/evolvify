@@ -8,9 +8,11 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import tn.esprit.Entities.Abonnement;
 import tn.esprit.Entities.StatusAbonnement;
+import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Services.AbonnementCRUD;
 import tn.esprit.Utils.QRCodeGenerator;
 import tn.esprit.Utils.QRCodeUtils;
+import tn.esprit.Utils.SessionManager;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -42,6 +44,15 @@ public class AddAbonnementController {
 
     @FXML
     public void initialize() {
+        // Récupérer l'utilisateur connecté
+        Utilisateur utilisateurConnecte = SessionManager.getInstance().getUtilisateurConnecte();
+        if (utilisateurConnecte != null) {
+            id_employe.setText(String.valueOf(utilisateurConnecte.getId_employe()));
+            id_employe.setEditable(false); // Empêcher la modification manuelle
+        } else {
+            showAlert("Erreur", "Aucun utilisateur connecté !");
+        }
+
         // Remplit automatiquement la date du jour
         date_deb.setValue(LocalDate.now());
 
@@ -57,21 +68,21 @@ public class AddAbonnementController {
     @FXML
     void ajouterAbonnement() {
         try {
-            // Vérification des champs vides
-            if (id_employe.getText().isEmpty() || prix.getText().isEmpty() ||
-                    date_deb.getValue() == null || date_exp.getValue() == null ||
+            // Récupérer l'utilisateur connecté depuis la session
+            Utilisateur utilisateurConnecte = SessionManager.getInstance().getUtilisateurConnecte();
+            if (utilisateurConnecte == null) {
+                showAlert("Erreur", "Aucun utilisateur connecté !");
+                return;
+            }
+            int idEmployeValue = utilisateurConnecte.getId_employe(); // Récupération automatique
+
+            // Vérification des autres champs
+            if (prix.getText().isEmpty() || date_deb.getValue() == null || date_exp.getValue() == null ||
                     type_ab.getValue() == null || status.getValue() == null) {
 
                 showAlert("Erreur", "Veuillez remplir tous les champs !");
                 return;
             }
-
-            // Vérification que id_employé est un nombre valide
-            if (!isInteger(id_employe.getText())) {
-                showAlert("Erreur", "L'ID de l'employé doit être un nombre entier valide !");
-                return;
-            }
-            int idEmployeValue = Integer.parseInt(id_employe.getText());
 
             // Conversion des valeurs
             String typeValue = type_ab.getValue();
@@ -120,6 +131,7 @@ public class AddAbonnementController {
             e.printStackTrace();
         }
     }
+
 
     /**
      * Génère et affiche le QR code dans l'ImageView

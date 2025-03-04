@@ -11,8 +11,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import tn.esprit.Entities.Trajet;
 import tn.esprit.Entities.StatusTrajet;
+import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Services.TrajetCRUD;
 import tn.esprit.Utils.MyDataBase;
+import tn.esprit.Utils.SessionManager;
 import tn.esprit.Utils.TrajetEventBus;
 
 import java.io.IOException;
@@ -45,18 +47,20 @@ public class AddTrajetController {
 
     @FXML
     private void initialize() {
-        id_employe.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.isEmpty()) {
-                try {
-                    int employeId = Integer.parseInt(newValue);
-                    verifierAbonnement(employeId);
-                } catch (NumberFormatException e) {
-                    showAlert("Erreur", "L'ID employé doit être un nombre valide.", Alert.AlertType.ERROR);
-                }
-            }
-        });
+        // Récupérer l'utilisateur connecté depuis la session
+        Utilisateur utilisateurConnecte = SessionManager.getInstance().getUtilisateurConnecte();
+
+        if (utilisateurConnecte != null) {
+            int employeId = utilisateurConnecte.getId_employe(); // Supposons que getId_employe() retourne l'ID de l'utilisateur
+            id_employe.setText(String.valueOf(employeId)); // Met à jour le champ id_employe
+            verifierAbonnement(employeId);
+        } else {
+            showAlert("Erreur", "Aucun utilisateur connecté.", Alert.AlertType.ERROR);
+        }
+
         moyen_transport.setPromptText("Sélectionner");
     }
+
 
     private void verifierAbonnement(int employeId) {
         String query = "SELECT status FROM abonnement WHERE id_employe = ?";
@@ -95,17 +99,23 @@ public class AddTrajetController {
         if (!isInputValid()) return;
 
         try {
-            // Fetch input values
-            int employeId = Integer.parseInt(id_employe.getText().trim());
+            // Récupérer l'utilisateur connecté
+            Utilisateur utilisateurConnecte = SessionManager.getInstance().getUtilisateurConnecte();
+
+            if (utilisateurConnecte == null) {
+                showAlert("Erreur", "Aucun utilisateur connecté. Veuillez vous connecter avant d'ajouter un trajet.", Alert.AlertType.ERROR);
+                return;
+            }
+
+            int employeId = utilisateurConnecte.getId_employe(); // Récupérer l'ID depuis la session
             String depart = pointDep.getText().trim();
             String arrivee = pointArr.getText().trim();
-
             double dist = Double.parseDouble(distance.getText().trim());
             Time duree = parseTime(durée_estimé.getText().trim());
             String moyen = moyen_transport.getValue();
             String statusValue = status.getValue();
 
-            // Convert status to enum
+            // Conversion du statut en Enum
             StatusTrajet statusEnum;
             try {
                 statusEnum = StatusTrajet.valueOf(statusValue.toUpperCase());
@@ -114,33 +124,29 @@ public class AddTrajetController {
                 return;
             }
 
-            // Fetch transport ID
+            // Récupération de l'ID du moyen de transport
             int moyenId = getMoyenId(moyen);
             if (moyenId == -1) {
                 showAlert("Erreur", "Le moyen de transport sélectionné n'est pas disponible.", Alert.AlertType.ERROR);
                 return;
             }
 
-            // Create a new Trajet object
+            // Création et ajout du trajet
             Trajet trajet = new Trajet(0, depart, arrivee, dist, duree, moyenId, employeId, statusEnum);
             int id = trajetCRUD.add(trajet);
 
             if (id > 0) {
-                // Fire event for map update (if other components are listening)
-              //TrajetEventBus.fireTrajetEvent(trajet);
-
-                // Clear input fields
+                // Nettoyage des champs après ajout réussi
                 clearFields();
 
-                // Show an embedded map popup (using the location from the Trajet, e.g., the departure address)
-                // You can modify this to use any address or logic you prefer.
+                // Affichage d'une carte avec l'adresse d'arrivée
                 showMapPopup(trajet.getPointArr());
             } else {
                 showAlert("Erreur", "L'ajout du trajet a échoué.", Alert.AlertType.ERROR);
             }
 
         } catch (NumberFormatException e) {
-            showAlert("Erreur", "Veuillez entrer des valeurs valides pour l'ID employé et la distance.", Alert.AlertType.ERROR);
+            showAlert("Erreur", "Veuillez entrer des valeurs valides pour la distance.", Alert.AlertType.ERROR);
         } catch (SQLException e) {
             showAlert("Erreur SQL", "Une erreur est survenue lors de l'ajout du trajet.", Alert.AlertType.ERROR);
             e.printStackTrace();

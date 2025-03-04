@@ -7,7 +7,8 @@
 <?import javafx.scene.text.*?>
 
 <AnchorPane style="-fx-background-color: #1A1D2C;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.FrontTransportController">
-    <VBox prefHeight="677.0" prefWidth="1326.0" spacing="10" AnchorPane.bottomAnchor="139.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+    <VBox  prefHeight="600.0" prefWidth="1000.0" spacing="10" AnchorPane.bottomAnchor="139.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+
         <!-- Top Bar -->
         <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 20 40 0 40;">
             <VBox spacing="5">
@@ -21,6 +22,17 @@
                         <Font name="System Bold" size="36" />
                     </font>
                 </Label>
+                <Label text="Trajets Récents" textFill="WHITE">
+                    <font>
+                        <Font name="System Bold" size="18" />
+                    </font>
+                </Label>
+                <Region HBox.hgrow="ALWAYS" />
+                <Button fx:id="addTrajetButton" style="-fx-background-color: #6C5CE7; -fx-text-fill: white; -fx-background-radius: 5;" text="+ NOUVEAU TRAJET">
+                    <font>
+                        <Font name="System Bold" size="12" />
+                    </font>
+                </Button>
             </VBox>
             <Region HBox.hgrow="ALWAYS" />
             <HBox alignment="CENTER_RIGHT" spacing="10">
@@ -203,17 +215,7 @@
         <!-- Recent Trips Section -->
         <VBox style="-fx-padding: 0 40 20 40;">
             <HBox alignment="CENTER_LEFT">
-                <Label text="Trajets Récents" textFill="WHITE">
-                    <font>
-                        <Font name="System Bold" size="18" />
-                    </font>
-                </Label>
-                <Region HBox.hgrow="ALWAYS" />
-                <Button fx:id="addTrajetButton" style="-fx-background-color: #6C5CE7; -fx-text-fill: white; -fx-background-radius: 5;" text="+ NOUVEAU TRAJET">
-                    <font>
-                        <Font name="System Bold" size="12" />
-                    </font>
-                </Button>
+
             </HBox>
             <!-- Table Header -->
             <HBox prefHeight="61.0" prefWidth="1247.0" style="-fx-padding: 10 0 5 0;">
