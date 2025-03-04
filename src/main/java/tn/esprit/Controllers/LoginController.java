@@ -148,6 +148,7 @@ public class LoginController {
 
         alert.showAndWait();
     }
+
     private void switchScene(ActionEvent event, String fxmlFile) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));

@@ -82,12 +82,12 @@ public class DashController {
 
         btnConges.setOnAction(event -> {
             setActiveButton(btnConges);
-            loadView("/fxml/conges.fxml");
+            loadView("/fxml/dashboardCongeRh.fxml");
         });
 
         btnAbsences.setOnAction(event -> {
             setActiveButton(btnAbsences);
-            loadView("/fxml/absences.fxml");
+            loadView("/fxml/AttendanceView.fxml");
         });
         btnTaches.setOnAction(event -> {
             setActiveButton(btnProjets);
@@ -283,7 +283,7 @@ public class DashController {
         loadView("/fxml/listUsers.fxml");
     }
 
-    @FXML
+    
     private void handleLogout() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Déconnexion");

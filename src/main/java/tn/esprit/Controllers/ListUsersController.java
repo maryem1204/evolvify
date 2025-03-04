@@ -66,6 +66,7 @@ public class ListUsersController {
     private ComboBox<Integer> yearFilterComboBox;
     private Integer selectedYear = null;
 
+
     private ObservableList<Utilisateur> users = FXCollections.observableArrayList();
     private List<Utilisateur> filteredUsers = new ArrayList<>();
 
