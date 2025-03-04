@@ -5,7 +5,9 @@ import tn.esprit.Utils.MyDataBase;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TacheService implements CRUD<Tache> {
 
@@ -135,6 +137,7 @@ public class TacheService implements CRUD<Tache> {
 
         return taches;
     }
+
 
 
 }

@@ -1,0 +1,156 @@
+/* responsive.css - Style CSS responsive pour application JavaFX */
+
+/* Styles de base pour tous les écrans */
+.root {
+    -fx-font-family: "System";
+    -fx-font-size: 12px;
+}
+
+/* Pour que les panneaux s'adaptent à la taille de la fenêtre */
+.main-container {
+    -fx-pref-width: 100%;
+    -fx-pref-height: 100%;
+}
+
+/* Styles pour les tableaux */
+.table-view {
+    -fx-pref-width: 100%;
+    -fx-max-height: 1000000px; /* Valeur très grande pour permettre au binding de fonctionner */
+}
+
+/* Permettre aux colonnes de s'adapter à la largeur de la table */
+.table-view .column-header,
+.table-view .column-header-background .filler {
+    -fx-size: 35;
+    -fx-border-width: 0 0 1 0;
+    -fx-background-color: #1976D2;
+    -fx-border-color: #DDDDDD;
+    -fx-border-insets: 0;
+}
+
+/* Styles pour le contenu des cellules */
+.table-view .table-cell {
+    -fx-alignment: center-left;
+    -fx-padding: 5 8 5 8;
+    -fx-wrap-text: true;
+}
+
+/* Style pour les icônes - adaptent leur taille sur petits écrans */
+.icon {
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+
+/* Styles responsives pour différentes tailles d'écran */
+/* Grands écrans (supérieurs à 1920px) */
+@media screen and (min-width: 1920px) {
+    .root {
+        -fx-font-size: 14px;
+    }
+
+    .big-title {
+        -fx-font-size: 26px;
+    }
+
+    .subtitle {
+        -fx-font-size: 20px;
+    }
+
+    .button {
+        -fx-padding: 10 15 10 15;
+    }
+}
+
+/* Écrans moyens (entre 1280px et 1919px) */
+@media screen and (min-width: 1280px) and (max-width: 1919px) {
+    .root {
+        -fx-font-size: 12px;
+    }
+
+    .big-title {
+        -fx-font-size: 22px;
+    }
+
+    .subtitle {
+        -fx-font-size: 18px;
+    }
+
+    .button {
+        -fx-padding: 8 12 8 12;
+    }
+}
+
+/* Petits écrans (moins de 1280px) */
+@media screen and (max-width: 1279px) {
+    .root {
+        -fx-font-size: 11px;
+    }
+
+    .big-title {
+        -fx-font-size: 18px;
+    }
+
+    .subtitle {
+        -fx-font-size: 16px;
+    }
+
+    .button {
+        -fx-padding: 6 10 6 10;
+    }
+
+    /* Réduire la taille des icônes sur petits écrans */
+    .icon {
+        -fx-scale-x: 0.8;
+        -fx-scale-y: 0.8;
+    }
+}
+
+/* Styles pour les tableaux sur différents écrans */
+@media screen and (max-width: 1279px) {
+    .table-view .table-cell {
+        -fx-padding: 3 5 3 5;
+    }
+}
+
+/* Styles pour les formulaires */
+.form-container {
+    -fx-spacing: 10;
+    -fx-padding: 15;
+}
+
+.form-field {
+    -fx-pref-width: 100%;
+}
+
+/* S'assurer que le contenu des panneaux horizontaux s'ajuste bien */
+.hbox {
+    -fx-spacing: 10;
+    -fx-fill-height: true;
+}
+
+/* S'assurer que le contenu des panneaux verticaux s'ajuste bien */
+.vbox {
+    -fx-spacing: 10;
+    -fx-fill-width: true;
+}
+
+/* Styles pour les boutons */
+.button {
+    -fx-background-color: #1976D2;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #1565C0;
+}
+
+/* Styles pour naviguer entre écrans sur petits appareils */
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+}
+
+.nav-button:hover {
+    -fx-background-color: rgba(0, 0, 0, 0.1);
+}

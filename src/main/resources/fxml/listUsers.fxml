@@ -26,30 +26,41 @@
                             style="-fx-background-color: linear-gradient(to right, #9966ff, #3366ff); -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 30; -fx-padding: 10 20 10 20; -fx-cursor: hand; -fx-font-size: 15px;"/>
                 </HBox>
 
-                <!-- Barre de recherche améliorée -->
-                <HBox alignment="CENTER_LEFT" spacing="10"
-                      style="-fx-background-color: #f0f5ff; -fx-background-radius: 30; -fx-padding: 5px; -fx-border-color: #e0e7ff; -fx-border-radius: 30; -fx-border-width: 1px;">
-                    <padding>
-                        <Insets left="20" right="8" top="8" bottom="8"/>
-                    </padding>
-                    <ImageView fitWidth="16" fitHeight="16">
-                        <image>
-                            <Image url="@../images/search-1.jpg"/>
-                        </image>
-                    </ImageView>
-                    <TextField fx:id="searchField" promptText="Rechercher un employé..."
-                               style="-fx-background-color: transparent; -fx-prompt-text-fill: #6c757d;" HBox.hgrow="ALWAYS" />
+                <!-- Barre de recherche avec filtre par année -->
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <!-- Filtre par année d'embauche -->
+                    <HBox alignment="CENTER_LEFT" spacing="5"
+                          style="-fx-background-color: #f0f5ff; -fx-background-radius: 30; -fx-padding: 5px; -fx-border-color: #e0e7ff; -fx-border-radius: 30; -fx-border-width: 1px;">
+                        <padding>
+                            <Insets left="15" right="15" top="8" bottom="8"/>
+                        </padding>
+                        <Label text="Année d'embauche:" style="-fx-text-fill: #6c757d;"/>
+                        <ComboBox fx:id="yearFilterComboBox" prefWidth="100" promptText="Année"
+                                  onAction="#handleYearFilter"
+                                  style="-fx-background-color: transparent; -fx-border-color: transparent;"/>
+                    </HBox>
 
-                    <Button fx:id="searchButton" onAction="#handleSearch"
-                            style="-fx-background-color: #4da6ff; -fx-background-radius: 50; -fx-min-width: 38; -fx-min-height: 38; -fx-max-width: 38; -fx-max-height: 38;">
-                        <graphic>
-                            <ImageView fitWidth="18" fitHeight="18">
-                                <image>
-                                    <Image url="@../images/search-1.jpg"/>
-                                </image>
-                            </ImageView>
-                        </graphic>
-                    </Button>
+                    <!-- Barre de recherche améliorée -->
+                    <HBox alignment="CENTER_LEFT" spacing="10" HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: #f0f5ff; -fx-background-radius: 30; -fx-padding: 5px; -fx-border-color: #e0e7ff; -fx-border-radius: 30; -fx-border-width: 1px;">
+                        <padding>
+                            <Insets left="20" right="8" top="8" bottom="8"/>
+                        </padding>
+
+                        <TextField fx:id="searchField" promptText="Rechercher un employé..."
+                                   style="-fx-background-color: transparent; -fx-prompt-text-fill: #6c757d;" HBox.hgrow="ALWAYS" />
+
+                        <Button fx:id="searchButton" onAction="#handleSearch"
+                                style="-fx-background-color: #4da6ff; -fx-background-radius: 50; -fx-min-width: 38; -fx-min-height: 38; -fx-max-width: 38; -fx-max-height: 38;">
+                            <graphic>
+                                <ImageView fitWidth="18" fitHeight="18">
+                                    <image>
+                                        <Image url="@../images/search-1.jpg"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                    </HBox>
                 </HBox>
             </VBox>
         </top>

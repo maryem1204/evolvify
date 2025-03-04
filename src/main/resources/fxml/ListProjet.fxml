@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="658.0" prefWidth="1170.0" style="-fx-background-color: transparent; -fx-padding: 20px;" stylesheets="@../Styles/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.ProjectListController">
+<BorderPane prefHeight="600.0" prefWidth="1200.0" style="-fx-background-color: transparent; -fx-padding: 20px;" stylesheets="@../Styles/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.ProjectListController">
 
     <!-- Header avec titre et barre de recherche -->
     <top>
@@ -28,20 +28,18 @@
 
     <!-- TableView pour afficher les projets -->
     <center>
-        <AnchorPane prefHeight="550.0" prefWidth="1170.0">
-            <VBox VBox.vgrow="ALWAYS">
-            <TableView fx:id="projectTable" prefHeight="550.0" prefWidth="1170.0">
+        <AnchorPane prefHeight="400.0" prefWidth="950.0">
+            <TableView fx:id="projectTable" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" prefHeight="550.0" prefWidth="1200.0">
                 <columns>
                     <TableColumn fx:id="colName" prefWidth="150" text="Nom du Projet" />
                     <TableColumn fx:id="colAbbreviation" prefWidth="100" text="Abréviation" />
                     <TableColumn fx:id="colStatus" prefWidth="100" text="Statut" />
                     <TableColumn fx:id="colStarterDate" prefWidth="120" text="Date de Début" />
                     <TableColumn fx:id="colEndDate" prefWidth="120" text="Date de Fin" />
-                    <TableColumn fx:id="colEmployeId" prefWidth="150" text="assigné à" />
-                    <TableColumn fx:id="colActions" prefWidth="200" text="Actions" />
+                    <TableColumn fx:id="colEmployeId" prefWidth="150" text="Assigné à" />
+                    <TableColumn fx:id="colActions" prefWidth="80" text="Actions" />
                 </columns>
             </TableView>
-            </VBox>
         </AnchorPane>
     </center>
 

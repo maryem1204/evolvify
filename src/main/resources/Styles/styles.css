@@ -47,6 +47,20 @@ HBox {
     -fx-background-color: #0047AB;
     -fx-text-fill: white;
     -fx-font-weight: bold;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+    -fx-padding: 8px 15px;
+}
+
+.gradient-button:hover {
+    -fx-background-color: #003380;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 5, 0, 0, 2);
+}
+
+/* TableView styles */
+.table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: #e0e0e0;
     -fx-border-radius: 5px;
     -fx-padding: 5px;
 }
@@ -127,6 +141,15 @@ HBox {
     -fx-border-color: #008000;/* Vert */
     -fx-text-fill: #008000;
     -fx-font-weight: bold;
+    -fx-text-fill: #0047AB;
+    -fx-padding: 0 0 10px 0;
+}
+
+.assignee-popup-list {
+    -fx-spacing: 5;
+}
+
+.assignee-popup-item {
     -fx-padding: 5px;
     -fx-border-radius: 5px;
     -fx-background-radius: 5px;

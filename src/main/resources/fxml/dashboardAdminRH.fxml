@@ -150,13 +150,13 @@
             </HBox>
 
             <!-- Troisième ligne -->
-            <HBox layoutX="250" layoutY="460" spacing="15">
+            <HBox layoutX="250" layoutY="460" spacing="10">
                 <!-- Progression -->
-                <VBox fx:id="progressionBox" prefHeight="100" prefWidth="550" styleClass="card, hover-effect">
+                <VBox fx:id="progressionBox" prefHeight="90" prefWidth="870" styleClass="card, hover-effect">
                     <Label styleClass="card-title" text="Progression" />
                     <BarChart fx:id="progressChart" prefHeight="140" animated="false">
                         <xAxis>
-                            <CategoryAxis fx:id="progressChartXAxis" label="Semaine" />
+                            <CategoryAxis fx:id="progressChartXAxis" />
                         </xAxis>
                         <yAxis>
                             <NumberAxis upperBound="150" tickUnit="50" />
@@ -165,20 +165,7 @@
                 </VBox>
 
                 <!-- Performance -->
-                <VBox prefHeight="100" prefWidth="320" styleClass="card, hover-effect">
-                    <Label styleClass="card-title" text="Performance" />
-                    <BarChart fx:id="barChart" prefHeight="140" animated="false">
-                        <xAxis>
-                            <CategoryAxis fx:id="categoryAxis" label="Semaine" />
-                        </xAxis>
-                        <yAxis>
-                            <NumberAxis upperBound="150" tickUnit="50" />
-                        </yAxis>
-                    </BarChart>
-                </VBox>
-
-
-            </HBox>
+        </HBox>
         </AnchorPane>
     </children>
 </AnchorPane>
