@@ -1,9 +1,12 @@
 package tn.esprit.Controllers;
 
+import javafx.animation.KeyFrame;
 import javafx.animation.RotateTransition;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
 import javafx.geometry.Point3D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -33,14 +36,14 @@ public class PageAcceuil {
     @FXML private Button login, nosoffre, nossolution, quisommesnous;
     private boolean[] isFlipped = {false, false, false, false, false};
     private Connection cnx = MyDataBase.getInstance().getCnx();
+
     @FXML
     private void goToAboutUs() {
         Platform.runLater(() -> {
-            scrollPane.layout();  // Force le redimensionnement du contenu du ScrollPane
-            scrollToCard(cardAboutUs);  // Essayez avec la carte "Qui sommes-nous ?"
+            // Utiliser un délai pour forcer le redimensionnement avant le défilement
+            Platform.runLater(() -> scrollToCard(cardAboutUs));
         });
     }
-
     // Défilement vers "Nos Solutions"
     @FXML
     private void goToSolutions() {
@@ -48,21 +51,43 @@ public class PageAcceuil {
     }
 
 
-
     private void scrollToCard(StackPane card) {
-        // Récupérer la position Y de la carte dans le ScrollPane
-        double cardPosition = card.localToParent(card.getBoundsInLocal()).getMinY();
-
-        // On peut fixer la valeur de vvalue directement
-        // On s'assure que la valeur reste dans l'intervalle [0, 1]
-        double scrollValue = Math.max(0, Math.min(1, cardPosition / scrollPane.getContent().getBoundsInLocal().getHeight()));
-
-        // Appliquer la valeur de défilement
+        double scrollValue = 1600.0;
         scrollPane.setVvalue(scrollValue);
+
     }
+    @FXML
+    private void goToOffres() {
+        Platform.runLater(() -> {
+            scrollPane.layout(); // Mise à jour du layout avant de calculer les positions
+            scrollToCardOffres(card1); // Faire défiler vers la première carte des offres
 
+            // Défilement vers les autres cartes avec des délais
+            Timeline timeline = new Timeline();
+            timeline.getKeyFrames().addAll(
+                    new KeyFrame(Duration.seconds(1), e -> scrollToCard(card2)),
+                    new KeyFrame(Duration.seconds(2), e -> scrollToCard(card3)),
+                    new KeyFrame(Duration.seconds(3), e -> scrollToCard(card4)),
+                    new KeyFrame(Duration.seconds(4), e -> scrollToCard(card5))
+            );
+            timeline.play(); // Lancer la timeline
+        });
+    }
+    private void scrollToCardOffres(StackPane card) {
 
+        Bounds viewportBounds = scrollPane.getViewportBounds();
+        Bounds cardBounds = card.localToScene(card.getBoundsInLocal());
 
+        double scrollOffset = cardBounds.getMinY() - viewportBounds.getMinY();
+        double contentHeight = scrollPane.getContent().getBoundsInLocal().getHeight();
+        double scrollValue = scrollOffset / contentHeight;
+
+        // Vérification pour s'assurer que la valeur est entre 0 et 1
+        scrollValue = Math.max(0, Math.min(1, scrollValue));
+
+        scrollPane.setVvalue(scrollValue);
+
+    }
 
 
 

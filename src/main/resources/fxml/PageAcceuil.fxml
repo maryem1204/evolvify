@@ -14,7 +14,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fx:id="scrollPane"  hbarPolicy="NEVER" prefHeight="820.0" prefWidth="1580.0" stylesheets="@../Styles/Acceuil.css" vbarPolicy="always" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.PageAcceuil">
+<ScrollPane fx:id="scrollPane" hbarPolicy="NEVER" prefHeight="820.0" prefWidth="1580.0" stylesheets="@../Styles/Acceuil.css" vbarPolicy="always" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.PageAcceuil">
    <content>
       <VBox minHeight="2000.0" prefWidth="1600.0">
          <Region prefHeight="20.0" />
@@ -27,17 +27,17 @@
                   <Image url="@../images/logo.png" />
                </image>
             </ImageView>
-            <Button fx:id="quisommesnous" mnemonicParsing="false" styleClass="button2" stylesheets="@../Styles/Acceuil.css" text="Qui Sommes Nous?" onAction="#goToAboutUs">
+            <Button fx:id="quisommesnous" mnemonicParsing="false" onAction="#goToAboutUs" styleClass="button2" stylesheets="@../Styles/Acceuil.css" text="Qui Sommes Nous?">
                <font>
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button fx:id="nossolution" mnemonicParsing="false" styleClass="button2" stylesheets="@../Styles/Acceuil.css" text="Nos Solutions" onAction="#goToSolutions">
+            <Button fx:id="nossolution" mnemonicParsing="false" onAction="#goToSolutions" styleClass="button2" stylesheets="@../Styles/Acceuil.css" text="Nos Solutions">
                <font>
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button fx:id="nosoffre" mnemonicParsing="false" styleClass="button2" stylesheets="@../Styles/Acceuil.css" text="Nos Offres">
+            <Button fx:id="nosoffre" mnemonicParsing="false" onAction="#goToOffres" styleClass="button2" stylesheets="@../Styles/Acceuil.css" text="Nos Offres" >
                <font>
                   <Font size="14.0" />
                </font>
@@ -239,11 +239,29 @@
             </StackPane>
          </HBox>
 
+         <Region prefHeight="10.0" />
+         <!-- Espace contact (numéro et emplacement) -->
+         <VBox alignment="CENTER" spacing="10.0" styleClass="contact-info">
+            <Label styleClass="section-title" stylesheets="@../Styles/Acceuil.css" text="Contactez-Nous" textFill="#1323b2">
+               <font>
+                  <Font size="24.0" />
+               </font></Label>
+            <Label styleClass="contact-info" stylesheets="@../Styles/Acceuil.css" text="Téléphone: +1 234 567 890">
+               <font>
+                  <Font size="18.0" />
+               </font></Label>
+            <Label styleClass="contact-info" stylesheets="@../Styles/Acceuil.css" text="Emplacement: 123 Rue Exemple, Ville, Pays">
+               <font>
+                  <Font size="18.0" />
+               </font></Label>
+         </VBox>
+
+         <Region prefHeight="150.0" />
          <!-- HBox pour afficher les cartes "Qui sommes-nous ?" et "Nos Solutions" -->
-         <HBox alignment="CENTER" spacing="100" >
+         <HBox alignment="CENTER" spacing="100">
 
             <!-- Carte "Qui sommes-nous ?" -->
-            <StackPane fx:id="cardAboutUs" prefHeight="250.0" prefWidth="400.0"  styleClass="info-card" stylesheets="@../Styles/background.css">
+            <StackPane fx:id="cardAboutUs" prefHeight="250.0" prefWidth="400.0" styleClass="info-card" stylesheets="@../Styles/background.css">
 
                <children>
                   <VBox alignment="CENTER" spacing="15">
