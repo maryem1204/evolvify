@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import tn.esprit.Utils.MyDataBase;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -229,5 +230,29 @@ public class PageAcceuil {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+
+
+    /**
+     * Charge dynamiquement une vue dans le `contentArea`
+     */
+    public void loadView(String fxmlPath) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+
+            // Remplace la vue actuelle (exemple)
+            Scene scene = login.getScene();
+            scene.setRoot(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handlelogin() {
+        loadView("/fxml/loginUser.fxml");
     }
 }

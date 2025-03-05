@@ -50,7 +50,7 @@
 
             <Region HBox.hgrow="ALWAYS" />
 
-            <Button fx:id="login" mnemonicParsing="false" styleClass="button2" stylesheets="@../Styles/Acceuil.css" text="Login">
+            <Button fx:id="login" mnemonicParsing="false" styleClass="button2" stylesheets="@../Styles/Acceuil.css" text="Login" onAction="#handlelogin">
                <font>
                   <Font size="14.0" />
                </font>
