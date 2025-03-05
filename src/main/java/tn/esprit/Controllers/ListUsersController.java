@@ -155,8 +155,8 @@ public class ListUsersController {
         });
 
         // Set the default selected value to 2025
-        yearFilterComboBox.setValue(2025);
-        selectedYear = 2025;
+        //yearFilterComboBox.setValue(tous);
+        //selectedYear = 2025;
 
         // Apply the filter immediately to show only 2025 employees by default
         applyFilters();
@@ -223,6 +223,7 @@ public class ListUsersController {
         int fromIndex = pageIndex * ROWS_PER_PAGE;
         int toIndex = Math.min(fromIndex + ROWS_PER_PAGE, filteredUsers.size());
 
+        System.out.println(filteredUsers.size());
         // Create a sublist for the current page
         List<Utilisateur> pageItems = filteredUsers.isEmpty() ?
                 Collections.emptyList() :

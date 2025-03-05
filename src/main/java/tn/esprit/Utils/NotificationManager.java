@@ -15,6 +15,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
+import tn.esprit.Controllers.ResetPasswordController;
 import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Services.UtilisateurService;
 import tn.esprit.Utils.SessionManager;
@@ -122,15 +123,21 @@ public class NotificationManager {
         );
     }
 
-    private static void openChangePasswordDialog(Utilisateur user) {
+    public static void openChangePasswordDialog(Utilisateur user) {
         try {
-            Parent changePasswordView = FXMLLoader.load(Objects.requireNonNull(NotificationManager.class.getResource("/fxml/resetPwd.fxml")));
-            Scene changePasswordScene = new Scene(changePasswordView);
+            // Load the reset password FXML
+            FXMLLoader loader = new FXMLLoader(NotificationManager.class.getResource("/fxml/resetPwd.fxml"));
+            Parent changePasswordView = loader.load();
 
-            // Get the current stage from the application's current window
-            Stage currentStage = (Stage) changePasswordView.getScene().getWindow();
-            currentStage.setScene(changePasswordScene);
-            currentStage.show();
+            // If you need to pass the user to the reset password controller
+            ResetPasswordController controller = loader.getController();
+            controller.setUser(user);
+
+            // Create a new stage for the change password dialog
+            Stage changePasswordStage = new Stage();
+            changePasswordStage.setTitle("Change Password");
+            changePasswordStage.setScene(new Scene(changePasswordView));
+            changePasswordStage.show();
         } catch (IOException e) {
             System.err.println("Error opening change password dialog: " + e.getMessage());
             e.printStackTrace();

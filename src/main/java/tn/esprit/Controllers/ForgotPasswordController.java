@@ -180,7 +180,7 @@ public class ForgotPasswordController {
             Stage stage = new Stage();
             stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/logo1.png")));
             stage.setScene(new Scene(container));
-            stage.setTitle("Reset Password");
+            stage.setTitle("Changer mot de passe");
 
             // Configure full screen
             Screen screen = Screen.getPrimary();

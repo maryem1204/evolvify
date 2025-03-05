@@ -285,7 +285,7 @@ public class ProjectListWithCardsController {
                     .filter(projet -> projet.getEnd_date() != null && projet.getEnd_date().isEqual(LocalDate.now().plus(1, ChronoUnit.DAYS)))
                     .count();
 
-            //System.out.println("Projets avec deadline demain : " + notificationCount); // Vérifier la valeur
+            System.out.println("Projets avec deadline demain : " + notificationCount); // Vérifier la valeur
             updateNotificationBadge((int) notificationCount);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -295,7 +295,7 @@ public class ProjectListWithCardsController {
 
     private void updateNotificationBadge(int count) {
         Platform.runLater(() -> {
-            //System.out.println("Mise à jour du badge avec : " + count);
+            System.out.println("Mise à jour du badge avec : " + count);
             if (count > 0) {
                 notificationBadge.setText(String.valueOf(count));
                 notificationBadge.setVisible(true);

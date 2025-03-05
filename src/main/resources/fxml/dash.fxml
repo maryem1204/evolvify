@@ -18,7 +18,7 @@
     <!-- Navbar -->
     <AnchorPane layoutX="-17.0" layoutY="-11.0" prefHeight="106.0" prefWidth="1882.0" style="-fx-background-color: rgba(255,255,255,0.61);" styleClass="navbar" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
 
-        <HBox alignment="CENTER_RIGHT" prefHeight="66.0" spacing="20" AnchorPane.rightAnchor="20.0">
+        <HBox alignment="CENTER_RIGHT" prefHeight="66.0" spacing="20" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
             <Region HBox.hgrow="ALWAYS" />
 
             <!-- Profil utilisateur + Déconnexion -->
@@ -27,11 +27,8 @@
                     <Insets bottom="10" left="10" right="10" top="30" />
                 </padding>
 
-                <ImageView fx:id="userIcon" fitHeight="51.0" fitWidth="53.0" styleClass="user-icon">
-                    <image>
-                        <Image url="@/images/profile.png" />
-                    </image>
-                </ImageView>
+                <ImageView fx:id="userIcon" fitHeight="51.0" fitWidth="53.0" styleClass="user-icon"/>
+
 
                 <Label fx:id="username" prefHeight="50.0" maxWidth="Infinity" styleClass="username" text="Meriem Sassi" />
 
@@ -64,7 +61,7 @@
     <ScrollPane fx:id="scrollSidebar" fitToHeight="true" fitToWidth="true" prefWidth="330.0" styleClass="sidebar-scrollpane" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="173.0">
         <VBox fx:id="sidebar" alignment="CENTER" prefWidth="330.0" spacing="25" style="-fx-background-color: #2A1B50; -fx-alignment: TOP_CENTER;">
             <!-- Dashboard -->
-            <Button fx:id="btnDashboard" onAction="#handleDashboard" styleClass="sidebar-button" text="  Dashboard">
+            <Button fx:id="btnDashboard" onAction="#handleDashboard" styleClass="sidebar-button" text="  Tableau de bord">
                 <graphic>
                     <ImageView fitHeight="30.0" fitWidth="30.0">
                         <image>

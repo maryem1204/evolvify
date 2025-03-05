@@ -90,6 +90,7 @@ public class LoginController {
         String email = emailField.getText().trim();
         String password = passwordField.isVisible() ? passwordField.getText() : textPasswordField.getText();
 
+        // Input validation
         if (email.isEmpty() || password.isEmpty()) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Veuillez remplir tous les champs.");
             return;
@@ -100,7 +101,14 @@ public class LoginController {
             if (utilisateur != null) {
                 // Verify the password using BCrypt
                 if (BCrypt.checkpw(password, utilisateur.getPassword())) {
-                    // Password is correct, store user in session
+                    // Clear password from memory for security
+                    if (passwordField.isVisible()) {
+                        passwordField.clear();
+                    } else {
+                        textPasswordField.clear();
+                    }
+
+                    // Store user in session
                     SessionManager.getInstance().setUtilisateurConnecte(utilisateur);
                     redirectUser(utilisateur.getRole(), event);
                 } else {
@@ -118,19 +126,31 @@ public class LoginController {
 
     private void redirectUser(Role role, ActionEvent event) throws IOException {
         String fxmlFile;
-        if (role == Role.RESPONSABLE_RH) {
-            fxmlFile = "/fxml/dash.fxml";
-        } else {
-            fxmlFile = "/fxml/dashEmployee.fxml";
+        String pageTitle;
+
+        // Determine FXML file and page title based on user role
+        switch (role) {
+            case RESPONSABLE_RH:
+                fxmlFile = "/fxml/dash.fxml";
+                pageTitle = "Tableau de bord RH";
+                break;
+            case EMPLOYEE:
+                fxmlFile = "/fxml/dashEmployee.fxml";
+                pageTitle = "Tableau de bord Employé";
+                break;
+            default:
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Rôle non autorisé.");
+                return;
         }
 
+        // Load the appropriate dashboard
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
         Parent root = loader.load();
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setTitle(pageTitle);
         stage.setScene(new Scene(root));
         stage.show();
     }
-
     private void showAlert(Alert.AlertType type, String title, String message) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
@@ -157,6 +177,7 @@ public class LoginController {
             // Créer une nouvelle scène et l'affecter à la fenêtre
             Scene scene = new Scene(root);
             stage.setScene(scene);
+            stage.setTitle("Oublier le mot de passe");
 
             // Récupérer les dimensions de l'écran
             Screen screen = Screen.getPrimary();

@@ -40,10 +40,15 @@ public class EmployeeProfileController implements Initializable {
     @FXML
     private Circle profilePhotoCircle;
     @FXML
-    private Button editProfileBtn, downloadCvBtn, requestLeaveBtn, updateCvBtn;
+    private Button editProfileBtn, requestLeaveBtn;
 
     private Utilisateur currentUser;
     private final UtilisateurService userService = new UtilisateurService();
+
+    private DashController dashController;
+    public void setDashController(DashController dashController) {
+        this.dashController = dashController;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -57,6 +62,7 @@ public class EmployeeProfileController implements Initializable {
         loadUserData();
         setupCircularProfileImage();
         setupButtonActions();
+
     }
 
     private void loadUserData() {
@@ -86,6 +92,8 @@ public class EmployeeProfileController implements Initializable {
         if (currentUser.getProfilePhotoPath() != null && !currentUser.getProfilePhoto().isEmpty()) {
             Image image = new Image(currentUser.getProfilePhoto());
             profileImageView.setImage(image);
+
+
         } else {
             setDefaultAvatar();
         }
@@ -122,7 +130,6 @@ public class EmployeeProfileController implements Initializable {
 
     private void setupButtonActions() {
         editProfileBtn.setOnAction(e -> handleEditProfile(e));
-        downloadCvBtn.setOnAction(e -> handleDownloadCV());
         requestLeaveBtn.setOnAction(e -> handleRequestLeave());
     }
 

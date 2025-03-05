@@ -33,7 +33,6 @@
                                         <HBox alignment="CENTER_LEFT" spacing="15.0">
                                             <children>
                                                 <Button fx:id="editProfileBtn" mnemonicParsing="false" onAction="#handleEditProfile" styleClass="action-button" text="Edit Profile" />
-                                                <Button fx:id="downloadCvBtn" mnemonicParsing="false" styleClass="action-button" text="Download CV" />
                                             </children>
                                             <VBox.margin>
                                                 <Insets top="10.0" />
@@ -134,7 +133,6 @@
                                         <HBox spacing="15.0">
                                             <children>
                                                 <Button fx:id="requestLeaveBtn" mnemonicParsing="false" styleClass="action-button" text="Request Leave" />
-                                                <Button fx:id="updateCvBtn" mnemonicParsing="false" styleClass="action-button" text="Upload New CV" />
                                             </children>
                                         </HBox>
                                     </children>

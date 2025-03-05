@@ -25,19 +25,19 @@
                 </ImageView>
 
                 <!-- Titre -->
-                <Label text="Reset your password"
+                <Label text="Changer Votre Mot de Passe"
                        style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #222;" />
 
                 <!-- Champs de mot de passe -->
                 <VBox spacing="12" alignment="CENTER_LEFT" maxWidth="300">
-                    <Label text="New Password" style="-fx-font-size: 16px; -fx-text-fill: #333;" />
+                    <Label text="Nouveau Mot de Passe" style="-fx-font-size: 16px; -fx-text-fill: #333;" />
 
                     <!-- New Password Field Stack -->
                     <StackPane>
-                        <PasswordField fx:id="newPasswordField" promptText="Enter new password"
+                        <PasswordField fx:id="newPasswordField" promptText="Entrer nouveau mot de passe"
                                        style="-fx-font-size: 14px; -fx-padding: 12; -fx-background-radius: 8;
                                          -fx-border-color: #ccc; -fx-border-radius: 8; -fx-pref-width: 300;" />
-                        <TextField fx:id="textNewPasswordField" promptText="Enter new password" visible="false" managed="false"
+                        <TextField fx:id="textNewPasswordField" promptText="Entrer nouveau mot de passe" visible="false" managed="false"
                                    style="-fx-font-size: 14px; -fx-padding: 12; -fx-background-radius: 8;
                                      -fx-border-color: #ccc; -fx-border-radius: 8; -fx-pref-width: 300;" />
                         <Button fx:id="toggleNewPasswordButton" styleClass="icon-button"
@@ -64,10 +64,10 @@
 
                     <!-- Confirm Password Field Stack -->
                     <StackPane>
-                        <PasswordField fx:id="confirmPasswordField" promptText="Confirm your password"
+                        <PasswordField fx:id="confirmPasswordField" promptText="Confirmer votre mot de passe"
                                        style="-fx-font-size: 14px; -fx-padding: 12; -fx-background-radius: 8;
                                          -fx-border-color: #ccc; -fx-border-radius: 8; -fx-pref-width: 300;" />
-                        <TextField fx:id="textConfirmPasswordField" promptText="Confirm your password" visible="false" managed="false"
+                        <TextField fx:id="textConfirmPasswordField" promptText="Confirmer votre mot de passe" visible="false" managed="false"
                                    style="-fx-font-size: 14px; -fx-padding: 12; -fx-background-radius: 8;
                                      -fx-border-color: #ccc; -fx-border-radius: 8; -fx-pref-width: 300;" />
                         <Button fx:id="toggleConfirmPasswordButton" styleClass="icon-button"
@@ -85,7 +85,7 @@
                 </VBox>
 
                 <!-- Bouton Reset -->
-                <Button text="Reset Password" fx:id="resetButton" onAction="#resetPassword"
+                <Button text="Changer Mot de Passe" fx:id="resetButton" onAction="#resetPassword"
                         style="-fx-background-color: linear-gradient(to right, #3b82f6, #9333ea);
                            -fx-text-fill: white; -fx-font-size: 18px; -fx-padding: 12;
                            -fx-background-radius: 8; -fx-pref-width: 300; -fx-cursor: hand;" />

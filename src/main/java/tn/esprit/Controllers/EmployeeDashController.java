@@ -17,6 +17,7 @@ import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Services.DeadLineNotification;
@@ -28,6 +29,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class EmployeeDashController {
     @FXML
@@ -64,6 +66,8 @@ public class EmployeeDashController {
     @FXML
     private StackPane avatarStackPane; // Changed from userAvatarPane
 
+    @FXML
+    private ImageView userProfileImage;
 
     @FXML
     private Circle avatarCircle;      // Changed from userAvatar
@@ -74,8 +78,6 @@ public class EmployeeDashController {
     private final UtilisateurService utilisateurService = new UtilisateurService();
 
     public void initialize() {
-
-
         // Set active button styling for dashboard by default
         setActiveButton(btnProfil);
 
@@ -85,6 +87,101 @@ public class EmployeeDashController {
         // Create user box programmatically
         createUserBox();
 
+        // Load profile image in the profile section
+        loadUserProfileImage();
+
+        // Ensure the navbar profile image is updated
+        Utilisateur utilisateur = SessionManager.getInstance().getUtilisateurConnecte();
+        if (utilisateur != null) {
+            updateNavbarProfileImage(utilisateur);
+        }
+        if (currentUser != null) {
+            System.out.println("Current User: " + currentUser.getFirstname());
+            System.out.println("First Login Status: " + currentUser.isFirstLogin());
+        } else {
+            System.out.println("No user logged in!");
+        }
+
+        checkFirstTimeLoginNotification();
+        setupNotificationIcon();
+    }
+
+
+    private void setupNotificationIcon() {
+        Utilisateur currentUser = SessionManager.getInstance().getUtilisateurConnecte();
+
+        Platform.runLater(() -> {
+            if (currentUser != null && currentUser.isFirstLogin()) {
+                // Make notification icon visible
+                if (notificationIcon != null) {
+                    notificationIcon.setVisible(true);
+                    notificationIcon.setManaged(true);
+
+                    // Add click event handler
+                    notificationIcon.setOnMouseClicked(event -> handleFirstLoginNotification());
+
+                    System.out.println("First login notification enabled");
+                } else {
+                    System.err.println("Notification icon is null!");
+                }
+            } else {
+                // Hide notification icon
+                if (notificationIcon != null) {
+                    notificationIcon.setVisible(false);
+                    notificationIcon.setManaged(false);
+                }
+            }
+        });
+    }
+
+    private void handleFirstLoginNotification() {
+        Utilisateur currentUser = SessionManager.getInstance().getUtilisateurConnecte();
+
+        if (currentUser != null && currentUser.isFirstLogin()) {
+            // Create and show first login dialog
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/FirstLoginDialog.fxml"));
+                Parent dialogRoot = loader.load();
+
+                Stage dialogStage = new Stage();
+                dialogStage.initModality(Modality.APPLICATION_MODAL);
+                dialogStage.setTitle("First Login Setup");
+                dialogStage.setScene(new Scene(dialogRoot));
+
+                // Controller for first login dialog
+                FirstLoginDialogController dialogController = loader.getController();
+                dialogController.setUser(currentUser);
+                dialogController.setParentController(this);
+
+                dialogStage.showAndWait();
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.err.println("Error loading first login dialog: " + e.getMessage());
+            }
+        }
+    }
+
+    // Method to update first login status
+    public void completeFirstLogin() {
+        Utilisateur currentUser = SessionManager.getInstance().getUtilisateurConnecte();
+        if (currentUser != null) {
+            currentUser.setFirstLogin(false);
+
+            // Update in database
+            try {
+                utilisateurService.updateFirstLogin(currentUser, false);
+
+                // Hide notification icon
+                Platform.runLater(() -> {
+                    if (notificationIcon != null) {
+                        notificationIcon.setVisible(false);
+                        notificationIcon.setManaged(false);
+                    }
+                });
+            } catch (SQLException e) {
+                System.err.println("Error updating first login status: " + e.getMessage());
+            }
+        }
     }
 
 
@@ -133,6 +230,36 @@ public class EmployeeDashController {
             System.out.println("Expected fx:id: avatarStackPane, avatarCircle, avatarLabel");
         }
     }
+    private void loadUserProfileImage() {
+        Utilisateur utilisateur = SessionManager.getInstance().getUtilisateurConnecte();
+        if (utilisateur == null) {
+            System.out.println("⚠ Aucun utilisateur connecté !");
+            return;
+        }
+
+        String imagePath = utilisateur.getProfilePhoto();
+        Image profileImage;
+
+        if (imagePath != null && !imagePath.isEmpty()) {
+            if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
+                profileImage = new Image(imagePath, 40, 40, true, true);
+            } else {
+                File file = new File(imagePath);
+                if (file.exists()) {
+                    profileImage = new Image(file.toURI().toString(), 40, 40, true, true);
+                } else {
+                    profileImage = new Image(getClass().getResource("/images/profile.png").toExternalForm(), 40, 40, true, true);
+                }
+            }
+        } else {
+            profileImage = new Image(getClass().getResource("/images/profile.png").toExternalForm(), 40, 40, true, true);
+        }
+
+        Platform.runLater(() -> {
+            userProfileImage.setImage(profileImage);
+            userProfileImage.setClip(new Circle(20, 20, 20)); // Circular crop
+        });
+    }
 
     public void saveProfileImage(File selectedFile) {
         try {
@@ -150,7 +277,7 @@ public class EmployeeDashController {
                     utilisateur.getLastname().toLowerCase() + "_" +
                     timestamp + "." + fileExtension;
 
-            // Define destination directory (adjust path as needed)
+            // Define destination directory
             File uploadDir = new File("C:/xampp/htdocs/evolvify/");
             if (!uploadDir.exists()) {
                 uploadDir.mkdirs();
@@ -176,13 +303,13 @@ public class EmployeeDashController {
             // Update user's profile photo
             utilisateur.setProfilePhoto(newImagePath);
 
-            // Update the navbar profile image
-            updateNavbarProfileImage(utilisateur);
-
-            // Optional: Update user in database
+            // Update user in database
             utilisateurService.update(utilisateur);
 
-            System.out.println("Profile image saved successfully: " + newImagePath);
+            // ✅ Force Navbar Update in JavaFX Thread
+            Platform.runLater(() -> updateNavbarProfileImage(utilisateur));
+
+            System.out.println("Profile image updated successfully: " + newImagePath);
 
         } catch (Exception e) {
             System.err.println("Error saving profile image: " + e.getMessage());
@@ -190,7 +317,6 @@ public class EmployeeDashController {
         }
     }
 
-    // Helper method to get file extension
     private String getFileExtension(File file) {
         String name = file.getName();
         int lastIndexOf = name.lastIndexOf(".");
@@ -200,40 +326,60 @@ public class EmployeeDashController {
         return name.substring(lastIndexOf + 1);
     }
 
-    @FXML
-    private void handleProfileImageUpload() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Select Profile Picture");
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif")
-        );
+    private void checkFirstTimeLoginNotification() {
+        // Get the current user from session
+        Utilisateur currentUser = SessionManager.getInstance().getUtilisateurConnecte();
 
-        File selectedFile = fileChooser.showOpenDialog(null);
-
-        if (selectedFile != null) {
-            saveProfileImage(selectedFile);
-        }
+        Platform.runLater(() -> {
+            if (currentUser != null && currentUser.isFirstLogin()) {
+                // Make notification icon visible and active
+                if (notificationIcon != null) {
+                    notificationIcon.setVisible(true);
+                    notificationIcon.setManaged(true);
+                    System.out.println("First login notification enabled");
+                } else {
+                    System.err.println("Notification icon is null!");
+                }
+            } else {
+                // Hide notification icon if not first login
+                if (notificationIcon != null) {
+                    notificationIcon.setVisible(false);
+                    notificationIcon.setManaged(false);
+                    System.out.println("First login notification disabled");
+                }
+            }
+        });
     }
 
+    @FXML
+    private void handleNotificationClick() {
+        Utilisateur currentUser = SessionManager.getInstance().getUtilisateurConnecte();
+
+        if (currentUser != null && currentUser.isFirstLogin()) {
+            // Open change password dialog
+            NotificationManager.openChangePasswordDialog(currentUser);
+
+            // Optional: Hide notification after first interaction
+            if (notificationIcon != null) {
+                notificationIcon.setVisible(false);
+                notificationIcon.setManaged(false);
+            }
+        }
+    }
     private void updateNavbarProfileImage(Utilisateur utilisateur) {
-        // Vérifier si un utilisateur est connecté
         if (utilisateur == null) {
             System.out.println("⚠ Aucun utilisateur connecté !");
             return;
         }
 
-        // Récupérer le chemin de l'image de profil
-        String newImagePath = utilisateur.getProfilePhoto(); // Assuming you have a method to get profile image path
+        String newImagePath = utilisateur.getProfilePhoto();
 
-        try {
-            // Find the ImageView in the navbar
+        Platform.runLater(() -> {
             Node profileImageNode = navbarHBox.lookup("#navbarProfileImage");
-
             if (profileImageNode instanceof ImageView) {
                 ImageView profileImage = (ImageView) profileImageNode;
-
                 Image newProfileImg;
-                // Charger la nouvelle image avec les mêmes paramètres que dans createUserBox()
+
                 if (newImagePath != null && !newImagePath.isEmpty()) {
                     if (newImagePath.startsWith("http://") || newImagePath.startsWith("https://")) {
                         newProfileImg = new Image(newImagePath, 40, 40, true, true);
@@ -250,23 +396,19 @@ public class EmployeeDashController {
                     newProfileImg = new Image(getClass().getResource("/images/profile.png").toExternalForm(), 40, 40, true, true);
                 }
 
-                // Mettre à jour l'image
-                Platform.runLater(() -> {
-                    profileImage.setImage(newProfileImg);
+                // ✅ Update Image
+                profileImage.setImage(newProfileImg);
 
-                    // Recréer le clip circulaire si nécessaire
-                    Circle clip = new Circle(20, 20, 20);
-                    profileImage.setClip(clip);
+                // ✅ Reapply Circular Clip
+                Circle clip = new Circle(20, 20, 20);
+                profileImage.setClip(clip);
 
-                    // Forcer la mise à jour du layout
-                    navbarHBox.requestLayout();
-                });
+                // ✅ Force UI Refresh
+                navbarHBox.requestLayout();
             }
-        } catch (Exception e) {
-            System.err.println("Erreur lors de la mise à jour de l'image de profil : " + e.getMessage());
-            e.printStackTrace();
-        }
+        });
     }
+
     // Rest of your methods remain the same
     @FXML
     private void handleProjets() throws IOException {
