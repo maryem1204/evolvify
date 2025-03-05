@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.StackPane?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.AffichageTrajetController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.AffichageTrajetController">
 
     <children>
         <AnchorPane prefHeight="600.0" prefWidth="986.0">
@@ -17,7 +17,7 @@
                 <BorderPane layoutX="98.0" layoutY="14.0" prefHeight="598.0" prefWidth="876.0" AnchorPane.bottomAnchor="-11.599999999999909" AnchorPane.leftAnchor="98.0" AnchorPane.rightAnchor="126.0" AnchorPane.topAnchor="14.0">
 
                     <center>
-                        <AnchorPane fx:id="tableblanche" prefHeight="514.0" prefWidth="875.0" styleClass="shadow" stylesheets="@../Styles/color.css" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                        <AnchorPane fx:id="tableblanche" prefHeight="514.0" prefWidth="875.0" styleClass="shadow" stylesheets="@../../java/tn/esprit/Styles/color.css" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                             <children>
                                 <TableView fx:id="tableTrajet" layoutX="34.0" layoutY="128.0" prefHeight="340.0" prefWidth="790.0">
                                     <columns>
@@ -42,7 +42,7 @@
                                         <URL value="@../Styles/add_transport.css" />
                                     </stylesheets></Button>
 
-                                <TextField fx:id="recherche" layoutX="34.0" layoutY="73.0" prefHeight="26.0" prefWidth="306.0" promptText="recherche" stylesheets="@../Styles/color.css" />
+                                <TextField fx:id="recherche" layoutX="34.0" layoutY="73.0" prefHeight="26.0" prefWidth="306.0" promptText="recherche" stylesheets="@../../java/tn/esprit/Styles/color.css" />
                             </children>
                         </AnchorPane>
                     </center>

@@ -39,7 +39,7 @@
 
         <TextField fx:id="type" layoutX="274.0" layoutY="133.0" promptText="Ex: Bus, Taxi" />
         <TextField fx:id="capacité" layoutX="276.0" layoutY="184.0" promptText="Ex: 50" />
-        <TextField fx:id="immatriculation" layoutX="275.0" layoutY="233.0" promptText="Ex: 123-XYZ-789" stylesheets="@../Styles/add_transport.css" />
+        <TextField fx:id="immatriculation" layoutX="275.0" layoutY="233.0" promptText="Ex: 123-XYZ-789" stylesheets="@../../java/tn/esprit/Styles/add_transport.css" />
 
         <SplitMenuButton fx:id="status" layoutX="274.0" layoutY="275.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0" text="disponible">
 

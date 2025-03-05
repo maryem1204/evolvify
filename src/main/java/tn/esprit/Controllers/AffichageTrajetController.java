@@ -12,9 +12,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import tn.esprit.Entities.MoyenTransport;
 import tn.esprit.Entities.Trajet;
-import tn.esprit.Entities.StatusTrajet; // Ajout pour utiliser l'énumération
 import tn.esprit.Services.TrajetCRUD;
 
 import java.io.IOException;
@@ -59,21 +57,40 @@ public class AffichageTrajetController {
     private TextField recherche;
 
     @FXML
+    private Button ajouter;
+
+    @FXML
     private TableColumn<Trajet, Void> colAction;
 
     private ObservableList<Trajet> trajets = FXCollections.observableArrayList();
-    private static final Logger logger = Logger.getLogger(AffichageTrajetController.class.getName());
-
     private ObservableList<Trajet> filteredTrajetList = FXCollections.observableArrayList();
 
+    private static final Logger logger = Logger.getLogger(AffichageTrajetController.class.getName());
+
     @FXML
-    void loadTrajets() {
+    public void initialize() {
+        colIdT.setCellValueFactory(new PropertyValueFactory<>("idT"));
+        colPointDep.setCellValueFactory(new PropertyValueFactory<>("pointDep"));
+        colPointArr.setCellValueFactory(new PropertyValueFactory<>("pointArr"));
+        colDistance.setCellValueFactory(new PropertyValueFactory<>("distance"));
+        colDuréeEstimé.setCellValueFactory(new PropertyValueFactory<>("duréeEstimé"));
+        colIdMoyen.setCellValueFactory(new PropertyValueFactory<>("idMoyen"));
+        colIdEmploye.setCellValueFactory(new PropertyValueFactory<>("idEmploye"));
+        colStatus.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStatus().name()));
+
+        addActionsColumn();
+        recherche.textProperty().addListener((observable, oldValue, newValue) -> handleSearch());
+
+        ajouter.setOnAction(event -> handleAjouterTrajet());
+
+        loadTrajets();
+    }
+
+    @FXML
+    private void loadTrajets() {
         TrajetCRUD trajetCRUD = new TrajetCRUD();
         try {
             List<Trajet> trajetList = trajetCRUD.showAll();
-            if (trajetList.isEmpty()) {
-                afficherAlerte("Aucun trajet", "Aucun trajet n'a été trouvé dans la base de données.");
-            }
             trajets.setAll(trajetList);
             tableTrajet.setItems(trajets);
         } catch (SQLException e) {
@@ -85,13 +102,15 @@ public class AffichageTrajetController {
     @FXML
     private void handleAjouterTrajet() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/add_trajet.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/add_trajet.fxml"));
             Parent root = loader.load();
             Stage stage = new Stage();
+            stage.setWidth(1000);
+            stage.setHeight(800);
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("Ajouter Trajet");
             stage.setScene(new Scene(root));
-            stage.showAndWait();
+            stage.show();  //rajjaaha show and wait mbaaed
             loadTrajets();
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Erreur lors de l'ouverture de la fenêtre d'ajout", e);
@@ -100,7 +119,7 @@ public class AffichageTrajetController {
 
     @FXML
     private void addActionsColumn() {
-        colAction.setCellFactory(param -> new TableCell<Trajet, Void>() {
+        colAction.setCellFactory(param -> new TableCell<>() {
             private final Button btnEdit = new Button("Modifier");
             private final Button btnDelete = new Button("Supprimer");
             private final HBox hbox = new HBox(10, btnEdit, btnDelete);
@@ -122,7 +141,7 @@ public class AffichageTrajetController {
 
             private void showEditPopup(Trajet trajet) {
                 try {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/modifier_trajet.fxml"));
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/modifier_trajet.fxml"));
                     Parent root = loader.load();
                     ModifierTrajetController controller = loader.getController();
                     controller.setTrajet(trajet);
@@ -131,7 +150,7 @@ public class AffichageTrajetController {
                     stage.initModality(Modality.APPLICATION_MODAL);
                     stage.setTitle("Modifier Trajet");
                     stage.setScene(new Scene(root));
-                    stage.showAndWait();
+                    stage.show();
                     loadTrajets();
                 } catch (IOException e) {
                     logger.log(Level.SEVERE, "Erreur lors de l'ouverture de la fenêtre de modification", e);
@@ -149,7 +168,6 @@ public class AffichageTrajetController {
     private void confirmDelete(Trajet trajet) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation de suppression");
-        alert.setHeaderText(null);
         alert.setContentText("Êtes-vous sûr de vouloir supprimer ce trajet ?");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
@@ -157,32 +175,16 @@ public class AffichageTrajetController {
                 TrajetCRUD trajetCRUD = new TrajetCRUD();
                 int deletedRows = trajetCRUD.delete(trajet);
                 if (deletedRows > 0) {
-                    afficherAlerte("Suppression réussie", "Le trajet a été supprimé avec succès.");
+                    afficherAlerte("Suppression réussie", "Le trajet a été supprimé.");
                     loadTrajets();
                 } else {
-                    afficherAlerte("Erreur", "Aucun trajet n'a été supprimé.");
+                    afficherAlerte("Erreur", "Aucun trajet supprimé.");
                 }
             } catch (SQLException e) {
                 logger.log(Level.SEVERE, "Erreur lors de la suppression du trajet", e);
-                afficherAlerte("Erreur", "Impossible de supprimer le trajet.");
+                afficherAlerte("Erreur", "Impossible de supprimer.");
             }
         }
-    }
-
-    @FXML
-    public void initialize() {
-        colIdT.setCellValueFactory(new PropertyValueFactory<>("idT"));
-        colPointDep.setCellValueFactory(new PropertyValueFactory<>("pointDep"));
-        colPointArr.setCellValueFactory(new PropertyValueFactory<>("pointArr"));
-        colDistance.setCellValueFactory(new PropertyValueFactory<>("distance"));
-        colDuréeEstimé.setCellValueFactory(new PropertyValueFactory<>("duréeEstimé"));
-        colIdMoyen.setCellValueFactory(new PropertyValueFactory<>("idMoyen"));
-        colIdEmploye.setCellValueFactory(new PropertyValueFactory<>("idEmploye"));
-        colStatus.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStatus().name()));
-
-        addActionsColumn();
-        recherche.textProperty().addListener((observable, oldValue, newValue) -> handleSearch());
-        loadTrajets();
     }
 
     @FXML
@@ -204,14 +206,13 @@ public class AffichageTrajetController {
                 .filter(trajet -> trajet.getPointDep().toLowerCase().contains(searchKeyword)
                         || trajet.getPointArr().toLowerCase().contains(searchKeyword)
                         || String.valueOf(trajet.getDistance()).contains(searchKeyword)
-                        || trajet.getStatus().name().toLowerCase().contains(searchKeyword)) // Correction ici
+                        || trajet.getStatus().name().toLowerCase().contains(searchKeyword))
                 .collect(Collectors.toList());
 
         filteredTrajetList.setAll(filteredList);
         tableTrajet.setItems(filteredTrajetList);
     }
 
-    @FXML
     private void afficherAlerte(String titre, String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle(titre);

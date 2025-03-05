@@ -111,8 +111,24 @@ public class ProjectListController {
                 }
 
                 Label statusLabel = new Label(status.toString());
-                statusLabel.getStyleClass().addAll("status-badge", "status-" + status.toString().toLowerCase().replace("_", "-"));
+                statusLabel.getStyleClass().addAll("status-label"); // Base status label style
+
+                // Apply specific status styles based on the status
+                switch (status) {
+                    case IN_PROGRESS:
+                        statusLabel.getStyleClass().add("status-inprogress");
+                        break;
+                    case COMPLETED:
+                        statusLabel.getStyleClass().add("status-completed");
+                        break;
+                    // Add more cases for other statuses if needed
+                    default:
+                        // Default style if no specific style is defined
+                        statusLabel.getStyleClass().add("status-default");
+                }
+
                 setGraphic(statusLabel);
+                setText(null);
             }
         });
 
@@ -183,6 +199,8 @@ public class ProjectListController {
         });
     }
 
+    private ObservableList<Projet> filteredProjet = FXCollections.observableArrayList();
+
     private void filterProjets(String keyword) {
         if (keyword == null || keyword.trim().isEmpty()) {
             projectTable.setItems(projets);
@@ -190,85 +208,89 @@ public class ProjectListController {
         }
 
         String searchKeyword = keyword.toLowerCase();
+
         List<Projet> filteredList = projets.stream()
-                .filter(projet -> projet.getName().toLowerCase().contains(searchKeyword)
-                        || projet.getAbbreviation().toLowerCase().contains(searchKeyword)
-                        || projet.getStatus().toString().toLowerCase().contains(searchKeyword))
+                .filter(projet -> {
+                    String name = projet.getName() != null ? projet.getName().toLowerCase() : "";
+                    String abbreviation = projet.getAbbreviation() != null ? projet.getAbbreviation().toLowerCase() : "";
+                    String status = projet.getStatus() != null ? projet.getStatus().toString().toLowerCase() : "";
+
+                    return name.contains(searchKeyword) ||
+                            abbreviation.contains(searchKeyword) ||
+                            status.contains(searchKeyword);
+                })
                 .collect(Collectors.toList());
 
-        projectTable.setItems(FXCollections.observableArrayList(filteredList));
-    }
-
-    private void loadProjects() throws SQLException {
-        projets.setAll(projectService.showAll());
-        projectTable.setItems(projets);
+        filteredProjet.setAll(filteredList);
+        projectTable.setItems(filteredProjet);
     }
 
     private void addActionsColumn() {
-        colActions.setCellFactory(param -> new TableCell<>() {
-            private final Button editButton = new Button();
-            private final Button deleteButton = new Button();
-            private final HBox actionsContainer = new HBox(10);
+        colActions.setCellFactory(param -> new TableCell<Projet, Void>() {
+            private final ImageView editIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/editIcon.png")));
+            private final ImageView deleteIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/deleteIconn.png")));
+            private final HBox hbox = new HBox(10);
 
             {
-                // Configurer les boutons d'action avec des icônes
-                ImageView editIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/editIcon.png")));
-                ImageView deleteIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/deleteIconn.png")));
+                editIcon.setFitHeight(20);
+                editIcon.setFitWidth(20);
+                deleteIcon.setFitHeight(20);
+                deleteIcon.setFitWidth(20);
 
-                editIcon.setFitHeight(30);
-                editIcon.setFitWidth(30);
-                deleteIcon.setFitHeight(30);
-                deleteIcon.setFitWidth(30);
+                editIcon.setStyle("-fx-cursor: hand;");
+                deleteIcon.setStyle("-fx-cursor: hand;");
 
-                editButton.setGraphic(editIcon);
-                deleteButton.setGraphic(deleteIcon);
-
-                // Ajouter des classes CSS pour le style
-                editButton.getStyleClass().addAll("action-button", "edit-button");
-                deleteButton.getStyleClass().addAll("action-button", "delete-button");
-
-                // Configurer les actions
-                editButton.setOnAction(event -> showEditPopup(getTableView().getItems().get(getIndex())));
-                deleteButton.setOnAction(event -> deleteProjet(getTableView().getItems().get(getIndex())));
-
-                actionsContainer.getChildren().addAll(editButton, deleteButton);
-                actionsContainer.setAlignment(Pos.CENTER);
+                hbox.getChildren().addAll(editIcon, deleteIcon);
             }
 
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : actionsContainer);
-                setText(null);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    // Réassigner les actions à chaque mise à jour
+                    editIcon.setOnMouseClicked(event -> {
+                        Projet projet = getTableView().getItems().get(getIndex());
+                        showEditPopup(projet);
+                    });
+
+                    deleteIcon.setOnMouseClicked(event -> {
+                        Projet projet = getTableView().getItems().get(getIndex());
+                        deleteProjet(projet);
+                    });
+
+                    setGraphic(hbox);
+                }
             }
         });
     }
 
+
+
     private void deleteProjet(Projet projet) {
         try {
-            // Ajouter une confirmation de suppression
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Confirmer la suppression");
-            alert.setHeaderText("Êtes-vous sûr de vouloir supprimer ce projet ?");
-            alert.setContentText("Nom du projet: " + projet.getName());
+            // Charger le fichier FXML
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/DeleteProjet.fxml"));
+            Parent root = loader.load();
 
-            if (alert.showAndWait().get() == ButtonType.OK) {
-                int deletedRows = projectService.delete(projet);
-                if (deletedRows > 0) {
-                    System.out.println("Projet supprimé avec succès.");
-                    refreshProjetList();
-                } else {
-                    System.out.println("Échec de la suppression du projet.");
-                    showAlert(Alert.AlertType.ERROR, "Échec de la suppression",
-                            "Le projet n'a pas pu être supprimé.");
-                }
-            }
-        } catch (SQLException e) {
+            // Obtenir le contrôleur et passer le projet sélectionné
+            DeleteProjetController controller = loader.getController();
+            controller.setProjet(projet);
+            controller.setProjectListController(this); // Référence au contrôleur parent
+
+            // Créer une nouvelle fenêtre pour la confirmation
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL); // Bloquer l'interaction avec la fenêtre principale
+            stage.setTitle("Confirmation de suppression");
+            stage.setScene(new Scene(root));
+            stage.showAndWait(); // Attendre la fermeture de la fenêtre avant de continuer
+        } catch (IOException e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Erreur de base de données",
-                    "Une erreur est survenue lors de la suppression: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'ouvrir la boîte de dialogue de suppression.");
         }
     }
+
 
     private void showAlert(Alert.AlertType type, String title, String content) {
         Alert alert = new Alert(type);
@@ -330,6 +352,10 @@ public class ProjectListController {
         try {
             projets.setAll(projectService.showAll());
             projectTable.setItems(projets);
+
+            // Réappliquer la configuration des colonnes et des actions
+            setupTableColumns();
+            addActionsColumn();
         } catch (SQLException e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Erreur de chargement",
@@ -463,5 +489,15 @@ public class ProjectListController {
             showAlert(Alert.AlertType.ERROR, "Erreur PDF",
                     "Une erreur est survenue lors de la création du PDF: " + e.getMessage());
         }
+    }
+    private void loadProjects() throws SQLException {
+        // Clear existing projects
+        projets.clear();
+
+        // Fetch all projects from the project service
+        projets.addAll(projectService.showAll());
+
+        // Set the projects in the table view
+        projectTable.setItems(projets);
     }
 }

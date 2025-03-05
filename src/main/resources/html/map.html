@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Carte OpenStreetMap avec Leaflet</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Empêche le défilement */
+        }
+        #map {
+            height: 100vh; /* 100% de la hauteur de la vue */
+            width: 100vw; /* 100% de la largeur de la vue */
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+    // Fonction pour initialiser la carte avec une adresse
+    function initMap(address) {
+        const map = L.map('map').setView([48.8566, 2.3522], 13); // Centre initial (Paris)
+
+        // Ajouter une couche de tuiles OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Géocodage de l'adresse (utilisation de l'API Nominatim d'OpenStreetMap)
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    const lat = parseFloat(data[0].lat);
+                    const lon = parseFloat(data[0].lon);
+                    map.setView([lat, lon], 15); // Centrer la carte sur l'adresse
+                    L.marker([lat, lon]).addTo(map) // Ajouter un marqueur
+                        .bindPopup(address) // Afficher l'adresse dans un popup
+                        .openPopup();
+                } else {
+                    alert('Adresse non trouvée');
+                }
+            })
+            .catch(error => console.error('Erreur de géocodage :', error));
+    }
+</script>
+</body>
+</html>

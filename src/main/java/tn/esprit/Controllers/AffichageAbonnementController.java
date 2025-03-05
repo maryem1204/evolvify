@@ -6,7 +6,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
@@ -17,9 +16,7 @@ import tn.esprit.Services.AbonnementCRUD;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -58,19 +55,6 @@ public class AffichageAbonnementController {
     private TextField recherche;
 
     @FXML
-    private ComboBox<String> triPrixComboBox;
-    @FXML
-    private Label lblTotalAbonnements;
-
-    @FXML
-    private Label lblMoyennePrix;
-
-    @FXML
-    private PieChart pieChartAbonnements;
-
-
-
-    @FXML
     private ObservableList<Abonnement> abonnements = FXCollections.observableArrayList();
 
     @FXML
@@ -79,7 +63,6 @@ public class AffichageAbonnementController {
     @FXML
     private ObservableList<Abonnement> filteredAbonnementList = FXCollections.observableArrayList();
 
-
     @FXML
     void loadAbonnements() {
         AbonnementCRUD abonnementCRUD = new AbonnementCRUD();
@@ -87,54 +70,9 @@ public class AffichageAbonnementController {
             List<Abonnement> abonnementsList = abonnementCRUD.showAll();
             abonnements.setAll(abonnementsList);
             tableViewAbonnement.setItems(abonnements);
-
-            // 🔥 Mettre à jour les statistiques
-            updateStatistics();
-
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Erreur lors du chargement des abonnements", e);
             afficherAlerte("Erreur", "Impossible de charger les abonnements.");
-        }
-    }
-
-    private void updateStatistics() {
-        if (abonnements.isEmpty()) return;
-
-        // 1️⃣ Nombre total d'abonnements
-        lblTotalAbonnements.setText(String.valueOf(abonnements.size()));
-
-        // 2️⃣ Moyenne des prix des abonnements
-        double moyennePrix = abonnements.stream()
-                .mapToDouble(Abonnement::getPrix)
-                .average()
-                .orElse(0.0);
-        lblMoyennePrix.setText(String.format("%.2f DT", moyennePrix));
-
-        // 3️⃣ Répartition des abonnements par type (PieChart)
-        Map<String, Long> abonnementParType = abonnements.stream()
-                .collect(Collectors.groupingBy(Abonnement::getType_Ab, Collectors.counting()));
-
-        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
-        abonnementParType.forEach((type, count) -> pieChartData.add(new PieChart.Data(type, count)));
-
-        pieChartAbonnements.setData(pieChartData);
-    }
-
-    @FXML
-    private void handleTriPrix() {
-        String choix = triPrixComboBox.getValue();
-        if (choix != null) {
-            List<Abonnement> sortedList;
-            if (choix.equals("Prix Ascendant")) {
-                sortedList = abonnements.stream()
-                        .sorted(Comparator.comparingDouble(Abonnement::getPrix))
-                        .collect(Collectors.toList());
-            } else { // Prix Descendant
-                sortedList = abonnements.stream()
-                        .sorted(Comparator.comparingDouble(Abonnement::getPrix).reversed())
-                        .collect(Collectors.toList());
-            }
-            tableViewAbonnement.setItems(FXCollections.observableArrayList(sortedList));
         }
     }
 
@@ -174,7 +112,7 @@ public class AffichageAbonnementController {
 
     private void showEditPopup(Abonnement abonnement) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/modifier_abonnement.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/modifier_abonnement.fxml"));
             Parent root = loader.load();
 
             ModifierAbonnementController controller = loader.getController();
@@ -213,7 +151,7 @@ public class AffichageAbonnementController {
 
     @FXML
     void handleAjouterAbonnement() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/add_abonnement.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/add_abonnement.fxml"));
         Parent root = loader.load();
 
         Scene scene = new Scene(root);
@@ -246,8 +184,6 @@ public class AffichageAbonnementController {
         // Ajouter la colonne d'actions
         addActionsColumn();
         recherche.textProperty().addListener((observable, oldValue, newValue) -> handleSearch());
-        triPrixComboBox.setOnAction(event -> handleTriPrix());
-
 
         // Charger les abonnements
         loadAbonnements();

@@ -17,7 +17,6 @@ public class Projet {
     private List<Integer> employes; // Liste des IDs des employés associés
 
     public enum Status {
-        NOT_STARTED,
         IN_PROGRESS,
         COMPLETED
     }

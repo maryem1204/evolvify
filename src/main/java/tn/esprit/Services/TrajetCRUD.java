@@ -161,4 +161,32 @@ public class TrajetCRUD implements CRUD<Trajet> {
             throw e;
         }
     }
+
+    public List<Trajet> findMostEfficient(int limit) throws SQLException {
+        List<Trajet> trajets = new ArrayList<>();
+        String query = "SELECT * FROM trajet ORDER BY durée_estimé DESC LIMIT ?";
+        try (PreparedStatement pstmt = cnx.prepareStatement(query)) {
+            pstmt.setInt(1, limit);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                StatusTrajet status = StatusTrajet.valueOf(rs.getString("status").toUpperCase());
+                Trajet trajet = new Trajet(
+                        rs.getInt("id_T"),
+                        rs.getString("point_dep"),
+                        rs.getString("point_arr"),
+                        rs.getDouble("distance"),
+                        rs.getTime("durée_estimé"),
+                        rs.getInt("id_moyen"),
+                        rs.getInt("id_employe"),
+                        status
+                );
+                trajets.add(trajet);
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur lors de la récupération des trajets les plus efficaces : " + e.getMessage());
+            throw e;
+        }
+        return trajets;
+    }
+
 }

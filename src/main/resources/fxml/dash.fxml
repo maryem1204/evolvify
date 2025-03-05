@@ -177,10 +177,10 @@
                     </HBox>
                 </graphic>
             </Button>
-            <VBox fx:id="subMenuTransport" managed="false" visible="false">
-                <Button fx:id="btnTransport" styleClass="sidebar-sub-button" text="Transport" />
-                <Button fx:id="btnTrajet" styleClass="sidebar-sub-button" text="Trajet" />
-                <Button fx:id="btnAb" styleClass="sidebar-sub-button" text="Abonnement" />
+            <VBox fx:id="subMenuTransport" spacing="5" visible="false" managed="false">
+                <Button fx:id="menuGererTransport"  text="Transport" styleClass="sidebar-sub-button"/>
+                <Button fx:id="menuGererAbonnement" onAction="#handleAbonnement" text="Abonnement" styleClass="sidebar-sub-button"/>
+                <Button fx:id="menuGererTrajet" text="Trajet" styleClass="sidebar-sub-button"/>
             </VBox>
         </VBox>
     </ScrollPane>

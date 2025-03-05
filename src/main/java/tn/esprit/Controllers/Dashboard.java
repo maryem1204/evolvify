@@ -26,13 +26,13 @@ public class Dashboard {
     public void initialize() {
         // Vérification que les éléments ne sont pas null avant d'ajouter les actions
         if (menuGererTransport != null)
-            menuGererTransport.setOnAction(e -> chargerPage("/Affichage_transport.fxml"));
+            menuGererTransport.setOnAction(e -> chargerPage("/fxml/Affichage_transport.fxml"));
 
         if (menuGererAbonnement != null)
-            menuGererAbonnement.setOnAction(e -> chargerPage("/Affichage_abonnement.fxml"));
+            menuGererAbonnement.setOnAction(e -> chargerPage("/fxml/Affichage_abonnement.fxml"));
 
         if (menuGererTrajet != null)
-            menuGererTrajet.setOnAction(e -> chargerPage("/Affichage_trajet.fxml"));
+            menuGererTrajet.setOnAction(e -> chargerPage("/fxml/Affichage_trajet.fxml"));
     }
 
     private void chargerPage(String fxmlFile) {

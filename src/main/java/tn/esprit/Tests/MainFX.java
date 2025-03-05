@@ -5,6 +5,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import tn.esprit.Services.AbonnementCRUD;
 
 import java.io.IOException;
 
@@ -29,7 +34,4 @@ public class MainFX extends Application {
         }
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
 }
