@@ -91,7 +91,7 @@
     -fx-background-color: white;
     -fx-background-radius: 10px;
     -fx-border-radius: 10px;
-    -fx-border-color: #e0e0e0;
+    -fx-border-color: transparent;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 8, 0, 0, 2);
 }
 
@@ -109,8 +109,7 @@
 
 .table-view .table-row-cell {
     -fx-background-color: white;
-    -fx-border-color: transparent transparent #e0e0e0 transparent;
-    -fx-border-width: 0 0 1 0;
+    -fx-border-color: transparent;
 }
 
 .table-view .table-row-cell:odd {

@@ -29,6 +29,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 public class EmployeeDashController {
     @FXML
@@ -78,8 +80,6 @@ public class EmployeeDashController {
     private final UtilisateurService utilisateurService = new UtilisateurService();
 
     public void initialize() {
-
-
         // Set active button styling for dashboard by default
         setActiveButton(btnProfil);
 
@@ -88,8 +88,14 @@ public class EmployeeDashController {
 
         // Create user box programmatically
         createUserBox();
-
+        // Verify CSS is loaded
+        System.out.println("CSS file paths attempts:");
+        System.out.println("1: " + getClass().getResource("/Styles/styledash.css"));
+        System.out.println("2: " + getClass().getResource("../Styles/styledash.css"));
+        System.out.println("3: " + getClass().getResource("/tn/esprit/Styles/styledash.css"));
+        System.out.println("4: " + getClass().getResource("../../Styles/styledash.css"));
     }
+
 
 
     private void createUserBox() {
@@ -313,6 +319,7 @@ public class EmployeeDashController {
         loadView("/fxml/employeeProfile.fxml");
     }
 
+
     @FXML
     private void handleProjet() throws IOException {
         setActiveButton(btnProjets);
@@ -335,7 +342,6 @@ public class EmployeeDashController {
             e.printStackTrace();
         }
     }
-
 
     private void loadView(String fxmlFile) {
         try {
@@ -365,5 +371,14 @@ public class EmployeeDashController {
         // Set active state to the selected button
         button.getStyleClass().add("active-sidebar-button");
     }
-
+    @FXML
+    public void handleConge(ActionEvent actionEvent) {
+        setActiveButton(btnConge);
+        loadView("/fxml/testConge.fxml");
+    }
+    @FXML
+    public void handleAbsence(ActionEvent actionEvent) {
+        setActiveButton(btnAbsence);
+        loadView("/fxml/EmployeeAbsence.fxml");
+    }
 }

@@ -1,5 +1,4 @@
 package tn.esprit.Controllers;
-import javafx.geometry.Pos;
 import javafx.stage.Modality;
 import javafx.stage.StageStyle;
 import javafx.beans.property.SimpleStringProperty;
@@ -15,18 +14,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.DateCell;
 import javafx.scene.layout.*;
-import javafx.scene.shape.Rectangle;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.StringConverter;
 import tn.esprit.Entities.*;
 import tn.esprit.Services.CongeService;
 import tn.esprit.Services.TtService;
 import tn.esprit.Utils.SessionManager;
-import javafx.scene.layout.Pane;
-import javafx.geometry.Insets;
-import javafx.scene.layout.Priority;
+
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -155,7 +149,7 @@ public class CongeEmployeController implements Initializable {
      */
     private void initializeDashboard() {
         loadRequestsFromDatabase();
-
+        recentRequestsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         typeColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getType()));
         periodColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getPeriod()));
         durationColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getDurationString()));
@@ -163,8 +157,8 @@ public class CongeEmployeController implements Initializable {
 
         // Configure Actions column with modify and delete buttons
         actionsColumn.setCellFactory(param -> new TableCell<RequestViewModel, Void>() {
-            private final Button modifyButton = new Button("Modifier");
-            private final Button deleteButton = new Button("Supprimer");
+            private final Button modifyButton = createStyledButton("Modifier", "-fx-background-color: linear-gradient(to right, #4a6fdc, #825ee4); -fx-text-fill: white;");
+            private final Button deleteButton = createStyledButton("Supprimer", "-fx-background-color: #e74c3c; -fx-text-fill: white;");
             private final HBox actionButtons = new HBox(10, modifyButton, deleteButton);
 
             {
@@ -179,6 +173,38 @@ public class CongeEmployeController implements Initializable {
                 });
             }
 
+            private Button createStyledButton(String text, String style) {
+                Button button = new Button(text);
+                button.setStyle(
+                        style +
+                                "-fx-background-radius: 20px;" +
+                                "-fx-font-weight: bold;" +
+                                "-fx-padding: 5px 15px;" +
+                                "-fx-cursor: hand;"
+                );
+
+                // Add hover and press effects
+                button.setOnMouseEntered(e -> button.setStyle(
+                        style +
+                                "-fx-background-radius: 20px;" +
+                                "-fx-font-weight: bold;" +
+                                "-fx-padding: 5px 15px;" +
+                                "-fx-cursor: hand;" +
+                                "-fx-opacity: 0.8;"
+                ));
+
+                button.setOnMouseExited(e -> button.setStyle(
+                        style +
+                                "-fx-background-radius: 20px;" +
+                                "-fx-font-weight: bold;" +
+                                "-fx-padding: 5px 15px;" +
+                                "-fx-cursor: hand;" +
+                                "-fx-opacity: 1;"
+                ));
+
+                return button;
+            }
+
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
@@ -189,6 +215,16 @@ public class CongeEmployeController implements Initializable {
                     boolean isPending = getTableView().getItems().get(getIndex()).getStatus() == Statut.EN_COURS;
                     modifyButton.setDisable(!isPending);
                     deleteButton.setDisable(!isPending);
+
+                    // Add opacity effect for disabled buttons
+                    modifyButton.setStyle(
+                            modifyButton.getStyle() +
+                                    (isPending ? "" : "-fx-opacity: 0.5;")
+                    );
+                    deleteButton.setStyle(
+                            deleteButton.getStyle() +
+                                    (isPending ? "" : "-fx-opacity: 0.5;")
+                    );
 
                     setGraphic(actionButtons);
                 }
@@ -209,7 +245,7 @@ public class CongeEmployeController implements Initializable {
             if (request.getType().equals("Congé")) {
                 loader = new FXMLLoader(getClass().getResource("/fxml/CongeRequest.fxml"));
             } else {
-                loader = new FXMLLoader(getClass().getResource("/fxml/TtRequest.fxml"));
+                loader = new FXMLLoader(getClass().getResource("/fxml/ttRequest.fxml"));
             }
 
             Parent modifyView = loader.load();
@@ -313,6 +349,9 @@ public class CongeEmployeController implements Initializable {
     /**
      * Initialize the new request (leave) form.
      */
+    /**
+     * Initialize the new request (leave) form.
+     */
     private void initializeNewRequestForm() {
         setupDatePicker(startDatePicker);
         setupDatePicker(endDatePicker);
@@ -321,17 +360,17 @@ public class CongeEmployeController implements Initializable {
         endTimeCombo.setItems(FXCollections.observableArrayList("AM", "PM"));
 
         leaveTypeCombo.setItems(FXCollections.observableArrayList(
-                "Paid Leave (CONGE_PAYE)",
-                "Unpaid Leave (CONGE_SANS_SOLDE)",
-                "Sick Leave (MALADIE)",
-                "Maternity Leave (MATERNITE)",
-                "Training (FORMATION)",
-                "Schedule Adjustment (AMMENAGEMENT)"
+                "CONGE PAYE",
+                "CONGE SANS SOLDE",
+                "MALADIE",
+                "MATERNITE",
+                "FORMATION",
+                "AMMENAGEMENT"
         ));
 
         startTimeCombo.setValue("AM");
         endTimeCombo.setValue("PM");
-        leaveTypeCombo.setValue("Paid Leave (CONGE_PAYE)");
+        leaveTypeCombo.setValue("CONGE PAYE");
 
         startDatePicker.valueProperty().addListener((obs, oldVal, newVal) -> updateDaysRequested());
         endDatePicker.valueProperty().addListener((obs, oldVal, newVal) -> updateDaysRequested());
@@ -344,7 +383,6 @@ public class CongeEmployeController implements Initializable {
         requestTypeToggle.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal == telecommutingRadio) {
                 switchToTelecommutingForm();
-                switchToLeaveForm();
             }
         });
 
@@ -353,15 +391,13 @@ public class CongeEmployeController implements Initializable {
         submitBtn.getStyleClass().add("btn-submit");
         submitBtn.setOnAction(this::handleSubmitLeave);
 
-        // Créer un HBox avec un spacer pour pousser le bouton à droite
-        Pane spacer = new Pane();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
+        // Créer un HBox pour aligner le bouton à droite
+        HBox buttonBox = new HBox(submitBtn);
+        buttonBox.setStyle("-fx-alignment: center-right;");
 
-        HBox buttonContainer = new HBox(spacer, submitBtn);
-        submitBtn.setStyle("-fx-start-margin: 1000px 0 0 0;"); // Ajoute un peu d'espace en haut
-
-        // Ajouter le conteneur de bouton à leaveFormContainer dans le GridPane
-        leaveFormContainer.getChildren().add(buttonContainer);
+        // Trouver le conteneur de formulaire et ajouter le bouton
+        GridPane parentGridPane = (GridPane) leaveFormContainer.getParent();
+        parentGridPane.add(buttonBox, 0, 8, 2, 1);
     }
 
     /**
@@ -581,7 +617,7 @@ public class CongeEmployeController implements Initializable {
             Stage popupStage = new Stage();
             popupStage.initModality(Modality.APPLICATION_MODAL);
             popupStage.initStyle(StageStyle.UTILITY);
-            popupStage.setTitle("New Leave Request");
+            popupStage.setTitle("Nouvelle demande ");
             popupStage.setScene(new Scene(newRequestView));
             popupStage.centerOnScreen();
             popupStage.showAndWait();
@@ -596,7 +632,7 @@ public class CongeEmployeController implements Initializable {
      */
     private void switchToTelecommutingForm() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/TtRequest.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ttRequest.fxml"));
             Parent telecommutingView = loader.load();
             Stage stage = (Stage) leaveRequestRadio.getScene().getWindow();
             stage.setScene(new Scene(telecommutingView));
@@ -634,9 +670,9 @@ public class CongeEmployeController implements Initializable {
 
             Reason reason;
             String leaveType = leaveTypeCombo.getValue();
-            if (leaveType.contains("CONGE_PAYE")) {
+            if (leaveType.contains("CONGE PAYE")) {
                 reason = Reason.CONGE_PAYE;
-            } else if (leaveType.contains("CONGE_SANS_SOLDE")) {
+            } else if (leaveType.contains("CONGE SANS SOLDE")) {
                 reason = Reason.CONGE_SANS_SOLDE;
             } else if (leaveType.contains("MALADIE")) {
                 reason = Reason.MALADIE;
