@@ -1,63 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
-
-<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.shape.Circle?>
-<AnchorPane maxWidth="1865.0" prefHeight="823.0" prefWidth="1865.0"
-            stylesheets="/Styles/styledash.css"
-            xmlns="http://javafx.com/javafx/19"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="tn.esprit.Controllers.EmployeeDashController">
-    <!-- Navbar -->
-    <AnchorPane styleClass="navbar" style="-fx-background-color: white;"
-                AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"
-                prefHeight="80.0">
-        <children>
-            <HBox alignment="CENTER_RIGHT" prefHeight="80.0" spacing="10" AnchorPane.rightAnchor="20.0"
-                  AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0">
+<?import javafx.scene.control.Label?>
 
-                <Label text="Evolvify" styleClass="app-title" HBox.hgrow="ALWAYS" />
+<AnchorPane maxWidth="1865.0" prefHeight="823.0" prefWidth="1865.0" stylesheets="/Styles/styledash.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.EmployeeDashController">
 
-                <Region HBox.hgrow="ALWAYS" />
-
-                <!-- User profile section -->
-                <HBox fx:id="userBox" alignment="CENTER" spacing="10">
-                    <!-- Replace image loading with a circle for now -->
-                    <StackPane>
-                        <Circle radius="25" fill="lightblue" stroke="white" strokeWidth="2" />
-                        <Label text="M" style="-fx-font-size: 18; -fx-font-weight: bold;" />
-                    </StackPane>
-
-                    <Label fx:id="username" text="Miriam Mirou" styleClass="username" />
-
-                    <Button fx:id="logoutBtn" styleClass="logout-button" text="Déconnexion" />
-                </HBox>
-            </HBox>
-        </children>
-    </AnchorPane>
     <!-- Logo -->
     <VBox alignment="CENTER" prefHeight="174.0" prefWidth="330.0" style="-fx-background-color: #2A1B50;" AnchorPane.topAnchor="0.0">
-        <ImageView fx:id="logoImage" fitHeight="173.0" fitWidth="230.0" layoutX="25.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+        <ImageView fx:id="logoImage" fitHeight="173.0" fitWidth="230.0" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@/images/evolve.png" />
             </image>
         </ImageView>
     </VBox>
 
+    <!-- Top Right Navbar -->
+    <HBox fx:id="navbarHBox" alignment="CENTER_RIGHT" spacing="10"
+          style="-fx-background-color: transparent; -fx-padding: 15px;"
+          AnchorPane.rightAnchor="20"
+          AnchorPane.topAnchor="20">
+
+        <!-- Notification Icon -->
+        <ImageView fx:id="notificationIcon" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@/images/notif.png" />
+            </image>
+        </ImageView>
+
+        <!-- User Profile Image (Circular) -->
+        <ImageView fx:id="userProfileImage" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@/images/profile.png" />
+            </image>
+            <clip>
+                <Circle centerX="20" centerY="20" radius="20" />
+            </clip>
+        </ImageView>
+
+        <!-- User Name Label -->
+        <Label fx:id="userNameLabel" text="User Name"
+               style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #333333;" />
+
+        <!-- Logout Button -->
+        <Button fx:id="logoutButton" onAction="#handleLogout"
+                style="-fx-background-color: transparent; -fx-cursor: hand;">
+            <graphic>
+                <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@/images/logoutt.png" />
+                    </image>
+                </ImageView>
+            </graphic>
+        </Button>
+    </HBox>
+
     <!-- Scrollable Sidebar -->
-    <ScrollPane fx:id="scrollSidebar" fitToHeight="true" fitToWidth="true" prefWidth="330.0" styleClass="sidebar-scrollpane" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="173.0">
-        <VBox fx:id="sidebar" alignment="CENTER" prefWidth="330.0" spacing="25" style="-fx-background-color: #2A1B50; -fx-alignment: TOP_CENTER;">
+    <ScrollPane fx:id="scrollSidebar" fitToHeight="true" fitToWidth="true" prefWidth="330.0"
+                styleClass="sidebar-scrollpane"
+                AnchorPane.bottomAnchor="0.0"
+                AnchorPane.topAnchor="173.0">
+        <VBox fx:id="sidebar" alignment="TOP_CENTER" prefWidth="330.0" spacing="25"
+              style="-fx-background-color: #2A1B50;">
 
             <!-- Projets -->
             <Button fx:id="btnProjets" onAction="#handleProjet" styleClass="sidebar-button" text="  Projets">
@@ -102,6 +112,15 @@
                     </ImageView>
                 </graphic>
             </Button>
+            <Button fx:id="btnTrajets" onAction="#handleTrajets" styleClass="sidebar-button" text="Trajets">
+                <graphic>
+                    <ImageView fitHeight="30.0" fitWidth="30.0">
+                        <image>
+                            <Image url="@/images/transportDash.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
 
             <!-- Offres -->
             <Button fx:id="btnOffres" onAction="#handleOffres" styleClass="sidebar-button" text="  Offres">
@@ -127,6 +146,15 @@
         </VBox>
     </ScrollPane>
 
-    <!-- Contenu dynamique -->
-    <AnchorPane fx:id="contentArea" layoutX="334.0" layoutY="99.0" prefHeight="717.0" prefWidth="1531.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="334.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="106.0" />
+    <!-- Dynamic Content Area -->
+    <AnchorPane fx:id="contentArea"
+                layoutX="333.0"
+                layoutY="106.0"
+                prefHeight="717.0"
+                prefWidth="1530.0"
+                style="-fx-background-color: white;"
+                AnchorPane.bottomAnchor="0.0"
+                AnchorPane.leftAnchor="333.0"
+                AnchorPane.rightAnchor="2.0"
+                AnchorPane.topAnchor="106.0" />
 </AnchorPane>

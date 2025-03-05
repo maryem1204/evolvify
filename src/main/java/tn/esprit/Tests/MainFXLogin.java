@@ -18,29 +18,30 @@ public class MainFXLogin extends Application {
             primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/logo1.png")));
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/loginUser.fxml"));
             Parent root = loader.load();
+
             primaryStage.setTitle("Login");
-            // Obtenir les dimensions de l'écran SANS cacher la barre des tâches
-            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+            Scene scene = new Scene(root);
+            primaryStage.setScene(scene);
 
-            // Ajustements pour occuper toute la zone visible
-            double correctionX = 5;  // Élargir un peu vers la droite
-            double correctionY = 5;  // Agrandir vers le bas
+            // Afficher la fenêtre en plein écran
+            primaryStage.setMaximized(true);
 
-            primaryStage.setX(screenBounds.getMinX() - 6); // Déplace légèrement à gauche
-            primaryStage.setY(screenBounds.getMinY());
-            primaryStage.setWidth(screenBounds.getWidth() + 5);
-            primaryStage.setHeight(screenBounds.getHeight() + correctionY);
+            // Centrer le contenu avec les dimensions de l'écran
+            Screen screen = Screen.getPrimary();
+            Rectangle2D bounds = screen.getVisualBounds();
 
-            // Empêcher le redimensionnement
-            primaryStage.setResizable(false);
-            primaryStage.setFullScreen(false);
-            primaryStage.setScene(new Scene(root));
+            primaryStage.setX(bounds.getMinX());
+            primaryStage.setY(bounds.getMinY());
+            primaryStage.setWidth(bounds.getWidth());
+            primaryStage.setHeight(bounds.getHeight());
+
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Erreur lors du chargement de l'interface FXML !");
         }
     }
+
 
     public static void main(String[] args) {
         launch(args);

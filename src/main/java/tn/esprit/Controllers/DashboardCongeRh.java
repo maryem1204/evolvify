@@ -55,7 +55,7 @@ public class DashboardCongeRh {
     private Button addLeaveButton;
     @FXML
     private TextField searchField;
-
+    private final UtilisateurService utilisateurService = new UtilisateurService();
     private final CongeService congeService = new CongeService();
     private final TtService ttService = new TtService();
     private ObservableList<Conge> congeList = FXCollections.observableArrayList();
@@ -251,6 +251,22 @@ public class DashboardCongeRh {
                 conge.setStatus(Statut.ACCEPTE);
                 congeService.update(conge);
 
+                // Récupérer le nom et l'email de l'employé
+                String employeeName = employeNames.getOrDefault(conge.getId_employe(), "Employé");
+                String employeeEmail = getEmployeeEmail(conge.getId_employe());
+
+                // Envoyer un e-mail de notification
+                if (employeeEmail != null) {
+                    utilisateurService.sendLeaveRequestStatusEmail(
+                            employeeEmail,
+                            employeeName,
+                            "congé",
+                            "ACCEPTÉ",
+                            conge.getLeave_start().toString(),
+                            conge.getLeave_end().toString()
+                    );
+                }
+
                 // Notification de succès
                 showAlert(Alert.AlertType.INFORMATION, "Demande acceptée",
                         "La demande de congé a été acceptée avec succès.");
@@ -265,7 +281,7 @@ public class DashboardCongeRh {
         }
     }
 
-    // Nouvelle méthode pour refuser une demande de congé
+    // Update the rejectConge method
     private void rejectConge(Conge conge) {
         try {
             // Demander confirmation
@@ -274,6 +290,22 @@ public class DashboardCongeRh {
 
                 conge.setStatus(Statut.REFUSE);
                 congeService.update(conge);
+
+                // Récupérer le nom et l'email de l'employé
+                String employeeName = employeNames.getOrDefault(conge.getId_employe(), "Employé");
+                String employeeEmail = getEmployeeEmail(conge.getId_employe());
+
+                // Envoyer un e-mail de notification
+                if (employeeEmail != null) {
+                    utilisateurService.sendLeaveRequestStatusEmail(
+                            employeeEmail,
+                            employeeName,
+                            "congé",
+                            "REFUSÉ",
+                            conge.getLeave_start().toString(),
+                            conge.getLeave_end().toString()
+                    );
+                }
 
                 // Notification de succès
                 showAlert(Alert.AlertType.INFORMATION, "Demande refusée",
@@ -289,7 +321,7 @@ public class DashboardCongeRh {
         }
     }
 
-    // Nouvelle méthode pour accepter une demande de TT
+    // Update the approveTt method
     private void approveTt(Tt tt) {
         try {
             // Demander confirmation
@@ -298,6 +330,22 @@ public class DashboardCongeRh {
 
                 tt.setStatus(Statut.ACCEPTE);
                 ttService.update(tt);
+
+                // Récupérer le nom et l'email de l'employé
+                String employeeName = employeNames.getOrDefault(tt.getId_employe(), "Employé");
+                String employeeEmail = getEmployeeEmail(tt.getId_employe());
+
+                // Envoyer un e-mail de notification
+                if (employeeEmail != null) {
+                    utilisateurService.sendLeaveRequestStatusEmail(
+                            employeeEmail,
+                            employeeName,
+                            "télétravail",
+                            "ACCEPTÉ",
+                            tt.getLeave_start().toString(),
+                            tt.getLeave_end().toString()
+                    );
+                }
 
                 // Notification de succès
                 showAlert(Alert.AlertType.INFORMATION, "Demande acceptée",
@@ -313,7 +361,7 @@ public class DashboardCongeRh {
         }
     }
 
-    // Nouvelle méthode pour refuser une demande de TT
+    // Update the rejectTt method
     private void rejectTt(Tt tt) {
         try {
             // Demander confirmation
@@ -322,6 +370,22 @@ public class DashboardCongeRh {
 
                 tt.setStatus(Statut.REFUSE);
                 ttService.update(tt);
+
+                // Récupérer le nom et l'email de l'employé
+                String employeeName = employeNames.getOrDefault(tt.getId_employe(), "Employé");
+                String employeeEmail = getEmployeeEmail(tt.getId_employe());
+
+                // Envoyer un e-mail de notification
+                if (employeeEmail != null) {
+                    utilisateurService.sendLeaveRequestStatusEmail(
+                            employeeEmail,
+                            employeeName,
+                            "télétravail",
+                            "REFUSÉ",
+                            tt.getLeave_start().toString(),
+                            tt.getLeave_end().toString()
+                    );
+                }
 
                 // Notification de succès
                 showAlert(Alert.AlertType.INFORMATION, "Demande refusée",
@@ -334,6 +398,17 @@ public class DashboardCongeRh {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Erreur",
                     "Une erreur est survenue lors du refus de la demande: " + e.getMessage());
+        }
+    }
+    // Add this helper method to retrieve the employee's email
+    private String getEmployeeEmail(int employeeId) {
+        try {
+            UtilisateurService userService = new UtilisateurService();
+            Utilisateur user = userService.getUserById(employeeId);
+            return user != null ? user.getEmail() : null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
         }
     }
     // Nouvelle méthode pour rafraîchir l'affichage des tableaux

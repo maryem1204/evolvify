@@ -1,23 +1,48 @@
 package tn.esprit.Services;
 
-import jakarta.mail.*;
+import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
+import com.twilio.type.PhoneNumber;
+
+import jakarta.mail.Authenticator;
+import jakarta.mail.Message.RecipientType;
+import jakarta.mail.MessagingException;
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+
 import org.mindrot.jbcrypt.BCrypt;
+
 import tn.esprit.Entities.Gender;
 import tn.esprit.Entities.Role;
 import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Utils.MyDataBase;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.security.SecureRandom;
 import java.sql.*;
 import java.sql.Date;
 import java.util.*;
 
+
 public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisateur> {
     private Connection cnx = MyDataBase.getInstance().getCnx();
     private PreparedStatement pst;
+    private static final String UPLOAD_DIR = "C:/xampp/htdocs/evolvify/";
+    private static final String BASE_URL = "http://localhost/evolvify/";
 
+    private static final String ACCOUNT_SID = "AC61b477b529caa61701b41634160f437a";
+    private static final String AUTH_TOKEN = "938ea525d8cbdd35b9f49f46a1b06d4d";
+    private static final String TWILIO_PHONE_NUMBER = "+15078000957";
+    private static final String FROM_EMAIL = "maryemsassi.dev@gmail.com";
+    private static final String EMAIL_PASSWORD = "jlej mknk aukk iqlx";
 
     /******* ❌Add user into database *********/
     @Override
@@ -32,13 +57,14 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
         String hashedPassword = BCrypt.hashpw(rawPassword, BCrypt.gensalt());
 
         // 3️⃣ Enregistrer dans la base avec le mot de passe haché
-        String req = "INSERT INTO Users (firstname, lastname, email, password, role) VALUES (?, ?, ?, ?, ?)";
+        String req = "INSERT INTO Users (firstname, lastname, email, password, role, first_login) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pst = cnx.prepareStatement(req)) {
             pst.setString(1, user.getFirstname());
             pst.setString(2, user.getLastname());
             pst.setString(3, user.getEmail());
             pst.setString(4, hashedPassword);
             pst.setString(5, user.getRole().toString());
+            pst.setBoolean(6, true);
             pst.executeUpdate();
         }
 
@@ -60,7 +86,6 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
         return false;
     }
 
-
     /******* ❌Display list Users *********/
     @Override
     public List<Utilisateur> showAll() throws SQLException {
@@ -76,7 +101,7 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
                     rs.getString("lastname"),
                     rs.getString("email"),
                     rs.getString("password"),
-                    rs.getBytes("profilePhoto"),
+                    rs.getString("profilePhoto"),
                     rs.getDate("birthdayDate"), // Garder la date NULL si elle est absente
                     rs.getDate("joiningDate"),
                     Role.valueOf(rs.getString("role")), // Correction ici
@@ -92,7 +117,6 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
 
         return utilisateurs;
     }
-
     /******* ❌Delete User by its ID *********/
     @Override
     public int delete(Utilisateur utilisateur) throws SQLException {
@@ -127,49 +151,38 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
         return pst.executeUpdate();
     }
 
-    /******* ❌Update User Profile in the database (for employee or HR or project manager) *********/
-    public int updateProfile(Utilisateur user) throws SQLException {
-        if (user.getId_employe() == 0) {
-            System.out.println("❌ Erreur : ID invalide pour la mise à jour !");
-            return 0;
-        }
 
-        String req = "UPDATE Users SET profilePhoto = ?, birthdayDate = ?, tt_restants = ?, conge_restant = ?, uploaded_cv = ?, num_tel = ? WHERE id_employe = ?";
+    /******* ❌ Mise à jour spécifique du first_login *********/
+    public int updateFirstLogin(Utilisateur user, boolean status) throws SQLException {
+        String req = "UPDATE Users SET first_login = ? WHERE id_employe = ?";
         pst = cnx.prepareStatement(req);
 
-        pst.setBytes(1, user.getProfilePhoto());
-        pst.setDate(2, user.getBirthdayDate() != null ? user.getBirthdayDate() : Date.valueOf("2000-01-01"));
-        pst.setInt(3, user.getTtRestants());
-        pst.setInt(4, user.getCongeRestant());
-        pst.setBytes(5, user.getUploadedCv());
-        pst.setString(6, user.getNum_tel());
-        pst.setInt(7, user.getId_employe());
+        pst.setBoolean(1, status);
+        pst.setInt(2, user.getId_employe());
 
         return pst.executeUpdate();
     }
 
-
-
     /******* ❌Get User profile photo to display in Profile *********/
     @Override
-    public byte[] getProfilePhoto(int userId) throws SQLException {
+    public String getProfilePhoto(int userId) throws SQLException {
         String query = "SELECT profilePhoto FROM Users WHERE id_employe = ?";
         pst = cnx.prepareStatement(query);
         pst.setInt(1, userId);
         ResultSet rs = pst.executeQuery();
 
         if (rs.next()) {
-            return rs.getBytes("profilePhoto");
+            return rs.getString("profilePhoto");
         }
         return null;
     }
 
     /******* ❌Update User in the database (for HR only) *********/
     @Override
-    public int updateProfilePhoto(int userId, byte[] photo) throws SQLException {
+    public int updateProfilePhoto(int userId, String photo) throws SQLException {
         String query = "UPDATE Users SET profilePhoto = ? WHERE id_employe = ?";
         pst = cnx.prepareStatement(query);
-        pst.setBytes(1, photo);
+        pst.setString(1, photo);
         pst.setInt(2, userId);
         return pst.executeUpdate();
     }
@@ -190,7 +203,7 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
                         rs.getString("lastname"),
                         rs.getString("email"),
                         rs.getString("password"),
-                        rs.getBytes("profilePhoto"),
+                        rs.getString("profilePhoto"),
                         rs.getDate("birthdayDate") != null ? rs.getDate("birthdayDate") : Date.valueOf("2000-01-01"),
                         rs.getDate("joiningDate") != null ? rs.getDate("joiningDate") : Date.valueOf("2000-01-01"),
                         Role.valueOf(rs.getString("role")), // ✅ Correction ici
@@ -224,7 +237,7 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
                         rs.getString("lastname"),
                         rs.getString("email"),
                         rs.getString("password"),
-                        rs.getBytes("profilePhoto"),
+                        rs.getString("profilePhoto"),
                         rs.getDate("birthdayDate") != null ? rs.getDate("birthdayDate") : Date.valueOf("2000-01-01"),
                         rs.getDate("joiningDate") != null ? rs.getDate("joiningDate") : Date.valueOf("2000-01-01"),
                         Role.valueOf(rs.getString("role")), // ✅ Correction ici
@@ -289,7 +302,7 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
                     rs.getString("lastname"),
                     rs.getString("email"),
                     rs.getString("password"),
-                    rs.getBytes("profilePhoto"),
+                    rs.getString("profilePhoto"),
                     rs.getDate("birthdayDate"),
                     rs.getDate("joiningDate"),
                     Role.valueOf(rs.getString("role")),
@@ -397,6 +410,7 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
         return password.toString();
     }
 
+    // 📧 Envoi d'un email de confirmation
     public void sendConfirmationEmail(String toEmail, String generatedPassword) {
         String subject = "Votre compte a été créé !";
         String content = "<p>Bonjour,</p>"
@@ -409,30 +423,7 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
                 + "<p>Nous vous conseillons de modifier votre mot de passe après votre première connexion.</p>"
                 + "<p>Ouvrez l'application et connectez-vous avec vos identifiants.</p>";
 
-        try {
-            Properties properties = new Properties();
-            properties.put("mail.smtp.auth", "true");
-            properties.put("mail.smtp.starttls.enable", "true");
-            properties.put("mail.smtp.host", "smtp.gmail.com");
-            properties.put("mail.smtp.port", "587");
-
-            Session session = Session.getInstance(properties, new Authenticator() {
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication("maryemsassi.dev@gmail.com", "jlej mknk aukk iqlx");
-                }
-            });
-
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("maryemsassi.dev@gmail.com"));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
-            message.setSubject(subject);
-            message.setContent(content, "text/html");
-
-            Transport.send(message);
-            System.out.println("E-mail envoyé avec succès !");
-        } catch (MessagingException e) {
-            System.err.println("Erreur lors de l'envoi de l'e-mail : " + e.getMessage());
-        }
+        sendEmail(toEmail, subject, content);
     }
 
     public int updateAbsenceCount() {
@@ -569,10 +560,8 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
         statement.executeUpdate();
     }
 
+    // 📧 Méthode générique pour envoyer un e-mail
     private void sendEmail(String toEmail, String subject, String content) {
-        final String fromEmail = "maryemsassi.dev@gmail.com";
-        final String password = "jlej mknk aukk iqlx"; // Remplacez par votre vrai mot de passe
-
         Properties properties = new Properties();
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true");
@@ -581,26 +570,264 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
 
         Session session = Session.getInstance(properties, new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(fromEmail, password);
+                return new PasswordAuthentication(FROM_EMAIL, EMAIL_PASSWORD);
             }
         });
 
         try {
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(fromEmail));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(FROM_EMAIL));
+            message.setRecipients(MimeMessage.RecipientType.TO, InternetAddress.parse(toEmail));
             message.setSubject(subject);
             message.setContent(content, "text/html");
 
             Transport.send(message);
-            System.out.println("📧 E-mail envoyé !");
+            System.out.println("📧 E-mail envoyé avec succès !");
         } catch (MessagingException e) {
             System.err.println("❌ Erreur lors de l'envoi de l'e-mail : " + e.getMessage());
         }
     }
+    // Method to upload and save profile photo
+    public String uploadProfilePhoto(int userId, File file) throws SQLException, IOException {
+        // Get user information to create filename
+        String firstName = "", lastName = "";
+        String query = "SELECT firstname, lastname FROM users WHERE id_employe = ?";
+        pst = cnx.prepareStatement(query);
+        pst.setInt(1, userId);
+        ResultSet rs = pst.executeQuery();
 
+        if (rs.next()) {
+            firstName = rs.getString("firstname");
+            lastName = rs.getString("lastname");
+        }
 
+        // Create filename using first and last name
+        String fileExtension = getFileExtension(file.getName());
+        String fileName = firstName + "_" + lastName + "_" + System.currentTimeMillis() + fileExtension;
 
+        // Ensure upload directory exists
+        File uploadDir = new File(UPLOAD_DIR);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs();
+        }
 
+        // Copy file to htdocs folder
+        Path destination = Paths.get(UPLOAD_DIR + fileName);
+        Files.copy(file.toPath(), destination, StandardCopyOption.REPLACE_EXISTING);
 
+        // Generate and save URL to database
+        String photoUrl = BASE_URL + fileName;
+        updateProfilePhoto(userId, photoUrl);
+
+        return photoUrl;
+    }
+
+    // Helper method to get file extension
+    private String getFileExtension(String fileName) {
+        int lastIndexOf = fileName.lastIndexOf(".");
+        if (lastIndexOf == -1) {
+            return ""; // No extension
+        }
+        return fileName.substring(lastIndexOf);
+    }
+
+    // Method to get user profile information
+    public Utilisateur getUserProfile(int userId) throws SQLException {
+        String query = "SELECT * FROM users WHERE id_employe = ?";
+        pst = cnx.prepareStatement(query);
+        pst.setInt(1, userId);
+        ResultSet rs = pst.executeQuery();
+        Utilisateur user = null;
+
+        if (rs.next()) {
+            user = new Utilisateur();
+            user.setId_employe(rs.getInt("id_employe"));
+            user.setFirstname(rs.getString("firstname"));
+            user.setLastname(rs.getString("lastname"));
+            user.setEmail(rs.getString("email"));
+            user.setProfilePhoto(rs.getString("profilePhoto"));
+
+            // Set gender with default value HOMME if null
+            String genderStr = rs.getString("gender");
+            if (genderStr == null || genderStr.isEmpty()) {
+                user.setGender(Gender.HOMME);
+            } else {
+                user.setGender(Gender.valueOf(genderStr));
+            }
+
+            user.setNum_tel(rs.getString("num_tel"));
+
+            java.sql.Date birthDate = rs.getDate("birthdayDate");
+            if (birthDate != null) {
+                user.setBirthdayDate(new Date(birthDate.getTime()));
+            }
+
+            java.sql.Date joinDate = rs.getDate("joiningDate");
+            if (joinDate != null) {
+                user.setJoiningDate(new Date(joinDate.getTime()));
+            }
+
+            // Set role
+            String roleStr = rs.getString("role");
+            if (roleStr != null && !roleStr.isEmpty()) {
+                user.setRole(Role.valueOf(roleStr));
+            }
+
+            // Check if we have a flag for if birthday has been edited
+            // If your database has this column:
+            // user.setBirthDateEdited(rs.getBoolean("birthdate_edited"));
+        }
+
+        return user;
+    }
+
+    // Method to update user profile
+    public int updateUserProfile(Utilisateur user) throws SQLException {
+        String query = "UPDATE users SET profilePhoto = ?, gender = ?, num_tel = ?, " +
+                "birthdayDate = ? WHERE id_employe = ?";
+        pst = cnx.prepareStatement(query);
+        pst.setString(1, user.getProfilePhoto());
+        pst.setString(2, user.getGender().name()); // Use enum name
+        pst.setString(3, user.getNum_tel());
+
+        if (user.getBirthdayDate() != null) {
+            java.sql.Date sqlDate = new java.sql.Date(user.getBirthdayDate().getTime());
+            pst.setDate(4, sqlDate);
+        } else {
+            pst.setNull(4, java.sql.Types.DATE);
+        }
+
+        pst.setInt(5, user.getId_employe());
+
+        return pst.executeUpdate();
+    }
+
+    // Check if birthdate has been edited before (if you have this flag in database)
+    public boolean hasBirthDateBeenEdited(int userId) throws SQLException {
+        // If you don't have this column, you might need to implement another way to check
+        // or add this column to your database
+        String query = "SELECT birthdate_edited FROM users WHERE id_employe = ?";
+        pst = cnx.prepareStatement(query);
+        pst.setInt(1, userId);
+        ResultSet rs = pst.executeQuery();
+
+        if (rs.next()) {
+            return rs.getBoolean("birthdate_edited");
+        }
+
+        return false;
+    }
+
+    // Add a method to update the birthdate_edited flag if you have this column
+    public void setBirthDateEdited(int userId, boolean edited) throws SQLException {
+        String query = "UPDATE users SET birthdate_edited = ? WHERE id_employe = ?";
+        pst = cnx.prepareStatement(query);
+        pst.setBoolean(1, edited);
+        pst.setInt(2, userId);
+        pst.executeUpdate();
+    }
+    public Utilisateur findByPhone(String phoneNumber) {
+        String query = "SELECT * FROM users WHERE num_tel = ?";
+        try {
+            pst = cnx.prepareStatement(query);
+            pst.setString(1, phoneNumber);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                return new Utilisateur(
+                        rs.getInt("id_employe"),
+                        rs.getString("firstname"),
+                        rs.getString("lastname"),
+                        rs.getString("email"),
+                        rs.getString("num_tel")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (pst != null) pst.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return null;
+    }
+    // 📲 Envoi d'un SMS avec Twilio
+    public boolean sendSMSConfirmationCode(String phoneNumber, int code) {
+        try {
+            Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+
+            // Vérifier si le numéro commence par '+', sinon ajouter l'indicatif Tunisie
+            if (!phoneNumber.startsWith("+")) {
+                phoneNumber = "+216" + phoneNumber;
+            }
+
+            Message message = Message.creator(
+                    new PhoneNumber(phoneNumber),   // ✅ Format correct
+                    new PhoneNumber(TWILIO_PHONE_NUMBER),
+                    "Votre code de vérification est : " + code
+            ).create();
+
+            System.out.println("📱 SMS envoyé avec succès : " + message.getSid());
+            return true;
+        } catch (Exception e) {
+            System.err.println("❌ Erreur SMS : " + e.getMessage());
+            return false;
+        }
+    }
+
+    public Map<String, Integer> getTaskStatusCount() {
+        Map<String, Integer> statusCount = new HashMap<>();
+        String query = "SELECT status, COUNT(*) FROM tache GROUP BY status;";
+
+        try (
+                PreparedStatement stmt = cnx.prepareStatement(query);
+                ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                String status = rs.getString("status");
+                int count = rs.getInt("count");
+                System.out.println("Statut : " + status + ", Nombre : " + count);
+                statusCount.put(status, count);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return statusCount;
+    }
+    public Map<Integer, Integer> getProjectsPerWeekForLastFourWeeks() {
+        Map<Integer, Integer> projectsPerWeek = new HashMap<>();
+        String query = "SELECT WEEK(starter_at) AS weekNum, COUNT(*) AS count FROM projet " +
+                "WHERE starter_at >= DATE_SUB(CURDATE(), INTERVAL 4 WEEK) GROUP BY weekNum";
+
+        try (PreparedStatement stmt = cnx.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                projectsPerWeek.put(rs.getInt("weekNum"), rs.getInt("count"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return projectsPerWeek;
+    }
+    public Map<Integer, Integer> getTasksPerWeekForLastFourWeeks() {
+        Map<Integer, Integer> tasksPerWeek = new HashMap<>();
+        String query = "SELECT WEEK(created_at) AS weekNum, COUNT(*) AS count FROM tache " +
+                "WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 4 WEEK) GROUP BY weekNum";
+
+        try (
+                PreparedStatement stmt = cnx.prepareStatement(query);
+                ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                tasksPerWeek.put(rs.getInt("weekNum"), rs.getInt("count"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return tasksPerWeek;
+    }
 }

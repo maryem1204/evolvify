@@ -22,6 +22,7 @@ public class SmsService {
     /**
      * Sends an SMS notification to HR when an employee registers attendance
      *
+     *
      * @param employeeId The ID of the employee
      * @param employeeName The name of the employee
      * @param status The attendance status recorded
@@ -30,11 +31,8 @@ public class SmsService {
     public String notifyHRAboutAttendance(int employeeId, String employeeName, String status) {
         String messageBody = String.format(
                 "Un employé a enregistré sa présence:\n" +
-                        "ID: %d\n" +
-                        "Nom: %s\n" +
-                        "Statut: %s\n\n" +
-                        "Veuillez valider ou confirmer .",
-                employeeId, employeeName, status, employeeId, employeeId
+                        "ID: %d\nNom: %s\nStatut: %s\n\nVeuillez valider ou confirmer.",
+                employeeId, employeeName, status
         );
 
         try {
@@ -47,6 +45,26 @@ public class SmsService {
             return message.getSid();
         } catch (Exception e) {
             System.err.println("Error sending SMS: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    // New method to notify the employee after status modification
+    public String notifyEmployeeStatusChange(String phoneNumber, int employeeId, String employeeName, String newStatus) {
+        String messageBody = String.format(
+                "Bonjour %s,\nVotre trajet (ID: %d) a été mis à jour.\nNouveau statut: %s",
+                employeeName, employeeId, newStatus
+        );
+        try {
+            Message message = Message.creator(
+                    new PhoneNumber(phoneNumber),
+                    new PhoneNumber(FROM_NUMBER),
+                    messageBody
+            ).create();
+            return message.getSid();
+        } catch (Exception e) {
+            System.err.println("Error sending SMS to employee: " + e.getMessage());
             e.printStackTrace();
             return null;
         }

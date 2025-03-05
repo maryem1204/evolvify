@@ -16,7 +16,7 @@ public class CongeService implements CRUD<Conge>{
     private PreparedStatement ps ;
     @Override
     public int add(Conge conge) throws SQLException {
-        String req = "INSERT INTO `congé`(`leave_start`, `leave_end`, `number_of_days`, `status`, `id_employe`, `reason`, `description`)  VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String req = "INSERT INTO congé`(leave_start`, leave_end, number_of_days, status, id_employe, reason, description)  VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         ps = cnx.prepareStatement(req);
 
@@ -33,7 +33,7 @@ public class CongeService implements CRUD<Conge>{
 
     @Override
     public int update(Conge conge) throws SQLException {
-        String req = "UPDATE `congé` SET `leave_start` = ?, `leave_end` = ?, `number_of_days` = ?, `status` = ?, `id_employe` = ?, `reason` = ?, `description` = ? WHERE `id_conge` = ?";
+        String req = "UPDATE congé SET leave_start = ?, leave_end = ?, number_of_days = ?, status = ?, id_employe = ?, reason = ?, description = ? WHERE id_conge = ?";
 
         ps = cnx.prepareStatement(req);
 
@@ -60,7 +60,7 @@ public class CongeService implements CRUD<Conge>{
 
     @Override
     public int delete(Conge conge) throws SQLException {
-        String req = "DELETE FROM `congé` WHERE `id_conge` = ?";
+        String req = "DELETE FROM congé WHERE id_conge = ?";
 
         ps = cnx.prepareStatement(req);
         ps.setInt(1, conge.getId_Conge());
@@ -82,7 +82,7 @@ public class CongeService implements CRUD<Conge>{
         List<Conge> conges = new ArrayList<>();
 
         // 🔥 Requête avec une jointure pour récupérer les informations de l'employé
-        String req = "SELECT c.*, u.firstname, u.lastname FROM `congé` c JOIN `Users` u ON c.id_employe = u.id_employe";
+        String req = "SELECT c.*, u.firstname, u.lastname FROM congé c JOIN Users u ON c.id_employe = u.id_employe";
 
         st = cnx.createStatement();
         ResultSet rs = st.executeQuery(req);
@@ -103,7 +103,7 @@ public class CongeService implements CRUD<Conge>{
             // ✅ Récupérer le prénom et nom de l'employé
             String employeName = rs.getString("firstname") + " " + rs.getString("lastname");
 
-            // ✅ Affichage (ou utilisation) sans modifier la classe `Conge`
+            // ✅ Affichage (ou utilisation) sans modifier la classe Conge
             System.out.println("Congé ID: " + conge.getId_Conge() + " | Employé: " + employeName);
 
             conges.add(conge);

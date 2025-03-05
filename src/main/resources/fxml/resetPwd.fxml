@@ -10,11 +10,12 @@
             style="-fx-background-color: #111827;">
 
     <VBox alignment="CENTER" prefWidth="600" prefHeight="700" spacing="10">
-        <StackPane>
+        <StackPane AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+                   AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
             <VBox alignment="CENTER" spacing="20" maxWidth="400"
                   style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 40;
-                         -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 10);
-                         -fx-border-color: #9333ea; -fx-border-width: 7; -fx-border-radius: 10;">
+                     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 10);
+                     -fx-border-color: #9333ea; -fx-border-width: 7; -fx-border-radius: 10; -fx-alignment: center">
 
                 <!-- Logo -->
                 <ImageView fitHeight="80" fitWidth="150" pickOnBounds="true" preserveRatio="true">
@@ -24,29 +25,70 @@
                 </ImageView>
 
                 <!-- Titre -->
-                <Label text="Reset your password"
+                <Label text="Changer Votre Mot de Passe"
                        style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #222;" />
 
                 <!-- Champs de mot de passe -->
                 <VBox spacing="12" alignment="CENTER_LEFT" maxWidth="300">
-                    <Label text="New Password" style="-fx-font-size: 16px; -fx-text-fill: #333;" />
-                    <PasswordField fx:id="newPasswordField" promptText="Enter new password"
+                    <Label text="Nouveau Mot de Passe" style="-fx-font-size: 16px; -fx-text-fill: #333;" />
+
+                    <!-- New Password Field Stack -->
+                    <StackPane>
+                        <PasswordField fx:id="newPasswordField" promptText="Entrer nouveau mot de passe"
+                                       style="-fx-font-size: 14px; -fx-padding: 12; -fx-background-radius: 8;
+                                         -fx-border-color: #ccc; -fx-border-radius: 8; -fx-pref-width: 300;" />
+                        <TextField fx:id="textNewPasswordField" promptText="Entrer nouveau mot de passe" visible="false" managed="false"
                                    style="-fx-font-size: 14px; -fx-padding: 12; -fx-background-radius: 8;
-                                          -fx-border-color: #ccc; -fx-border-radius: 8; -fx-pref-width: 300;" />
+                                     -fx-border-color: #ccc; -fx-border-radius: 8; -fx-pref-width: 300;" />
+                        <Button fx:id="toggleNewPasswordButton" styleClass="icon-button"
+                                style="-fx-background-color: transparent; -fx-cursor: hand;"
+                                StackPane.alignment="CENTER_RIGHT" onAction="#toggleNewPasswordVisibility">
+                            <graphic>
+                                <ImageView fitHeight="20" fitWidth="20">
+                                    <Image url="@/images/eye_closed.png" />
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                    </StackPane>
+
+                    <!-- Add this right after the New Password StackPane -->
+                    <HBox fx:id="strengthMeterContainer" spacing="5" alignment="CENTER_LEFT" maxWidth="300">
+                        <Region fx:id="strengthSection1" style="-fx-background-color: #ddd; -fx-pref-height: 5; -fx-pref-width: 60;" />
+                        <Region fx:id="strengthSection2" style="-fx-background-color: #ddd; -fx-pref-height: 5; -fx-pref-width: 60;" />
+                        <Region fx:id="strengthSection3" style="-fx-background-color: #ddd; -fx-pref-height: 5; -fx-pref-width: 60;" />
+                        <Region fx:id="strengthSection4" style="-fx-background-color: #ddd; -fx-pref-height: 5; -fx-pref-width: 60;" />
+                        <Label fx:id="strengthLabel" text="" style="-fx-font-size: 12px; -fx-text-fill: #666;" />
+                    </HBox>
 
                     <Label text="Confirm Password" style="-fx-font-size: 16px; -fx-text-fill: #333;" />
-                    <PasswordField fx:id="confirmPasswordField" promptText="Confirm your password"
+
+                    <!-- Confirm Password Field Stack -->
+                    <StackPane>
+                        <PasswordField fx:id="confirmPasswordField" promptText="Confirmer votre mot de passe"
+                                       style="-fx-font-size: 14px; -fx-padding: 12; -fx-background-radius: 8;
+                                         -fx-border-color: #ccc; -fx-border-radius: 8; -fx-pref-width: 300;" />
+                        <TextField fx:id="textConfirmPasswordField" promptText="Confirmer votre mot de passe" visible="false" managed="false"
                                    style="-fx-font-size: 14px; -fx-padding: 12; -fx-background-radius: 8;
-                                          -fx-border-color: #ccc; -fx-border-radius: 8; -fx-pref-width: 300;" />
+                                     -fx-border-color: #ccc; -fx-border-radius: 8; -fx-pref-width: 300;" />
+                        <Button fx:id="toggleConfirmPasswordButton" styleClass="icon-button"
+                                style="-fx-background-color: transparent; -fx-cursor: hand;"
+                                StackPane.alignment="CENTER_RIGHT" onAction="#toggleConfirmPasswordVisibility">
+                            <graphic>
+                                <ImageView fitHeight="20" fitWidth="20">
+                                    <Image url="@/images/eye_closed.png" />
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                    </StackPane>
 
                     <Label fx:id="errorLabel" text="" style="-fx-text-fill: red; -fx-font-size: 14px;" />
                 </VBox>
 
                 <!-- Bouton Reset -->
-                <Button text="Reset Password" fx:id="resetButton" onAction="#resetPassword"
+                <Button text="Changer Mot de Passe" fx:id="resetButton" onAction="#resetPassword"
                         style="-fx-background-color: linear-gradient(to right, #3b82f6, #9333ea);
-                               -fx-text-fill: white; -fx-font-size: 18px; -fx-padding: 12;
-                               -fx-background-radius: 8; -fx-pref-width: 300; -fx-cursor: hand;" />
+                           -fx-text-fill: white; -fx-font-size: 18px; -fx-padding: 12;
+                           -fx-background-radius: 8; -fx-pref-width: 300; -fx-cursor: hand;" />
             </VBox>
         </StackPane>
     </VBox>

@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import java.util.ArrayList;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -26,7 +27,7 @@ import java.util.Optional;
 public class DashController {
 
     @FXML
-    private Button btnDashboard, btnUser, btnRecrutements, btnProjets, btnTransports;
+    private Button btnDashboard, btnUser, btnRecrutements, btnProjets, btnTransports,btnTaches,btnEquipe;
     @FXML
     private Button btnConges, btnAbsences, btnGestionConges;
     @FXML
@@ -35,6 +36,9 @@ public class DashController {
     private Label username;
     @FXML
     private VBox sidebar, subMenuConges, subMenuRecrutements, subMenuProjets,subMenuTransport;
+    // Boutons du sous-menu Transports
+    @FXML
+    private Button menuGererTransport, menuGererAbonnement, menuGererTrajet;
     @FXML
     private AnchorPane contentArea;
     @FXML
@@ -67,8 +71,10 @@ public class DashController {
         // Chargement des icônes
         userIcon.setImage(new Image(getClass().getResource("/images/profile.png").toExternalForm(), true));
 
-        sidebarButtons = List.of(btnDashboard, btnUser, btnRecrutements, btnProjets, btnTransports, btnConges, btnAbsences);
-
+        sidebarButtons = new ArrayList<>(List.of(btnDashboard, btnUser, btnRecrutements, btnProjets, btnTransports, btnConges, btnAbsences));
+        sidebarButtons.add(menuGererTransport);
+        sidebarButtons.add(menuGererAbonnement);
+        sidebarButtons.add(menuGererTrajet);
         for (Button button : sidebarButtons) {
             button.setOnAction(event -> {
                 setActiveButton(button);
@@ -81,15 +87,35 @@ public class DashController {
         btnRecrutements.setOnAction(event -> toggleSubMenuRecrutements());
         btnProjets.setOnAction(event -> toggleSubMenuProjets());
         btnTransports.setOnAction(event -> toggleSubMenuTransports());
-
+        // Actions spécifiques pour les boutons qui se trouvent dans les sous-menus
+        menuGererTransport.setOnAction(event -> {
+            setActiveButton(menuGererTransport);
+            loadView("/fxml/Affichage_transport.fxml");
+        });
+        menuGererAbonnement.setOnAction(event -> {
+            setActiveButton(menuGererAbonnement);
+            loadView("/fxml/Affichage_abonnement.fxml");//FrontAbonnement.fxml matensehomch
+        });
+        menuGererTrajet.setOnAction(event -> {
+            setActiveButton(menuGererTrajet);
+            loadView("/fxml/Affichage_trajet.fxml");//FrontTransport.fxml
+        });
         btnConges.setOnAction(event -> {
             setActiveButton(btnConges);
-            loadView("/fxml/conges.fxml");
+            loadView("/fxml/dashboardCongeRh.fxml");
         });
 
         btnAbsences.setOnAction(event -> {
             setActiveButton(btnAbsences);
-            loadView("/fxml/absences.fxml");
+            loadView("/fxml/AttendanceView.fxml");
+        });
+        btnTaches.setOnAction(event -> {
+            setActiveButton(btnProjets);
+            loadView("/fxml/ListProjet.fxml");
+        });
+        btnEquipe.setOnAction(event -> {
+            setActiveButton(btnProjets);
+            loadView("/fxml/ListTacheRH.fxml");
         });
 
         //username.setText("Meriem Sassi");
@@ -108,6 +134,11 @@ public class DashController {
         // Récupérer l'utilisateur connecté
         Utilisateur utilisateur = SessionManager.getInstance().getUtilisateurConnecte();
 
+        // Ensure the username label resizes to fit content
+        username.setMaxWidth(Double.MAX_VALUE);
+        username.setWrapText(true);
+
+
         // Vérifier si un utilisateur est bien en session
         if (utilisateur != null) {
             // Afficher son prénom et nom dans le Label
@@ -119,7 +150,20 @@ public class DashController {
 
         // événement de clic à l'icône de déconnexion
         logoutIcon.setOnMouseClicked(event -> handleLogout());
-
+        username.setOnMouseClicked(event -> {
+            try {
+                handleProfil();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        userIcon.setOnMouseClicked(event -> {
+            try {
+                handleProfil();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     /**
@@ -159,6 +203,12 @@ public class DashController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             Parent root = loader.load();
             contentArea.getChildren().setAll(root);
+
+            // Ensure the view fills the content area
+            AnchorPane.setTopAnchor(root, 0.0);
+            AnchorPane.setRightAnchor(root, 0.0);
+            AnchorPane.setBottomAnchor(root, 0.0);
+            AnchorPane.setLeftAnchor(root, 0.0);
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("⚠ Erreur de chargement : " + fxmlFile);
@@ -265,14 +315,20 @@ public class DashController {
 
     @FXML
     public void handleConge(ActionEvent actionEvent) {
+        setActiveButton(btnConges);
         loadView("/fxml/dashboardCongeRh.fxml");
     }
     @FXML
     public void handleAbsence(ActionEvent actionEvent) {
+        setActiveButton(btnAbsences);
         loadView("/fxml/AttendanceView.fxml");
     }
 
-
+    @FXML
+    public void handleAbonnement(ActionEvent actionEvent) {
+        setActiveButton(menuGererAbonnement);
+        loadView("/fxml/Affichage_abonnement.fxml");
+    }
     private void handleLogout() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Déconnexion");
@@ -287,7 +343,7 @@ public class DashController {
 
             try {
                 // Charger la scène de connexion
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Login.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/LoginUser.fxml"));
                 Parent root = loader.load();
 
                 // Récupérer la scène actuelle et la remplacer par la scène de connexion
@@ -299,6 +355,9 @@ public class DashController {
             }
         }
     }
-
+    @FXML
+    private void handleProfil() throws IOException {
+        loadView("/fxml/employeeProfile.fxml");
+    }
 
 }

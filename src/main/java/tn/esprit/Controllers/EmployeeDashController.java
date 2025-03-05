@@ -1,28 +1,33 @@
 package tn.esprit.Controllers;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import tn.esprit.Entities.Utilisateur;
+import tn.esprit.Services.DeadLineNotification;
 import tn.esprit.Services.UtilisateurService;
+import tn.esprit.Utils.NotificationManager;
+import tn.esprit.Utils.SessionManager;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -41,6 +46,9 @@ public class EmployeeDashController {
     private Button btnAbsence;
     @FXML
     private Button btnAbonnements;
+
+    @FXML
+    private Button btnTrajets;
     @FXML
     private Button btnOffres;
     @FXML
@@ -52,15 +60,21 @@ public class EmployeeDashController {
     @FXML
     private VBox sidebar;
     @FXML
-    private HBox userBox;
+    private HBox navbarHBox;
 
+    @FXML
+    private ImageView notificationIcon;
+    @FXML
+    private Label userNameLabel;
     // For the circular avatar placeholder
     @FXML
-    private StackPane userAvatarPane;
+    private StackPane avatarStackPane; // Changed from userAvatarPane
+
+
     @FXML
-    private Circle userAvatar;
+    private Circle avatarCircle;      // Changed from userAvatar
     @FXML
-    private Label userInitials;
+    private Label avatarLabel;        // Changed from userInitials
 
     private Utilisateur currentUser;
     private final UtilisateurService utilisateurService = new UtilisateurService();
@@ -72,73 +86,198 @@ public class EmployeeDashController {
         // Load default dashboard view
         loadView("/fxml/employeeProfile.fxml");
 
-        // Set up logout functionality
-        logoutBtn.setOnAction(event -> handleLogout());
-
+        // Create user box programmatically
+        createUserBox();
         // Verify CSS is loaded
         System.out.println("CSS file paths attempts:");
         System.out.println("1: " + getClass().getResource("/Styles/styledash.css"));
         System.out.println("2: " + getClass().getResource("../Styles/styledash.css"));
         System.out.println("3: " + getClass().getResource("/tn/esprit/Styles/styledash.css"));
         System.out.println("4: " + getClass().getResource("../../Styles/styledash.css"));
-
-        // Initialize the username with a default value
-        username.setText("Utilisateur");
-
-        // Set up the avatar placeholder
-        setupPlaceholderAvatar("U");
     }
 
-    private void setupPlaceholderAvatar(String initial) {
-        if (userAvatar != null && userInitials != null) {
-            userAvatar.setFill(Color.LIGHTBLUE);
-            userAvatar.setStroke(Color.WHITE);
-            userAvatar.setStrokeWidth(2);
-            userInitials.setText(initial);
-        } else {
-            System.out.println("Warning: Avatar components are null");
-        }
-    }
 
-    public void setUserData(Utilisateur user) {
-        this.currentUser = user;
 
-        if (user != null) {
-            username.setText(user.getFirstname() + " " + user.getLastname());
+    private void createUserBox() {
+        System.out.println("🔧 Creating user box...");
 
-            // Set the initial for the avatar
-            String initial = "";
-            if (user.getFirstname() != null && !user.getFirstname().isEmpty()) {
-                initial = user.getFirstname().substring(0, 1).toUpperCase();
-            }
-            setupPlaceholderAvatar(initial);
-
-            // Try to load actual profile image if it exists
-            tryLoadProfileImage(user);
-        }
-    }
-
-    private void tryLoadProfileImage(Utilisateur user) {
-        if (user.getProfilePhotoPath() == null || user.getProfilePhotoPath().isEmpty()) {
-            return; // Keep using the placeholder
+        // Check if a user is logged in
+        Utilisateur utilisateur = SessionManager.getInstance().getUtilisateurConnecte();
+        if (utilisateur == null) {
+            System.out.println("⚠ No user logged in!");
+            return;
         }
 
         try {
-            // Try loading from file path first
-            File file = new File(user.getProfilePhotoPath());
-            if (file.exists()) {
-                // If we have an actual photo, we could replace the circle placeholder
-                // with the actual photo, but for now we'll just keep the placeholder
-                System.out.println("Found profile image at: " + file.getAbsolutePath());
-                // Optionally: userAvatar.setFill(new ImagePattern(new Image(file.toURI().toString())));
-            } else {
-                System.out.println("Profile image file not found: " + user.getProfilePhotoPath());
-            }
+            // Update user profile image
+            updateNavbarProfileImage(utilisateur);
+
+            // Update user name label
+            userNameLabel.setText(utilisateur.getFirstname() + " " + utilisateur.getLastname());
+
+            // Configure notification icon (optional interaction)
+            configureNotificationIcon();
+
         } catch (Exception e) {
-            System.out.println("Error loading profile image: " + e.getMessage());
+            System.err.println("Error creating user box: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
+    private void configureNotificationIcon() {
+        // Optional: Add interaction to notification icon
+        notificationIcon.setOnMouseClicked(event -> {
+            // Handle notification click
+            System.out.println("Notification icon clicked");
+            // Implement notification logic here
+        });
+    }
+    private void setupPlaceholderAvatar(String initial) {
+        if (avatarCircle != null && avatarLabel != null) {
+            avatarCircle.setFill(Color.LIGHTBLUE);
+            avatarCircle.setStroke(Color.WHITE);
+            avatarCircle.setStrokeWidth(2);
+            avatarLabel.setText(initial);
+        } else {
+            System.out.println("Warning: Avatar components are null. Make sure fx:id is set correctly in FXML.");
+            System.out.println("Expected fx:id: avatarStackPane, avatarCircle, avatarLabel");
+        }
+    }
+
+    public void saveProfileImage(File selectedFile) {
+        try {
+            // Get the current logged-in user
+            Utilisateur utilisateur = SessionManager.getInstance().getUtilisateurConnecte();
+            if (utilisateur == null) {
+                System.err.println("No user logged in!");
+                return;
+            }
+
+            // Generate a unique filename
+            String timestamp = String.valueOf(System.currentTimeMillis());
+            String fileExtension = getFileExtension(selectedFile);
+            String newFileName = utilisateur.getFirstname().toLowerCase() + "_" +
+                    utilisateur.getLastname().toLowerCase() + "_" +
+                    timestamp + "." + fileExtension;
+
+            // Define destination directory (adjust path as needed)
+            File uploadDir = new File("C:/xampp/htdocs/evolvify/");
+            if (!uploadDir.exists()) {
+                uploadDir.mkdirs();
+            }
+
+            // Create destination file
+            File destFile = new File(uploadDir, newFileName);
+
+            // Copy the file
+            try (FileInputStream fis = new FileInputStream(selectedFile);
+                 FileOutputStream fos = new FileOutputStream(destFile)) {
+
+                byte[] buffer = new byte[1024];
+                int length;
+                while ((length = fis.read(buffer)) > 0) {
+                    fos.write(buffer, 0, length);
+                }
+            }
+
+            // Construct the URL path
+            String newImagePath = "http://localhost/evolvify/" + newFileName;
+
+            // Update user's profile photo
+            utilisateur.setProfilePhoto(newImagePath);
+
+            // Update the navbar profile image
+            updateNavbarProfileImage(utilisateur);
+
+            // Optional: Update user in database
+            utilisateurService.update(utilisateur);
+
+            System.out.println("Profile image saved successfully: " + newImagePath);
+
+        } catch (Exception e) {
+            System.err.println("Error saving profile image: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    // Helper method to get file extension
+    private String getFileExtension(File file) {
+        String name = file.getName();
+        int lastIndexOf = name.lastIndexOf(".");
+        if (lastIndexOf == -1) {
+            return "png"; // default extension
+        }
+        return name.substring(lastIndexOf + 1);
+    }
+
+    @FXML
+    private void handleProfileImageUpload() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select Profile Picture");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif")
+        );
+
+        File selectedFile = fileChooser.showOpenDialog(null);
+
+        if (selectedFile != null) {
+            saveProfileImage(selectedFile);
+        }
+    }
+
+    private void updateNavbarProfileImage(Utilisateur utilisateur) {
+        // Vérifier si un utilisateur est connecté
+        if (utilisateur == null) {
+            System.out.println("⚠ Aucun utilisateur connecté !");
+            return;
+        }
+
+        // Récupérer le chemin de l'image de profil
+        String newImagePath = utilisateur.getProfilePhoto(); // Assuming you have a method to get profile image path
+
+        try {
+            // Find the ImageView in the navbar
+            Node profileImageNode = navbarHBox.lookup("#navbarProfileImage");
+
+            if (profileImageNode instanceof ImageView) {
+                ImageView profileImage = (ImageView) profileImageNode;
+
+                Image newProfileImg;
+                // Charger la nouvelle image avec les mêmes paramètres que dans createUserBox()
+                if (newImagePath != null && !newImagePath.isEmpty()) {
+                    if (newImagePath.startsWith("http://") || newImagePath.startsWith("https://")) {
+                        newProfileImg = new Image(newImagePath, 40, 40, true, true);
+                    } else {
+                        File file = new File(newImagePath);
+                        if (file.exists()) {
+                            newProfileImg = new Image(file.toURI().toString(), 40, 40, true, true);
+                        } else {
+                            System.out.println("⚠ Fichier image introuvable : " + newImagePath);
+                            newProfileImg = new Image(getClass().getResource("/images/profile.png").toExternalForm(), 40, 40, true, true);
+                        }
+                    }
+                } else {
+                    newProfileImg = new Image(getClass().getResource("/images/profile.png").toExternalForm(), 40, 40, true, true);
+                }
+
+                // Mettre à jour l'image
+                Platform.runLater(() -> {
+                    profileImage.setImage(newProfileImg);
+
+                    // Recréer le clip circulaire si nécessaire
+                    Circle clip = new Circle(20, 20, 20);
+                    profileImage.setClip(clip);
+
+                    // Forcer la mise à jour du layout
+                    navbarHBox.requestLayout();
+                });
+            }
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la mise à jour de l'image de profil : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    // Rest of your methods remain the same
     @FXML
     private void handleProjets() throws IOException {
         setActiveButton(btnProjets);
@@ -160,7 +299,12 @@ public class EmployeeDashController {
     @FXML
     private void handleAbonnements() throws IOException {
         setActiveButton(btnAbonnements);
-        //loadView("EmployeeSubscriptions.fxml");
+        loadView("/fxml/FrontAbonnement.fxml");
+    }
+    @FXML
+    private void handleTrajets() throws IOException {
+        setActiveButton(btnTrajets);
+        loadView("/fxml/FrontTransport.fxml");
     }
 
     @FXML
@@ -182,16 +326,18 @@ public class EmployeeDashController {
         loadView("/fxml/ProjectListWithCards.fxml");
     }
 
+    @FXML
     private void handleLogout() {
+        System.out.println("🔒 Déconnexion de l'utilisateur...");
+        SessionManager.getInstance().logout();
+
+        // Optionnel : Rediriger vers la page de connexion
         try {
-            // Clear any user session data
-
-            // Load the login screen
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/login.fxml"));
-            Parent root = loader.load();
-
-            // Replace current scene with login scene
-            contentArea.getScene().setRoot(root);
+            Parent loginView = FXMLLoader.load(getClass().getResource("/fxml/loginUser.fxml"));
+            Scene loginScene = new Scene(loginView);
+            Stage stage = (Stage) navbarHBox.getScene().getWindow();
+            stage.setScene(loginScene);
+            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -227,10 +373,12 @@ public class EmployeeDashController {
     }
     @FXML
     public void handleConge(ActionEvent actionEvent) {
-        loadView("/fxml/CongeEmploye.fxml");
+        setActiveButton(btnConge);
+        loadView("/fxml/testConge.fxml");
     }
     @FXML
     public void handleAbsence(ActionEvent actionEvent) {
-        loadView("/fxml/EmployeAbsence.fxml");
+        setActiveButton(btnAbsence);
+        loadView("/fxml/EmployeeAbsence.fxml");
     }
 }

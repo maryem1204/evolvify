@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC4Zjzz5c9rQ2Rn6Hgz1UeDH1LJv6BGhgc"></script>
+    <script>
+        function initMap() {
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 8,
+                center: { lat: 36.8065, lng: 10.1815 } // Tunis par défaut
+            });
+
+            // Ajouter un marqueur
+            var marker = new google.maps.Marker({
+                position: { lat: 36.8065, lng: 10.1815 },
+                map: map
+            });
+        }
+    </script>
+</head>
+<body onload="initMap()">
+<div id="map" style="width:100%; height:500px;"></div>
+</body>
+</html>

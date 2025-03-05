@@ -70,12 +70,14 @@
 .user-icon {
     -fx-clip-shape: circle;
     -fx-border-radius: 50%;
+    -fx-cursor: hand;
 }
 
 .username {
     -fx-text-fill: #00060b;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
+    -fx-cursor: hand;
 }
 .online-indicator {
     -fx-fill: #28A745;
@@ -189,4 +191,21 @@
 
 #sidebar {
     -fx-pref-width: 330px;
+}
+/* Logout button style */
+.logout-button {
+    -fx-background-color: #2A1B50;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 8 15 8 15;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.logout-button:hover {
+    -fx-background-color: #3c2973;
+}
+
+.logout-button:pressed {
+    -fx-background-color: #1e1438;
 }
