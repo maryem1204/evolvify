@@ -194,5 +194,5 @@
     <!-- Contenu dynamique -->
     <AnchorPane fx:id="contentArea" style="-fx-background-color: white;"
                 AnchorPane.topAnchor="106.0" AnchorPane.bottomAnchor="0.0"
-                AnchorPane.leftAnchor="330.0" AnchorPane.rightAnchor="0.0" />
+                AnchorPane.leftAnchor="350.0" AnchorPane.rightAnchor="0.0" />
 </AnchorPane>

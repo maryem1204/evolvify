@@ -79,7 +79,7 @@
               style="-fx-background-color: #2A1B50;">
 
             <!-- Projets -->
-            <Button fx:id="btnProjets" onAction="#handleProjet" styleClass="sidebar-button" text="  Projets">
+            <Button fx:id="btnProjets" onAction="#handleProjets" styleClass="sidebar-button" text="  Projets">
                 <graphic>
                     <ImageView fitHeight="30.0" fitWidth="30.0">
                         <image>

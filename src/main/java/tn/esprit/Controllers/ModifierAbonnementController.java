@@ -59,7 +59,7 @@ public class ModifierAbonnementController {
         id_employe.setText(String.valueOf(abonnement.getId_employe())); // Ajout de l'ID employé
     }
 
-    private static LocalDate convertToLocalDate(Date dateToConvert) {
+    static LocalDate convertToLocalDate(Date dateToConvert) {
         return Instant.ofEpochMilli(dateToConvert.getTime())
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();

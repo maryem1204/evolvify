@@ -421,19 +421,19 @@ public class EmployeeDashController {
     @FXML
     private void handleProjets() throws IOException {
         setActiveButton(btnProjets);
-        //loadView("EmployeeProjects.fxml");
+        loadView("/fxml/ProjectListWithCards.fxml");
     }
 
     @FXML
     private void handleConge() throws IOException {
         setActiveButton(btnConge);
-        //loadView("EmployeeLeaves.fxml");
+        loadView("/fxml/testConge.fxml");
     }
 
     @FXML
     private void handleAbsence() throws IOException {
         setActiveButton(btnAbsence);
-        //loadView("EmployeeAbsences.fxml");
+        loadView("/fxml/EmployeeAbsence.fxml");
     }
 
     @FXML

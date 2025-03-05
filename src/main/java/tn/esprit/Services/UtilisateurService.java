@@ -813,4 +813,50 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
         }
         return tasksPerWeek;
     }
+
+    public void sendLeaveRequestStatusEmail(String toEmail, String employeeName, String requestType, String status, String startDate, String endDate) {
+        String subject = "Statut de votre demande de " + requestType;
+        String content = "<p>Bonjour " + employeeName + ",</p>"
+                + "<p>Votre demande de " + requestType + " a été " + status.toLowerCase() + ".</p>"
+                + "<p>Détails de la demande :</p>"
+                + "<ul>"
+                + "<li><b>Type :</b> " + requestType + "</li>"
+                + "<li><b>Statut :</b> " + status + "</li>"
+                + "<li><b>Date de début :</b> " + startDate + "</li>"
+                + "<li><b>Date de fin :</b> " + endDate + "</li>"
+                + "</ul>"
+                + "<p>Merci de consulter l'application pour plus de détails.</p>";
+
+        try {
+            Properties properties = new Properties();
+            properties.put("mail.smtp.auth", "true");
+            properties.put("mail.smtp.starttls.enable", "true");
+            properties.put("mail.smtp.host", "smtp.gmail.com");
+            properties.put("mail.smtp.port", "587");
+            properties.put("mail.smtp.debug", "true"); // Add debug logging
+
+
+
+            Session session = Session.getInstance(properties, new Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(FROM_EMAIL, EMAIL_PASSWORD);
+                }
+            });
+
+            try {
+                MimeMessage message = new MimeMessage(session);
+                message.setFrom(new InternetAddress(FROM_EMAIL));
+                message.setRecipients(MimeMessage.RecipientType.TO, InternetAddress.parse(toEmail));
+                message.setSubject(subject);
+                message.setContent(content, "text/html");
+
+                Transport.send(message);
+                System.out.println("📧 E-mail envoyé avec succès !");
+            } catch (MessagingException e) {
+                System.err.println("❌ Erreur lors de l'envoi de l'e-mail : " + e.getMessage());
+            }
+        } catch (Exception e) {
+            System.err.println("❌ Erreur lors de l'envoi de l'e-mail : " + e.getMessage());
+        }
+    }
 }

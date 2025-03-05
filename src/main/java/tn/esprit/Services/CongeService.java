@@ -16,12 +16,12 @@ public class CongeService implements CRUD<Conge>{
     private PreparedStatement ps ;
     @Override
     public int add(Conge conge) throws SQLException {
-        String req = "INSERT INTO congé`(leave_start`, leave_end, number_of_days, status, id_employe, reason, description)  VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String req = "INSERT INTO congé (leave_start, leave_end, number_of_days, status, id_employe, reason, description) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         ps = cnx.prepareStatement(req);
 
-        ps.setDate(1, new Date(conge.getLeave_start().getTime()));
-        ps.setDate(2, new Date(conge.getLeave_end().getTime()));
+        ps.setDate(1, new java.sql.Date(conge.getLeave_start().getTime()));
+        ps.setDate(2, new java.sql.Date(conge.getLeave_end().getTime()));
         ps.setInt(3, conge.getNumber_of_days());
         ps.setString(4, conge.getStatus().name()); // Conversion ENUM -> String
         ps.setInt(5, conge.getId_employe());
