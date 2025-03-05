@@ -65,50 +65,55 @@ public class DashController {
             setActiveButton(btnDashboard);
         });
 
-        sidebarButtons = List.of(btnDashboard, btnUser, btnRecrutements, btnProjets, btnTransports, btnConges,
-                btnAbsences, btnCandidats, btnEntretiens, btnTrajet, btnAb, btnTransport);
+        // Null check before creating the list
+        List<Button> tempButtons = new ArrayList<>();
+
+        // Add buttons only if they are not null
+        addButtonIfNotNull(tempButtons, btnDashboard);
+        addButtonIfNotNull(tempButtons, btnUser);
+        addButtonIfNotNull(tempButtons, btnRecrutements);
+        addButtonIfNotNull(tempButtons, btnProjets);
+        addButtonIfNotNull(tempButtons, btnTransports);
+        addButtonIfNotNull(tempButtons, btnConges);
+        addButtonIfNotNull(tempButtons, btnAbsences);
+        addButtonIfNotNull(tempButtons, btnCandidats);
+        addButtonIfNotNull(tempButtons, btnEntretiens);
+        addButtonIfNotNull(tempButtons, btnTrajet);
+        addButtonIfNotNull(tempButtons, btnAb);
+        addButtonIfNotNull(tempButtons, btnTransport);
+        addButtonIfNotNull(tempButtons, menuGererTransport);
+        addButtonIfNotNull(tempButtons, menuGererAbonnement);
+        addButtonIfNotNull(tempButtons, menuGererTrajet);
+        addButtonIfNotNull(tempButtons, btnTaches);
+        addButtonIfNotNull(tempButtons, btnEquipe);
+
+        sidebarButtons = tempButtons;
 
         sidebarButtons.forEach(button -> button.setOnAction(event -> {
             setActiveButton(button);
             loadView(getFxmlPath(button));
         }));
-        sidebarButtons = new ArrayList<>(List.of(btnDashboard, btnUser, btnRecrutements, btnProjets, btnTransports, btnConges, btnAbsences));
-        sidebarButtons.add(menuGererTransport);
-        sidebarButtons.add(menuGererAbonnement);
-        sidebarButtons.add(menuGererTrajet);
-        for (Button button : sidebarButtons) {
-            button.setOnAction(event -> {
-                setActiveButton(button);
-                loadView(getFxmlPath(button));
-            });
-        }
 
-        btnGestionConges.setOnAction(event -> toggleSubMenu(subMenuConges, arrowIconConges, isSubMenuCongesVisible));
-        btnRecrutements.setOnAction(event -> toggleSubMenu(subMenuRecrutements, arrowIconRecrutements, isSubMenuRecrutementsVisible));
-        btnProjets.setOnAction(event -> toggleSubMenu(subMenuProjets, arrowIconProjets, isSubMenuProjetsVisible));
-        btnTransports.setOnAction(event -> toggleSubMenu(subMenuTransport, arrowIconTransports, isSubMenuTransportVisible));
-
-        username.setOnMouseClicked(event -> handleProfil());
-        userIcon.setOnMouseClicked(event -> handleProfil());
-        logoutIcon.setOnMouseClicked(event -> handleLogout());
-        // Ajout des événements de sous-menus
+        // Submenu toggle actions
         btnGestionConges.setOnAction(event -> toggleSubMenuConges());
         btnRecrutements.setOnAction(event -> toggleSubMenuRecrutements());
         btnProjets.setOnAction(event -> toggleSubMenuProjets());
         btnTransports.setOnAction(event -> toggleSubMenuTransports());
-        // Actions spécifiques pour les boutons qui se trouvent dans les sous-menus
+
+        // Other specific button actions
         menuGererTransport.setOnAction(event -> {
             setActiveButton(menuGererTransport);
             loadView("/fxml/Affichage_transport.fxml");
         });
         menuGererAbonnement.setOnAction(event -> {
             setActiveButton(menuGererAbonnement);
-            loadView("/fxml/Affichage_abonnement.fxml");//FrontAbonnement.fxml matensehomch
+            loadView("/fxml/Affichage_abonnement.fxml");
         });
         menuGererTrajet.setOnAction(event -> {
             setActiveButton(menuGererTrajet);
-            loadView("/fxml/Affichage_trajet.fxml");//FrontTransport.fxml
+            loadView("/fxml/Affichage_trajet.fxml");
         });
+
         btnConges.setOnAction(event -> {
             setActiveButton(btnConges);
             loadView("/fxml/dashboardCongeRh.fxml");
@@ -127,66 +132,110 @@ public class DashController {
             loadView("/fxml/ListTacheRH.fxml");
         });
 
-        //username.setText("Meriem Sassi");
+        // Rest of your initialization remains the same
         hideAllSubMenus();
         loadUserProfileImage();
         setupUsernameLabel();
+        username.setOnMouseClicked(event -> {
+            handleProfil();
+        });
+        logoutIcon.setOnMouseClicked(event -> {
+            handleLogout();
+        });
+    }
+    private void addButtonIfNotNull(List<Button> list, Button button) {
+        if (button != null) {
+            list.add(button);
+        }
     }
 
     private void loadUserProfileImage() {
         Utilisateur utilisateur = SessionManager.getInstance().getUtilisateurConnecte();
-        if (utilisateur == null) return;
 
-        String imagePath = utilisateur.getProfilePhoto();
-        Image profileImage = (imagePath != null && !imagePath.isEmpty()) ? new Image(new File(imagePath).toURI().toString())
-                : new Image(getClass().getResource("/images/profile.png").toExternalForm());
+        if (utilisateur == null) {
+            username.setText("Utilisateur non connecté");
+            setDefaultProfileImage();
+            return;
+        }
 
-        // Ensure the username label resizes to fit content
+        // Set username
+        username.setText(utilisateur.getFirstname() + " " + utilisateur.getLastname());
         username.setMaxWidth(Double.MAX_VALUE);
         username.setWrapText(true);
 
+        String imagePath = utilisateur.getProfilePhoto();
 
-        // Vérifier si un utilisateur est bien en session
-        if (utilisateur != null) {
-            // Afficher son prénom et nom dans le Label
-            username.setText(utilisateur.getFirstname() + " " + utilisateur.getLastname());
-        } else {
-            // Si aucun utilisateur, afficher un message par défaut
-            username.setText("Utilisateur non connecté");
+        if (imagePath == null || imagePath.isEmpty()) {
+            setDefaultProfileImage();
+            return;
         }
 
         Platform.runLater(() -> {
-            userIcon.setImage(profileImage);
-            Circle clip = new Circle(25, 25, 25);
-            userIcon.setClip(clip);
+            try {
+                Image profileImage;
+
+                if (imagePath.startsWith("http")) {
+                    // Load image from URL
+                    profileImage = new Image(imagePath, true);
+                } else {
+                    // Load image from local file
+                    File imageFile = new File(imagePath);
+                    if (!imageFile.exists()) {
+                        setDefaultProfileImage();
+                        return;
+                    }
+                    profileImage = new Image(imageFile.toURI().toString());
+                }
+
+                // If loading the image failed, use default
+                if (profileImage.isError()) {
+                    setDefaultProfileImage();
+                } else {
+                    userIcon.setImage(profileImage);
+                    userIcon.setClip(new Circle(userIcon.getFitWidth() / 2, userIcon.getFitHeight() / 2, userIcon.getFitWidth() / 2));
+                }
+            } catch (Exception e) {
+                System.err.println("Error loading profile image: " + e.getMessage());
+                setDefaultProfileImage();
+            }
         });
     }
 
 
-    /**
-     * Définit le bouton actif (change la couleur de fond)
-     */
-    private void setActiveButton(Button selectedButton) {
-        sidebarButtons.forEach(button -> button.getStyleClass().remove("selected"));
-        selectedButton.getStyleClass().add("selected");
+    private void setDefaultProfileImage() {
+        Platform.runLater(() -> {
+            try {
+                Image defaultImage = new Image(getClass().getResource("/images/profile.png").toExternalForm());
+                userIcon.setImage(defaultImage);
+                Circle clip = new Circle(25, 25, 25);
+                userIcon.setClip(clip);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
-    /**
-     * Charge dynamiquement une vue dans le `contentArea`
-     */
+    private void setActiveButton(Button activeButton) {
+        if (sidebarButtons != null) {
+            sidebarButtons.forEach(btn -> {
+                btn.getStyleClass().remove("active-button");
+            });
+
+            if (activeButton != null) {
+                activeButton.getStyleClass().add("active-button");
+            }
+        }
+    }
+
     private void loadView(String fxmlFile) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(fxmlFile));
             contentArea.getChildren().setAll(root);
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("⚠ Erreur de chargement : " + fxmlFile);
         }
     }
 
-    /**
-     * Récupère le bon FXML en fonction du bouton
-     */
     private String getFxmlPath(Button button) {
         return switch (button.getId()) {
             case "btnDashboard" -> "/fxml/dashboardAdminRH.fxml";
@@ -202,9 +251,6 @@ public class DashController {
         };
     }
 
-    /**
-     * Animation pour basculer un sous-menu
-     */
     private void toggleSubMenu(VBox subMenu, ImageView arrowIcon, boolean isVisible) {
         boolean newState = !isVisible;
         Timeline timeline = new Timeline(
@@ -217,9 +263,6 @@ public class DashController {
         arrowIcon.setRotate(newState ? 90 : 0);
     }
 
-    /**
-     * Basculer le sous-menu Gestion Congés
-     */
     @FXML
     private void toggleSubMenuConges() {
         toggleSubMenu(subMenuConges, arrowIconConges, isSubMenuCongesVisible);
@@ -249,10 +292,6 @@ public class DashController {
         toggleSubMenu(subMenuTransport, arrowIconTransports, isSubMenuTransportVisible);
         isSubMenuTransportVisible = !isSubMenuTransportVisible;
     }
-
-    /**
-     * Cacher tous les sous-menus au démarrage
-     */
     private void hideAllSubMenus() {
         subMenuConges.setVisible(false);
         subMenuConges.setManaged(false);
@@ -279,7 +318,6 @@ public class DashController {
         setActiveButton(btnUser);
         loadView("/fxml/listUsers.fxml");
     }
-
     @FXML
     private void handleGestionProjet() {
         setActiveButton(btnDashboard);
@@ -324,22 +362,6 @@ public class DashController {
             }
         }
     }
-    @FXML
-    private void showCandidats() {
-        loadView("/fxml/Listcondidate.fxml");
-    }
-
-    @FXML
-    private void showOffres() {
-        loadView("/fxml/Listoffre.fxml");
-    }
-
-    @FXML
-    private void showListOffresCandidates() {
-        loadView("/fxml/listoffreCandidates.fxml");
-    }
-
-
     @FXML
     private void handleProfil() {
         loadView("/fxml/employeeProfile.fxml");

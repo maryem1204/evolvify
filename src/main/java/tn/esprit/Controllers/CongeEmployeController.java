@@ -29,11 +29,11 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static tn.esprit.Controllers.ModifierAbonnementController.convertToLocalDate;
 
 public class CongeEmployeController implements Initializable {
 
@@ -86,6 +86,13 @@ public class CongeEmployeController implements Initializable {
     @FXML private Button prevMonthButton;
     @FXML private Button nextMonthButton;
     @FXML private Label monthLabel;
+    private Conge requestToModify;
+    @FXML
+    private DatePicker leaveStartDatePicker;
+    @FXML
+    private DatePicker leaveEndDatePicker;
+    @FXML
+    private TextArea descriptionTextArea,reasonComboBox;
 
     // Current month for dynamic calendar
     private LocalDate currentMonth;
@@ -142,8 +149,41 @@ public class CongeEmployeController implements Initializable {
         } else if (leaveStartDate != null) {
             initializeTelecommutingForm();
         }
+        if (statusComboBox != null) {
+            // Populate status combo box
+            statusComboBox.getItems().clear(); // Clear any existing items
+            statusComboBox.getItems().addAll(
+                    Arrays.stream(Statut.values())
+                            .map(Enum::name)
+                            .collect(Collectors.toList())
+            );
+        }
+
+        /*typeComboBox.getItems().addAll(
+                Arrays.stream(Type.values())
+                        .map(Enum::name)
+                        .collect(Collectors.toList())
+        );*/
+
+    }
+    public void setRequestToModify(Conge conge) {
+        this.requestToModify = conge;
+        populateFields();
     }
 
+    private void populateFields() {
+        if (requestToModify != null) {
+            leaveStartDatePicker.setValue(convertToLocalDate(requestToModify.getLeave_start()));
+            leaveEndDatePicker.setValue(convertToLocalDate(requestToModify.getLeave_end()));
+
+            descriptionTextArea.setText(requestToModify.getDescription());
+
+            statusComboBox.setValue(requestToModify.getStatus().name());
+            //typeComboBox.setValue(requestToModify.getType().name());
+
+            reasonComboBox.setText(requestToModify.getReason().name());
+        }
+    }
     /**
      * Initialize the dashboard view.
      */
@@ -264,7 +304,106 @@ public class CongeEmployeController implements Initializable {
             showAlert("Error loading modify request form: " + e.getMessage());
         }
     }
+    @FXML
+    private void handleUpdateRequest() {
+        try {
+            // Validate input fields
+            if (!validateFields()) {
+                return;
+            }
 
+            // Create updated Conge object
+            Conge updatedConge = new Conge();
+            updatedConge.setId_Conge(requestToModify.getId_Conge());
+            updatedConge.setLeave_start(convertToUtilDate(leaveStartDatePicker.getValue()));
+            updatedConge.setLeave_end(convertToUtilDate(leaveEndDatePicker.getValue()));
+
+            // Calculate number of days
+            long daysBetween = ChronoUnit.DAYS.between(
+                    leaveStartDatePicker.getValue(),
+                    leaveEndDatePicker.getValue()
+            ) + 1; // +1 to include both start and end dates
+            updatedConge.setNumber_of_days((int) daysBetween);
+
+            updatedConge.setStatus(Statut.valueOf(statusComboBox.getValue()));
+            updatedConge.setId_employe(currentUser.getId_employe());
+            updatedConge.setReason(Reason.valueOf(reasonComboBox.getText()));
+            updatedConge.setDescription(descriptionTextArea.getText());
+
+            // Call service to update
+            int rowsUpdated = congeService.update(updatedConge);
+
+            if (rowsUpdated > 0) {
+                showSuccessAlert("Request updated successfully");
+                closeWindow();
+            } else {
+                showErrorAlert("No rows were updated. Please check the request details.");
+            }
+        } catch (Exception e) {
+            showErrorAlert("Error updating request: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private boolean validateFields() {
+        // Validate start and end dates
+        if (leaveStartDatePicker.getValue() == null || leaveEndDatePicker.getValue() == null) {
+            showErrorAlert("Start and end dates must be selected");
+            return false;
+        }
+
+        // Validate that start date is before or equal to end date
+        if (leaveStartDatePicker.getValue().isAfter(leaveEndDatePicker.getValue())) {
+            showErrorAlert("Start date must be before or equal to end date");
+            return false;
+        }
+
+        // Validate employee ID
+        try {
+            currentUser.getId_employe();
+        } catch (NumberFormatException e) {
+            showErrorAlert("Invalid employee ID");
+            return false;
+        }
+
+        // Validate status and reason are selected
+        if (statusComboBox.getValue() == null ) {
+            showErrorAlert("Status and Reason must be selected");
+            return false;
+        }
+
+        return true;
+    }
+
+    // Utility methods for date conversion
+    private LocalDate convertToLocalDate(java.util.Date date) {
+        return date == null ? null : new java.sql.Date(date.getTime()).toLocalDate();
+    }
+
+    private java.util.Date convertToUtilDate(LocalDate localDate) {
+        return localDate == null ? null : java.sql.Date.valueOf(localDate);
+    }
+
+    private void showSuccessAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Success");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void showErrorAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void closeWindow() {
+        Stage stage = (Stage) leaveStartDatePicker.getScene().getWindow();
+        stage.close();
+    }
     /**
      * Handle deletion of a request.
      */

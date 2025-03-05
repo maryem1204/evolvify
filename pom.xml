@@ -109,6 +109,7 @@
         </dependency>
 
 
+        <!-- JavaFX Swing: BufferedImage -> Image  -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-swing</artifactId>
