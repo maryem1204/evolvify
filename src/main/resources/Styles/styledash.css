@@ -86,7 +86,7 @@
     -fx-background-color: transparent;
     -fx-text-fill: white;
     -fx-font-size: 14px;
-    -fx-padding: 5px 130px; /* Augmenter la marge à gauche*/
+    -fx-padding: 5px 110px; /* Augmenter la marge à gauche*/
     -fx-alignment: CENTER_LEFT;
 }
 
@@ -208,4 +208,16 @@
 
 .logout-button:pressed {
     -fx-background-color: #1e1438;
+}
+
+.notification-icon {
+    -fx-opacity: 0.7;
+}
+
+.notification-icon:hover {
+    -fx-opacity: 1.0;
+}
+
+.first-login-notification {
+    -fx-effect: dropshadow(three-pass-box, red, 10, 0.5, 0, 0);
 }

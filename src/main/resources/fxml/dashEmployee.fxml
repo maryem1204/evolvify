@@ -10,7 +10,9 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.control.Label?>
 
-<AnchorPane maxWidth="1865.0" prefHeight="823.0" prefWidth="1865.0" stylesheets="/Styles/styledash.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.EmployeeDashController">
+<AnchorPane maxWidth="1865.0" prefHeight="823.0" prefWidth="1865.0"
+            stylesheets="/Styles/styledash.css" xmlns="http://javafx.com/javafx/19"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.EmployeeDashController">
 
     <!-- Logo -->
     <VBox alignment="CENTER" prefHeight="174.0" prefWidth="330.0" style="-fx-background-color: #2A1B50;" AnchorPane.topAnchor="0.0">
@@ -28,12 +30,19 @@
           AnchorPane.topAnchor="20">
 
         <!-- Notification Icon -->
-        <ImageView fx:id="notificationIcon" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+        <ImageView
+                fx:id="notificationIcon"
+                fitHeight="40.0"
+                fitWidth="40.0"
+                pickOnBounds="true"
+                preserveRatio="true"
+                onMouseClicked="#handleNotificationClick"
+                visible="false"
+                styleClass="notification-icon">
             <image>
                 <Image url="@/images/notif.png" />
             </image>
         </ImageView>
-
         <!-- User Profile Image (Circular) -->
         <ImageView fx:id="userProfileImage" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
             <image>
@@ -50,9 +59,9 @@
 
         <!-- Logout Button -->
         <Button fx:id="logoutButton" onAction="#handleLogout"
-                style="-fx-background-color: transparent; -fx-cursor: hand;">
+                style="-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 40px;">
             <graphic>
-                <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@/images/logoutt.png" />
                     </image>

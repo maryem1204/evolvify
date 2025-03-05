@@ -87,7 +87,7 @@ public class DashAdminRHController {
             employeeTable.getScene().heightProperty().addListener((obs, oldVal, newVal) -> handleWindowResize());
         }
 
-
+        
     }
 
     private void setupResizeButton() {

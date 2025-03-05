@@ -22,7 +22,7 @@
             </image>
         </ImageView>
 
-        <Label text="Oubliez mot de passe"
+        <Label text="Forgot Password"
                style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #222;" />
 
         <VBox spacing="8" alignment="CENTER_LEFT" maxWidth="300">

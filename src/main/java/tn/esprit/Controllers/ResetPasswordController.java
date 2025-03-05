@@ -14,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Services.UtilisateurService;
 
 import java.io.IOException;
@@ -47,11 +48,15 @@ public class ResetPasswordController {
 
     private final UtilisateurService utilisateurService = new UtilisateurService();
     private int userId;  // ID de l'utilisateur à mettre à jour
+    private Utilisateur user;
 
     public void setUserId(int userId) {
         this.userId = userId;
     }
 
+    public void setUser(Utilisateur user) {
+        this.user = user;
+    }
     @FXML
     public void initialize() {
         // Set up password strength monitoring
@@ -121,6 +126,30 @@ public class ResetPasswordController {
             showError("Erreur lors de la mise à jour du mot de passe !");
             e.printStackTrace();
         }
+        try {
+            // Update user's password
+            utilisateurService.updatePassword(user.getId_employe(), newPassword);
+
+            // Mark first login as complete
+            user.setFirstLogin(false);
+            utilisateurService.updateFirstLogin(user, false);
+
+            // Show success message
+            showAlert(Alert.AlertType.INFORMATION, "Succès", "Mot de passe réinitialisé avec succès !");
+
+            // Close the dialog or redirect to appropriate screen
+            closeDialog();
+        } catch (SQLException e) {
+            showError("Erreur lors de la mise à jour du mot de passe : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    // Helper method to close the dialog
+    private void closeDialog() {
+        // Get the current stage and close it
+        Stage stage = (Stage) errorLabel.getScene().getWindow();
+        stage.close();
     }
 
     @FXML
@@ -275,7 +304,13 @@ public class ResetPasswordController {
 
             // Ajouter l'icône de l'application
             stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/logo1.png")));
-            stage.setTitle("Login");
+            stage.setTitle("Connexion");
+
+            root.setTranslateX(-200); // Start with 0 and adjust if needed
+            root.setTranslateY(-170);
+
+            // Centrer la fenêtre sur l'écran
+            stage.centerOnScreen();
 
             // Configuration de l'écran en plein écran
             Screen screen = Screen.getPrimary();

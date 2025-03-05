@@ -230,8 +230,17 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
             pst.setString(1, email);
             ResultSet rs = pst.executeQuery();
 
+            // Ajout de logs de débogage
+            System.out.println("Recherche de l'utilisateur avec l'email : " + email);
+
             if (rs.next()) {
-                return new Utilisateur(
+                // Logs détaillés
+                System.out.println("Utilisateur trouvé !");
+                System.out.println("ID: " + rs.getInt("id_employe"));
+                System.out.println("Email: " + rs.getString("email"));
+                System.out.println("Mot de passe haché: " + rs.getString("password"));
+
+                Utilisateur utilisateur = new Utilisateur(
                         rs.getInt("id_employe"),
                         rs.getString("firstname"),
                         rs.getString("lastname"),
@@ -240,15 +249,25 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
                         rs.getString("profilePhoto"),
                         rs.getDate("birthdayDate") != null ? rs.getDate("birthdayDate") : Date.valueOf("2000-01-01"),
                         rs.getDate("joiningDate") != null ? rs.getDate("joiningDate") : Date.valueOf("2000-01-01"),
-                        Role.valueOf(rs.getString("role")), // ✅ Correction ici
+                        Role.valueOf(rs.getString("role")),
                         rs.getInt("tt_restants"),
                         rs.getInt("conge_restant"),
                         rs.getBytes("uploaded_cv"),
                         rs.getString("num_tel"),
-                        Gender.valueOf(rs.getString("gender")) // Ajout du genre
-
+                        Gender.valueOf(rs.getString("gender"))
                 );
+
+                // Vérification supplémentaire
+                System.out.println("Utilisateur créé - Email: " + utilisateur.getEmail());
+                System.out.println("Utilisateur créé - Mot de passe haché: " + utilisateur.getPassword());
+
+                return utilisateur;
+            } else {
+                System.out.println("Aucun utilisateur trouvé pour l'email : " + email);
             }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la recherche de l'utilisateur : " + e.getMessage());
+            e.printStackTrace();
         }
         return null;
     }
@@ -512,42 +531,6 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
     }
     /******* ❌FORGET PASSWORD *********/
 
-    public void savePasswordResetToken(int userId, String token) {
-        String query = "UPDATE users SET reset_token = ? WHERE id_employe = ?";
-        try (PreparedStatement pst = cnx.prepareStatement(query)) {
-            pst.setString(1, token);
-            pst.setInt(2, userId);
-            pst.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public Utilisateur findByResetToken(String token) {
-        String query = "SELECT id_employe, email, password, role FROM users WHERE reset_token = ?";
-        try (PreparedStatement pst = cnx.prepareStatement(query)) {
-            pst.setString(1, token);
-            ResultSet resultSet = pst.executeQuery();
-            if (resultSet.next()) {
-                return new Utilisateur(
-                        resultSet.getInt("id_employe"),
-                        resultSet.getString("email"),
-                        resultSet.getString("password"),
-                        Role.valueOf(resultSet.getString("role"))
-                );
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public void sendConfirmationCode(String email, int code) {
-        String subject = "Code de vérification";
-        String content = "<p>Votre code de vérification est : <b>" + code + "</b></p>";
-
-        sendEmail(email, subject, content);
-    }
 
     public void updatePassword(int userId, String newPassword) throws SQLException {
         String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt()); // Hachage du mot de passe
@@ -779,7 +762,7 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
 
     public Map<String, Integer> getTaskStatusCount() {
         Map<String, Integer> statusCount = new HashMap<>();
-        String query = "SELECT status, COUNT(*) FROM tache GROUP BY status;";
+        String query = "SELECT status, COUNT(*) AS status_count FROM tache GROUP BY status";
 
         try (
                 PreparedStatement stmt = cnx.prepareStatement(query);
@@ -787,7 +770,7 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
 
             while (rs.next()) {
                 String status = rs.getString("status");
-                int count = rs.getInt("count");
+                int count = rs.getInt("status_count");
                 System.out.println("Statut : " + status + ", Nombre : " + count);
                 statusCount.put(status, count);
             }
