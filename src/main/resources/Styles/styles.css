@@ -29,6 +29,25 @@ HBox {
     -fx-alignment: CENTER;
 }
 
+/* Amélioration de la sélection et de la visibilité du texte */
+.table-row-cell:selected {
+    -fx-background-color: #B0C4DE; /* Light blue selection background */
+}
+
+.table-row-cell:selected .label {
+    -fx-text-fill: black !important; /* Force black text for all labels in selected row */
+}
+
+.table-view .table-cell {
+    -fx-text-fill: black; /* Ensure default text color is black */
+    -fx-background-color: transparent; /* Remove any background from individual cells */
+    -fx-padding: 5px;
+}
+
+.table-row-cell {
+    -fx-text-fill: black;
+}
+
 .table-row-cell:odd {
     -fx-background-color: #F8F9FA;
 }
@@ -37,12 +56,12 @@ HBox {
     -fx-background-color: #FFFFFF;
 }
 
-.table-row-cell:selected {
-    -fx-background-color: #B0C4DE;
-    -fx-text-fill: black;
+.table-view {
+    -fx-selection-bar: #B0C4DE; /* Light blue selection color */
+    -fx-selection-bar-non-focused: #D3D3D3; /* Light gray when not focused */
 }
 
-/* Style pour les boutons de la TableView (par exemple, ajouter ou éditer un projet) */
+/* Style pour les boutons de la TableView */
 .table-view .button {
     -fx-background-color: #0047AB;
     -fx-text-fill: white;
@@ -50,19 +69,6 @@ HBox {
     -fx-background-radius: 5px;
     -fx-cursor: hand;
     -fx-padding: 8px 15px;
-}
-
-.gradient-button:hover {
-    -fx-background-color: #003380;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 5, 0, 0, 2);
-}
-
-/* TableView styles */
-.table-view {
-    -fx-background-color: transparent;
-    -fx-border-color: #e0e0e0;
-    -fx-border-radius: 5px;
-    -fx-padding: 5px;
 }
 
 .table-view .button:hover {
@@ -88,12 +94,10 @@ HBox {
     -fx-effect: dropshadow(three-pass-box, rgba(71, 184, 255, 0.5), 10, 0, 0, 5);
 }
 
-/* Effet au survol */
 .gradient-button:hover {
     -fx-background-color: linear-gradient(from 55% 0% to 100% 100%, #0099FF 0%, #0055FF 55%, #0099FF 90%);
 }
 
-/* Effet lorsque le bouton est enfoncé */
 .gradient-button:pressed {
     -fx-background-color: linear-gradient(from 55% 0% to 100% 100%, #0044CC 0%, #0077DD 55%, #0044CC 90%);
     -fx-effect: dropshadow(three-pass-box, rgba(19, 95, 216, 0.35), 5, 0, 0, 3);
@@ -111,24 +115,24 @@ HBox {
     -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.2), 3, 0, 0, 1);
 }
 
-/* Focus sur la barre de recherche */
 .search-bar:focused {
-    -fx-border-color: #4CAF50;}
+    -fx-border-color: #4CAF50;
+}
 
+/* Status Labels */
 .status-label {
     -fx-padding: 5px 10px;
     -fx-alignment: center;
-    -fx-text-fill: black; /* Texte en noir pour meilleure visibilité */
+    -fx-text-fill: black;
     -fx-font-weight: bold;
     -fx-background-radius: 5px;
     -fx-border-width: 2px;
     -fx-border-radius: 5px;
 }
 
-
 .status-inprogress {
     -fx-background-color: #ffeb99;
-    -fx-border-color: #ff9900;/* Jaune */
+    -fx-border-color: #ff9900;
     -fx-text-fill: #ff9900;
     -fx-font-weight: bold;
     -fx-padding: 5px;
@@ -138,13 +142,13 @@ HBox {
 
 .status-completed {
     -fx-background-color: #99ff99;
-    -fx-border-color: #008000;/* Vert */
-    -fx-text-fill: #008000;
+    -fx-border-color: #008000;
+    -fx-text-fill: #258112;
     -fx-font-weight: bold;
-    -fx-text-fill: #0047AB;
     -fx-padding: 0 0 10px 0;
 }
 
+/* Autres styles existants */
 .assignee-popup-list {
     -fx-spacing: 5;
 }
@@ -154,22 +158,17 @@ HBox {
     -fx-border-radius: 5px;
     -fx-background-radius: 5px;
 }
-/* overlay.css */
 
-/* Style de l'overlay (fond semi-transparent noir) */
 .overlay-pane {
-    -fx-background-color: rgba(0, 0, 0, 0.5);  /* Noir semi-transparent */
+    -fx-background-color: rgba(0, 0, 0, 0.5);
     -fx-alignment: center;
-    -fx-opacity: 0;  /* Initialement invisible */
-    -fx-transition: opacity 0.3s ease-in-out;  /* Transition douce pour l'apparition */
+    -fx-opacity: 0;
+    -fx-transition: opacity 0.3s ease-in-out;
 }
 
-/* Quand l'overlay est visible */
 .overlay-pane.visible {
-    -fx-opacity: 1; /* Rendre l'overlay visible */
+    -fx-opacity: 1;
 }
-
-/* Add these styles to your existing CSS file */
 
 .filter-combo {
     -fx-background-color: white;
@@ -202,4 +201,3 @@ HBox {
 .reset-button:hover {
     -fx-background-color: #d0d0d0;
 }
-

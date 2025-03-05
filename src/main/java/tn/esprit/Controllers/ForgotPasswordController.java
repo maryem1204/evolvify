@@ -23,12 +23,6 @@ import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Services.UtilisateurService;
 import tn.esprit.Utils.SimpleCaptcha;
 
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-import tn.esprit.Entities.Utilisateur;
-import tn.esprit.Services.UtilisateurService;
-import tn.esprit.Tests.MainFXLogin;
-
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Random;
@@ -47,20 +41,11 @@ public class ForgotPasswordController {
     @FXML
     private Hyperlink backToLogin;
 
-    private TextField emailField, codeField;
-    @FXML
-    private Button submitButton, verifyCodeButton;
-    @FXML
-    private Label errorLabel, codeLabel;
-    @FXML
-    private VBox codeSection;
-
     private final UtilisateurService utilisateurService = new UtilisateurService();
     private int generatedCode;
     private int userId;
     private boolean captchaVerified = false;
     private SimpleCaptcha captcha = new SimpleCaptcha();
-
 
     @FXML
     public void initialize() {
@@ -107,7 +92,6 @@ public class ForgotPasswordController {
         captchaTextField.clear();
         captchaVerified = false;
         sendCodeButton.setDisable(true);
-
     }
 
     @FXML
@@ -119,9 +103,6 @@ public class ForgotPasswordController {
             showError("Veuillez valider le CAPTCHA d'abord !");
             return;
         }
-
-        String email = emailField.getText().trim();
-        errorLabel.setText("");
 
         if (phoneNumber.isEmpty()) {
             showError("Veuillez entrer votre numéro de téléphone !");
@@ -147,12 +128,6 @@ public class ForgotPasswordController {
         } else {
             showError("Erreur lors de l'envoi du SMS. Veuillez réessayer plus tard.");
         }
-
-        generatedCode = new Random().nextInt(90000000) + 10000000;
-        utilisateurService.sendConfirmationCode(email, generatedCode);
-
-        // Afficher la section du code
-        codeSection.setVisible(true);
     }
 
     @FXML
@@ -163,8 +138,6 @@ public class ForgotPasswordController {
                 openResetPasswordWindow();
             } else {
                 showError("Code incorrect, vérifiez votre SMS !");
-
-                showError("Code incorrect, vérifiez votre email !");
             }
         } catch (NumberFormatException e) {
             showError("Veuillez entrer un code valide !");
@@ -180,7 +153,6 @@ public class ForgotPasswordController {
         errorLabel.setText(message);
         errorLabel.setStyle("-fx-text-fill: green;");
     }
-
 
     @FXML
     private void openResetPasswordWindow() {
@@ -222,14 +194,6 @@ public class ForgotPasswordController {
             stage.show();
 
             // Close current window
-            ResetPasswordController controller = loader.getController();
-            controller.setUserId(userId);
-
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.show();
-
-            // Fermer la fenêtre actuelle
             Stage currentStage = (Stage) verifyCodeButton.getScene().getWindow();
             currentStage.close();
         } catch (IOException e) {
@@ -249,15 +213,12 @@ public class ForgotPasswordController {
                 root.setTranslateX(-380);
             }
 
-
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Erreur: Impossible de charger la page : " + fxmlFile);
-
-            System.out.println("ErreurImpossible de charger la page : " + fxmlFile);
         }
     }
 
@@ -265,6 +226,4 @@ public class ForgotPasswordController {
     public void goToLogin(ActionEvent event) {
         switchScene(event, "/fxml/loginUser.fxml");
     }
-}
-
 }

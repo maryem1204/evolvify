@@ -1,4 +1,5 @@
 package tn.esprit.Controllers;
+import tn.esprit.Entities.Role;
 import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Services.DeadLineNotification;
 import javafx.application.Platform;
@@ -20,30 +21,38 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import tn.esprit.Entities.Projet;
 import tn.esprit.Services.ProjetService;
-import tn.esprit.Utils.SessionManager;
-import tn.esprit.Entities.Role;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+
+import javafx.scene.control.Alert.AlertType;
+import tn.esprit.Utils.SessionManager;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+
 public class ProjectListWithCardsController {
+
     private ProjetService projetService = new ProjetService();
     private List<Projet> allProjets;
 
-    @FXML private GridPane projectListContainer;
+    @FXML private GridPane projectListContainer;  // Container pour les cartes de projets
     @FXML private TextField recherche;
+    @FXML private Button btnAjouterProjet;
     @FXML private ImageView notificationIcon;
     @FXML private Label notificationBadge;
-    @FXML private Button btnAjouterProjet;
+
     @FXML public void initialize() {
         loadProjects();
         loadNotificationIcon();
+
         if (btnAjouterProjet != null) {
             Utilisateur utilisateur = SessionManager.getUtilisateurConnecte();
             if (utilisateur != null && utilisateur.getRole() == Role.EMPLOYEE) {
@@ -79,15 +88,37 @@ public class ProjectListWithCardsController {
 
     private void loadProjects() {
         try {
-            Utilisateur utilisateur = SessionManager.getUtilisateurConnecte();
-            if (utilisateur != null) {
-                allProjets = projetService.getProjectsByEmployee(utilisateur.getId_employe());  // Récupérer les projets assignés
-                updateProjectList(allProjets);  // Afficher uniquement les projets de l'utilisateur
+            // Get the currently logged-in user
+            Utilisateur utilisateurConnecte = SessionManager.getUtilisateurConnecte();
+
+            if (utilisateurConnecte == null) {
+                // If no user is logged in, show an error or empty list
+                allProjets = new ArrayList<>();
+                updateProjectList(allProjets);
+                return;
             }
+
+            // Check if the user is an admin (show all projects)
+            if (utilisateurConnecte.getRole() == Role.EMPLOYEE) {
+                allProjets = projetService.showAll();
+            } else {
+                // For other roles, get projects assigned to the current user
+                allProjets = projetService.getProjectsByEmployee(utilisateurConnecte.getId_employe());
+            }
+
+            updateProjectList(allProjets);
         } catch (SQLException e) {
             e.printStackTrace();
+            // Handle the error appropriately, perhaps show an alert
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Erreur de chargement des projets");
+            alert.setContentText("Impossible de charger les projets. Veuillez réessayer.");
+            alert.showAndWait();
         }
     }
+
+
 
     @FXML
     private void handleSearch() {
@@ -217,6 +248,8 @@ public class ProjectListWithCardsController {
         return card;
     }
 
+
+
     private void showEditPopup(Projet projet) {
         // Ouvrir la fenêtre pour éditer un projet
         showPopup("/fxml/ModifierProjet.fxml", projet, "Modifier Projet");
@@ -278,8 +311,10 @@ public class ProjectListWithCardsController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/DetailsProjet.fxml"));
             Parent root = loader.load();
+
             DetailsProjetController controller = loader.getController();
             controller.setProjet(projet);
+
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.setTitle("Détails du Projet");
@@ -330,4 +365,3 @@ public class ProjectListWithCardsController {
     }
 
 }
-

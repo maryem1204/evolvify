@@ -283,7 +283,7 @@ public class DashController {
         loadView("/fxml/listUsers.fxml");
     }
 
-    
+    @FXML
     private void handleLogout() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Déconnexion");
@@ -313,5 +313,15 @@ public class DashController {
     @FXML
     private void handleProfil() throws IOException {
         loadView("/fxml/employeeProfile.fxml");
+    }
+
+    public void handleConge(ActionEvent actionEvent) {
+        setActiveButton(btnConges);
+        loadView("fxml/dashboardCongeRh.fxml");
+    }
+
+    public void handleAbsence(ActionEvent actionEvent) {
+        setActiveButton(btnAbsences);
+        loadView("fxml/AttendanceView.fxml");
     }
 }

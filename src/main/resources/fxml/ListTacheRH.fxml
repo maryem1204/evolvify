@@ -43,10 +43,10 @@
                         <Button onAction="#resetFilters" styleClass="reset-button" text="Réinitialiser" />
                     </HBox>
                     <Pane HBox.hgrow="ALWAYS" />
-                    <Button onAction="#openAjoutTachePopup" prefHeight="50.0" prefWidth="154.0" styleClass="gradient-button" text="+ Ajouter tache">
+
                <HBox.margin>
                   <Insets top="5.0" />
-               </HBox.margin></Button>
+               </HBox.margin>
             <VBox.margin>
                <Insets />
             </VBox.margin>

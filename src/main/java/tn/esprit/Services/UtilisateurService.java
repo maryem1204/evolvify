@@ -578,36 +578,11 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
             MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(FROM_EMAIL));
             message.setRecipients(MimeMessage.RecipientType.TO, InternetAddress.parse(toEmail));
-
-
-    private void sendEmail(String toEmail, String subject, String content) {
-        final String fromEmail = "maryemsassi.dev@gmail.com";
-        final String password = "jlej mknk aukk iqlx"; // Remplacez par votre vrai mot de passe
-
-        Properties properties = new Properties();
-        properties.put("mail.smtp.auth", "true");
-        properties.put("mail.smtp.starttls.enable", "true");
-        properties.put("mail.smtp.host", "smtp.gmail.com");
-        properties.put("mail.smtp.port", "587");
-
-        Session session = Session.getInstance(properties, new Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(fromEmail, password);
-            }
-        });
-
-        try {
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(fromEmail));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
             message.setSubject(subject);
             message.setContent(content, "text/html");
 
             Transport.send(message);
             System.out.println("📧 E-mail envoyé avec succès !");
-
-            System.out.println("📧 E-mail envoyé !");
- 
         } catch (MessagingException e) {
             System.err.println("❌ Erreur lors de l'envoi de l'e-mail : " + e.getMessage());
         }
@@ -742,7 +717,6 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
 
         return false;
     }
-
 
     // Add a method to update the birthdate_edited flag if you have this column
     public void setBirthDateEdited(int userId, boolean edited) throws SQLException {

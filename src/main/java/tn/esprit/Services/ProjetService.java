@@ -184,4 +184,41 @@ public class ProjetService {
     }
 
 
+    public List<Projet> getProjectsByEmployee(int employeId) throws SQLException {
+        String query = "SELECT p.* FROM projet p " +
+                "JOIN projet_employe pe ON p.id_projet = pe.projet_id " +
+                "WHERE pe.employe_id = ?";
+        List<Projet> projets = new ArrayList<>();
+
+        try (Connection cnx = getConnection();
+             PreparedStatement pst = cnx.prepareStatement(query)) {
+            pst.setInt(1, employeId);
+            try (ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    projets.add(mapProjet(rs));
+                }
+            }
+        }
+        return projets;
+    }
+
+
+    private Projet mapProjet(ResultSet rs) throws SQLException {
+        int projetId = rs.getInt("id_projet");
+
+        return new Projet(
+                projetId,
+                rs.getString("name"),
+                rs.getString("description"),
+                Projet.Status.valueOf(rs.getString("status")),
+                rs.getDate("end_date") != null ? rs.getDate("end_date").toLocalDate() : null,
+                rs.getDate("starter_at") != null ? rs.getDate("starter_at").toLocalDate() : null,
+                rs.getString("abbreviation"),
+                rs.getBytes("uploaded_files"),
+                getEmployeesByProjetId(projetId) // Récupérer la liste des employés associés
+        );
+    }
+
+
+
 }

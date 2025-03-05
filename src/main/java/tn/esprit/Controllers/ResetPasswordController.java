@@ -3,9 +3,7 @@ package tn.esprit.Controllers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-
 import javafx.geometry.Rectangle2D;
-
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -15,7 +13,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.stage.Screen;
-
 import javafx.stage.Stage;
 import tn.esprit.Services.UtilisateurService;
 
@@ -48,20 +45,9 @@ public class ResetPasswordController {
     private boolean isNewPasswordVisible = false;
     private boolean isConfirmPasswordVisible = false;
 
-    @FXML
-    private Label errorLabel;
-    @FXML
-    private Button resetButton;
-
     private final UtilisateurService utilisateurService = new UtilisateurService();
     private int userId;  // ID de l'utilisateur à mettre à jour
 
-
-    /**
-     * Initialise le contrôleur avec l'ID de l'utilisateur récupéré de l'interface ForgotPasswordController.
-     * @param userId Identifiant de l'utilisateur qui veut réinitialiser son mot de passe.
-     */
- 
     public void setUserId(int userId) {
         this.userId = userId;
     }
@@ -107,9 +93,6 @@ public class ResetPasswordController {
         String confirmPassword = isConfirmPasswordVisible ? textConfirmPasswordField.getText().trim() : confirmPasswordField.getText().trim();
 
         // Clear previous error messages
-    private void resetPassword() {
-        String newPassword = newPasswordField.getText().trim();
-        String confirmPassword = confirmPasswordField.getText().trim();
         errorLabel.setText("");
 
         // Perform validations
@@ -117,6 +100,7 @@ public class ResetPasswordController {
             showError("Veuillez remplir tous les champs !");
             return;
         }
+
         if (!newPassword.equals(confirmPassword)) {
             showError("Les mots de passe ne correspondent pas !");
             return;
@@ -129,7 +113,6 @@ public class ResetPasswordController {
         }
 
         // All validations passed, update the password
-
         try {
             utilisateurService.updatePassword(userId, newPassword);
             showAlert(Alert.AlertType.INFORMATION, "Succès", "Mot de passe réinitialisé avec succès !");
@@ -256,7 +239,6 @@ public class ResetPasswordController {
         return Math.min(4, strength);
     }
 
-
     private void showError(String message) {
         errorLabel.setText(message);
         errorLabel.setStyle("-fx-text-fill: red;");
@@ -283,10 +265,6 @@ public class ResetPasswordController {
         }
     }
 
-    /**
-     * Ouvre la page de connexion après la réinitialisation du mot de passe.
-     * Cette version ferme l'ancienne fenêtre et ouvre une nouvelle.
-     */
     private void openLoginScene() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/loginUser.fxml"));
@@ -308,7 +286,6 @@ public class ResetPasswordController {
             stage.setHeight(bounds.getHeight());
             stage.setMaximized(true); // Activer le mode plein écran
 
-
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
@@ -322,6 +299,3 @@ public class ResetPasswordController {
         switchScene(event, "/fxml/loginUser.fxml");
     }
 }
-
-}
-
