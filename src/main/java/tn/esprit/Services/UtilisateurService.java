@@ -599,7 +599,49 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
         }
     }
 
+    public void sendLeaveRequestStatusEmail(String toEmail, String employeeName, String requestType, String status, String startDate, String endDate) {
+        String subject = "Statut de votre demande de " + requestType;
+        String content = "<p>Bonjour " + employeeName + ",</p>"
+                + "<p>Votre demande de " + requestType + " a été " + status.toLowerCase() + ".</p>"
+                + "<p>Détails de la demande :</p>"
+                + "<ul>"
+                + "<li><b>Type :</b> " + requestType + "</li>"
+                + "<li><b>Statut :</b> " + status + "</li>"
+                + "<li><b>Date de début :</b> " + startDate + "</li>"
+                + "<li><b>Date de fin :</b> " + endDate + "</li>"
+                + "</ul>"
+                + "<p>Merci de consulter l'application pour plus de détails.</p>";
 
+        try {
+            Properties properties = new Properties();
+            properties.put("mail.smtp.auth", "true");
+            properties.put("mail.smtp.starttls.enable", "true");
+            properties.put("mail.smtp.host", "smtp.gmail.com");
+            properties.put("mail.smtp.port", "587");
+            properties.put("mail.smtp.debug", "true"); // Add debug logging
+
+            Session session = Session.getInstance(properties, new Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication("maryemsassi.dev@gmail.com", "jlej mknk aukk iqlx");
+                }
+            });
+
+            // Enable debug output to console
+            session.setDebug(true);
+
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("maryemsassi.dev@gmail.com"));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
+            message.setSubject(subject);
+            message.setContent(content, "text/html");
+
+            Transport.send(message);
+            System.out.println("📧 E-mail envoyé à : " + toEmail);
+        } catch (MessagingException e) {
+            System.err.println("❌ Erreur détaillée lors de l'envoi de l'e-mail : ");
+            e.printStackTrace(); // This will print the full stack trace
+        }
+    }
 
 
 

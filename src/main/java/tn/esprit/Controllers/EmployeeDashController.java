@@ -227,10 +227,12 @@ public class EmployeeDashController {
     }
     @FXML
     public void handleConge(ActionEvent actionEvent) {
-        loadView("/fxml/CongeEmploye.fxml");
+        setActiveButton(btnConge);
+        loadView("/fxml/testConge.fxml");
     }
     @FXML
     public void handleAbsence(ActionEvent actionEvent) {
-        loadView("/fxml/EmployeAbsence.fxml");
+        setActiveButton(btnAbsence);
+        loadView("/fxml/EmployeeAbsence.fxml");
     }
 }

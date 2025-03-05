@@ -34,7 +34,7 @@
 /* Carte de l'historique */
 .history-card {
     -fx-background-color: -fx-white;
-    -fx-background-radius: -fx-card-radius;
+    -fx-background-radius: 8px;
     -fx-padding: 20px;
     -fx-spacing: 15px;
     -fx-effect: -fx-shadow;
@@ -167,13 +167,13 @@
 .date-picker {
     -fx-background-color: transparent;
     -fx-border-color: -fx-medium-gray;
-    -fx-border-radius: -fx-button-radius;
+    -fx-border-radius: 5px;
     -fx-font-size: 13px;
 }
 
 .date-picker .arrow-button {
     -fx-background-color: -fx-medium-gray;
-    -fx-background-radius: 0 -fx-button-radius -fx-button-radius 0;
+    -fx-background-radius: 0px -fx-button-radius -fx-button-radius 0px;
 }
 
 .date-picker .arrow-button:hover {

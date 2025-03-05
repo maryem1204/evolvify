@@ -30,6 +30,10 @@
                 <Button fx:id="registerPresentButton" styleClass="present-button" text="Présent" />
                 <Button fx:id="registerAbsentButton" styleClass="absent-button" text="Absent" />
                 <Button fx:id="registerLeaveButton" styleClass="leave-button" text="En Congé" />
+                <!-- Add the new PDF button -->
+                <Button fx:id="generatePdfButton"
+                        text="Générer Historique PDF"
+                        style="-fx-background-color: #4682B4; -fx-text-fill: white;" />
             </HBox>
          <VBox.margin>
             <Insets top="40.0" />

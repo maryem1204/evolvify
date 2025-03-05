@@ -23,6 +23,12 @@
                 </right>
             </BorderPane>
 
+            <!-- Buttons for PDF generation -->
+            <HBox spacing="10" styleClass="button-section">
+                <Button fx:id="generateAllPdfButton" text="Générer PDF pour tous" />
+                <Button fx:id="generateSelectedPdfButton" text="Générer PDF pour sélection" />
+            </HBox>
+
             <!-- Filtres de recherche -->
             <HBox spacing="10" styleClass="filter-section">
                 <TextField fx:id="searchEmployeeField" promptText="Rechercher un employé..." prefWidth="200" onKeyReleased="#applyFilters"/>
