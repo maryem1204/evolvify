@@ -1,0 +1,44 @@
+/* Styles pour les cartes spécifiques */
+.info-card {
+    -fx-background-color: white;
+    -fx-background-radius: 15px;
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0.5, 5, 5);
+    -fx-border-color: #E54091;
+    -fx-border-radius: 15px;
+}
+
+.card-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0F82E6;
+}
+
+.card-description {
+    -fx-font-size: 14px;
+    -fx-text-fill: #555;
+}
+
+.backglist {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%,
+    #FF7A45,
+    #E54091,
+    #A53BD4,
+    #0F82E6,
+    #0047AB);
+}
+.shadow-effect {
+    -fx-effect: dropshadow(gaussian, #FF7A45, 10, 0.5, 0, 5),
+    dropshadow(gaussian, #E54091, 15, 0.5, 0, 10),
+    dropshadow(gaussian, #A53BD4, 20, 0.5, 0, 15),
+    dropshadow(gaussian, #0F82E6, 25, 0.5, 0, 20),
+    dropshadow(gaussian, #0047AB, 30, 0.5, 0, 25);
+}
+.white-bg{
+    -fx-background-color: #fff;
+    -fx-background-radius: 8px;
+
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 15, 0, 0, 5);
+
+
+}

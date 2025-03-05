@@ -1,0 +1,17 @@
+
+
+.backglist {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%,
+    #FF7A45,
+    #E54091,
+    #A53BD4,
+    #0F82E6,
+    #0047AB);
+}
+.shadow-effect {
+    -fx-effect: dropshadow(gaussian, #FF7A45, 10, 0.5, 0, 5),
+    dropshadow(gaussian, #E54091, 15, 0.5, 0, 10),
+    dropshadow(gaussian, #A53BD4, 20, 0.5, 0, 15),
+    dropshadow(gaussian, #0F82E6, 25, 0.5, 0, 20),
+    dropshadow(gaussian, #0047AB, 30, 0.5, 0, 25);
+}

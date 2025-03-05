@@ -5,6 +5,9 @@ import javafx.scene.image.ImageView;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Date;
 import java.util.Arrays;
 import java.util.Objects;
@@ -97,6 +100,33 @@ public class Utilisateur implements Serializable {
         this.role = role;
         this.firstLogin = true;
 
+    }
+    public Utilisateur(String firstname, String lastname, String email,  Date birthdayDate, Date joiningDate, byte[] uploaded_cv, String num_tel) {
+
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+        this.password="";
+
+        this.birthdayDate = birthdayDate != null ? birthdayDate : Date.valueOf("2000-01-01");
+        this.joiningDate = joiningDate != null ? joiningDate : Date.valueOf("2000-01-01");
+
+        this.tt_restants = 0;
+        this.conge_restant = 0;
+        this.uploaded_cv = uploaded_cv;
+        this.num_tel = num_tel;
+    }
+
+    // Convertir un fichier en byte[]
+    public static byte[] fileToBytes(String filePath) throws IOException {
+        Path path = Paths.get(filePath);
+        return Files.readAllBytes(path);
+    }
+
+    // Convertir un byte[] en fichier
+    public static void bytesToFile(byte[] fileData, String outputPath) throws IOException {
+        Path path = Paths.get(outputPath);
+        Files.write(path, fileData);
     }
 
     // Getters et Setters

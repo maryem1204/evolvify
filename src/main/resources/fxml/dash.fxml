@@ -50,7 +50,6 @@
         </HBox>
     </AnchorPane>
 
-
     <!-- Logo -->
     <VBox alignment="CENTER" prefHeight="174.0" prefWidth="330.0" style="-fx-background-color: #2A1B50;" AnchorPane.topAnchor="0.0">
         <ImageView fx:id="logoImage" fitHeight="173.0" fitWidth="230.0" pickOnBounds="true" preserveRatio="true">
@@ -76,7 +75,7 @@
                 </graphic>
             </Button>
 
-            <!-- Gestion Utilisateurs controle-dacces.png-->
+            <!-- Gestion Utilisateurs -->
             <Button fx:id="btnUser" onAction="#handleGestionUtilisateur" styleClass="sidebar-button" text=" Gestion Utilisateurs">
                 <graphic>
                     <ImageView fitHeight="30.0" fitWidth="30.0">
@@ -113,7 +112,6 @@
                 <Button fx:id="btnAbsences" onAction="#handleAbsence" text="Absences" styleClass="sidebar-sub-button" />
             </VBox>
 
-
             <!-- Gestion Recrutements -->
             <Button fx:id="btnRecrutements" onAction="#toggleSubMenuRecrutements" styleClass="sidebar-button" text="Gestion Recrutements">
                 <graphic>
@@ -124,7 +122,7 @@
                             </image>
                         </ImageView>
                         <Label style="-fx-text-fill: white;" text="Gestion Recrutements" />
-                        <Region HBox.hgrow="ALWAYS" /> <!-- Ajout d'un espace flexible -->
+                        <Region HBox.hgrow="ALWAYS" />
                         <ImageView fx:id="arrowIconRecrutements" fitHeight="20.0" fitWidth="20.0">
                             <image>
                                 <Image url="@/images/fleche.png" />
@@ -134,8 +132,9 @@
                 </graphic>
             </Button>
             <VBox fx:id="subMenuRecrutements" managed="false" visible="false">
-                <Button fx:id="btnCandidats" styleClass="sidebar-sub-button" text="Candidats" />
-                <Button fx:id="btnEntretiens" styleClass="sidebar-sub-button" text="Entretiens" />
+                <Button fx:id="btnCandidats" onAction="#showCandidats" styleClass="sidebar-sub-button" text="Candidats" />
+                <Button fx:id="btnOffre" onAction="#showOffres" styleClass="sidebar-sub-button" text="Offre" />
+                <Button fx:id="btnEntretiens" onAction="#showListOffresCandidates" styleClass="sidebar-sub-button" text="Entretiens" />
             </VBox>
 
             <!-- Gestion Projets -->
@@ -148,8 +147,7 @@
                             </image>
                         </ImageView>
                         <Label style="-fx-text-fill: white;" text="Gestion Projets" />
-                        <Region HBox.hgrow="ALWAYS" /> <!-- Ajout d'un espace flexible -->
-
+                        <Region HBox.hgrow="ALWAYS" />
                         <ImageView fx:id="arrowIconProjets" fitHeight="20.0" fitWidth="20.0">
                             <image>
                                 <Image url="@/images/fleche.png" />
@@ -159,8 +157,8 @@
                 </graphic>
             </Button>
             <VBox fx:id="subMenuProjets" managed="false" visible="false">
-                <Button fx:id="btnTaches" styleClass="sidebar-sub-button" text="Projets" />
-                <Button fx:id="btnEquipe" styleClass="sidebar-sub-button" text="Taches" />
+                <Button fx:id="btnTaches" onAction="#handleGestionProjet" styleClass="sidebar-sub-button" text="Projets" />
+                <Button fx:id="btnEquipe" onAction="#handleTache" styleClass="sidebar-sub-button" text="Taches" />
             </VBox>
 
             <!-- Gestion Transports -->
@@ -173,8 +171,7 @@
                             </image>
                         </ImageView>
                         <Label style="-fx-text-fill: white;" text="Gestion Transports" />
-                        <Region HBox.hgrow="ALWAYS" /> <!-- Ajout d'un espace flexible -->
-
+                        <Region HBox.hgrow="ALWAYS" />
                         <ImageView fx:id="arrowIconTransports" fitHeight="20.0" fitWidth="20.0">
                             <image>
                                 <Image url="@/images/fleche.png" />

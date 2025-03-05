@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="600.0" prefWidth="500.0" styleClass="backglist" stylesheets="@../Styles/background.css" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.AddCondidate">
+   <children>
+      <AnchorPane layoutX="15.0" layoutY="12.0" prefHeight="726.0" prefWidth="486.0" styleClass="white-bg" stylesheets="@../Styles/background.css">
+         <children>
+            <Button fx:id="confirme" layoutX="168.0" layoutY="623.0" mnemonicParsing="false" onAction="#add" styleClass="button2" stylesheets="@../Styles/Acceuil.css" text="Confirmé">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Button>
+            <TextField fx:id="cvimporté" layoutX="240.0" layoutY="544.0" prefHeight="39.0" prefWidth="96.0" />
+            <Button fx:id="uploadbutton" layoutX="358.0" layoutY="544.0" maxWidth="108.0" minWidth="108.0" mnemonicParsing="false" onAction="#importerCV" prefHeight="39.0" prefWidth="108.0" styleClass="button2" stylesheets="@../Styles/Acceuil.css" text="importer">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Button>
+            <Label layoutX="38.0" layoutY="544.0" prefHeight="17.0" prefWidth="92.0" text="Votre CV">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <TextField fx:id="nomTextfield" layoutX="240.0" layoutY="137.0" prefHeight="25.0" prefWidth="174.0" promptText="nom" />
+            <Label layoutX="36.0" layoutY="135.0" text="Nom">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label layoutX="36.0" layoutY="202.0" prefHeight="27.0" prefWidth="96.0" text="Prenom">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <TextField fx:id="prenomTextfield" layoutX="240.0" layoutY="203.0" prefHeight="25.0" prefWidth="174.0" promptText="prenom" />
+            <TextField fx:id="emailTextfield" layoutX="240.0" layoutY="261.0" prefHeight="25.0" prefWidth="174.0" promptText="e-mail" />
+            <Label layoutX="41.0" layoutY="262.0" text="E-mail">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <TextField fx:id="numtextfield" layoutX="240.0" layoutY="325.0" prefHeight="25.0" prefWidth="174.0" promptText="numero de telephone" />
+            <Label layoutX="38.0" layoutY="324.0" prefHeight="27.0" prefWidth="189.0" text="Numero de telephone">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <DatePicker fx:id="datenaissancetextfield" layoutX="240.0" layoutY="391.0" />
+            <Label layoutX="36.0" layoutY="385.0" prefHeight="38.0" prefWidth="181.0" text="Date de naissance">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <DatePicker fx:id="datedepotTextfield" layoutX="240.0" layoutY="461.0" />
+            <Label layoutX="38.0" layoutY="460.0" text="Date Depot">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label layoutX="72.0" layoutY="45.0" styleClass="image-shadow" stylesheets="@../Styles/Acceuil.css" text="Bienvenu Dans Notre Entreprise" textFill="#130bf5">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

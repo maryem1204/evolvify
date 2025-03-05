@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<ScrollPane fx:id="scrollPane" hbarPolicy="NEVER" prefHeight="820.0" prefWidth="1580.0" stylesheets="@../Styles/Acceuil.css" vbarPolicy="always" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.PageAcceuil">
+   <content>
+      <VBox minHeight="2000.0" prefWidth="1600.0">
+         <Region prefHeight="20.0" />
+
+         <!-- HBox pour organiser les boutons -->
+         <HBox alignment="TOP_LEFT" spacing="90">
+            <Region prefWidth="10.0" />
+            <ImageView fitWidth="200.0" preserveRatio="true">
+               <image>
+                  <Image url="@../images/logo.png" />
+               </image>
+            </ImageView>
+            <Button fx:id="quisommesnous" mnemonicParsing="false" onAction="#goToAboutUs" styleClass="button2" stylesheets="@../Styles/Acceuil.css" text="Qui Sommes Nous?">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="nossolution" mnemonicParsing="false" onAction="#goToSolutions" styleClass="button2" stylesheets="@../Styles/Acceuil.css" text="Nos Solutions">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="nosoffre" mnemonicParsing="false" onAction="#goToOffres" styleClass="button2" stylesheets="@../Styles/Acceuil.css" text="Nos Offres" >
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="contacte" mnemonicParsing="false" styleClass="button2" stylesheets="@../Styles/Acceuil.css" text="Contactez-Nous">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <Button fx:id="login" mnemonicParsing="false" styleClass="button2" stylesheets="@../Styles/Acceuil.css" text="Login" onAction="#handlelogin">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <HBox.margin>
+                  <Insets bottom="0" left="0" right="80" top="0" />
+               </HBox.margin>
+            </Button>
+         </HBox>
+         <!-- Ajout d'un espace entre les boutons et l'image -->
+         <Region prefHeight="50.0" />
+         <!-- StackPane pour l'image (corrigé) -->
+         <StackPane alignment="CENTER">
+            <ImageView fitWidth="1206.0" preserveRatio="true" styleClass="image-shadow">
+               <image>
+                  <Image url="@../images/Acceuil.jpg" />
+               </image>
+            </ImageView>
+         </StackPane>
+         
+         <!-- HBox pour organiser les cartes -->
+         <HBox alignment="CENTER" layoutX="25.0" layoutY="600.0" spacing="50.0">
+            <Region prefHeight="900.0" />
+
+
+            <!-- Cartes -->
+            <StackPane fx:id="card1" prefHeight="214.0" prefWidth="190.0">
+               <children>
+                  <Group>
+                     <StackPane fx:id="frontPane1" prefHeight="214.0" prefWidth="190.0" visible="true">
+                        <children>
+                           <ImageView fitHeight="214.0" fitWidth="190.0" pickOnBounds="true" preserveRatio="false">
+                              <image>
+                                 <Image url="@../images/Java.png" />
+                              </image>
+                           </ImageView>
+                        </children>
+                     </StackPane>
+
+                     <StackPane fx:id="backPane1" prefHeight="214.0" prefWidth="190.0" visible="false">
+                        <children>
+                           <Rectangle fill="BLACK" height="214.0" width="190.0" />
+                           <Button fx:id="postuler1" prefHeight="50.0" prefWidth="120.0">
+                              <graphic>
+                                 <ImageView fitHeight="40.0" fitWidth="40.0">
+                                    <image>
+                                       <Image url="@../images/postuler.png" />
+                                    </image>
+                                 </ImageView>
+                              </graphic>
+                           </Button>
+                        </children>
+                     </StackPane>
+                  </Group>
+               </children>
+            </StackPane>
+
+            <!-- Carte 2 -->
+            <StackPane fx:id="card2" prefHeight="214.0" prefWidth="190.0">
+               <children>
+                  <Group>
+                     <StackPane fx:id="frontPane2" prefHeight="214.0" prefWidth="190.0" visible="true">
+                        <children>
+                           <ImageView fitHeight="214.0" fitWidth="190.0" pickOnBounds="true" preserveRatio="false">
+                              <image>
+                                 <Image url="@../images/python.png" />
+                              </image>
+                           </ImageView>
+                        </children>
+                     </StackPane>
+
+                     <StackPane fx:id="backPane2" prefHeight="214.0" prefWidth="190.0" visible="false">
+                        <children>
+                           <Rectangle fill="BLACK" height="214.0" width="190.0" />
+                           <Button fx:id="postuler2" prefHeight="50.0" prefWidth="120.0">
+                              <graphic>
+                                 <ImageView fitHeight="40.0" fitWidth="40.0">
+                                    <image>
+                                       <Image url="@../images/postuler.png" />
+                                    </image>
+                                 </ImageView>
+                              </graphic>
+                           </Button>
+                        </children>
+                     </StackPane>
+                  </Group>
+               </children>
+            </StackPane>
+
+            <!-- Carte 3 -->
+            <StackPane fx:id="card3" prefHeight="214.0" prefWidth="190.0">
+               <children>
+                  <Group>
+                     <StackPane fx:id="frontPane3" prefHeight="214.0" prefWidth="190.0" visible="true">
+                        <children>
+                           <ImageView fitHeight="214.0" fitWidth="190.0" pickOnBounds="true" preserveRatio="false">
+                              <image>
+                                 <Image url="@../images/web.png" />
+                              </image>
+                           </ImageView>
+                        </children>
+                     </StackPane>
+
+                     <StackPane fx:id="backPane3" prefHeight="214.0" prefWidth="190.0" visible="false">
+                        <children>
+                           <Rectangle fill="BLACK" height="214.0" width="190.0" />
+
+                           <Button fx:id="postuler3" layoutX="35.0" layoutY="160.0" prefHeight="50.0" prefWidth="120.0">
+                              <graphic>
+                                 <ImageView fitHeight="40.0" fitWidth="40.0">
+                                    <image>
+                                       <Image url="@../images/postuler.png" />
+                                    </image>
+                                 </ImageView>
+                              </graphic>
+                           </Button>
+                        </children>
+                     </StackPane>
+                  </Group>
+               </children>
+            </StackPane>
+
+            <!-- Carte 4 -->
+            <StackPane fx:id="card4" prefHeight="214.0" prefWidth="190.0">
+               <children>
+                  <Group>
+                     <StackPane fx:id="frontPane4" prefHeight="214.0" prefWidth="190.0" visible="true">
+                        <children>
+                           <ImageView fitHeight="214.0" fitWidth="190.0" pickOnBounds="true" preserveRatio="false">
+                              <image>
+                                 <Image url="@../images/mobile.jpg" />
+                              </image>
+                           </ImageView>
+                        </children>
+                     </StackPane>
+
+                     <StackPane fx:id="backPane4" prefHeight="214.0" prefWidth="190.0" visible="false">
+                        <children>
+                           <Rectangle fill="WHITE" height="214.0" width="190.0" />
+
+                           <Button fx:id="postuler4" layoutX="35.0" layoutY="160.0" prefHeight="50.0" prefWidth="120.0">
+                              <graphic>
+                                 <ImageView fitHeight="40.0" fitWidth="40.0">
+                                    <image>
+                                       <Image url="@../images/postuler.png" />
+                                    </image>
+                                 </ImageView>
+                              </graphic>
+                           </Button>
+                        </children>
+                     </StackPane>
+                  </Group>
+               </children>
+            </StackPane>
+
+            <!-- Carte 5 -->
+            <StackPane fx:id="card5" prefHeight="214.0" prefWidth="190.0">
+               <children>
+                  <Group>
+                     <StackPane fx:id="frontPane5" prefHeight="214.0" prefWidth="190.0" visible="true">
+                        <children>
+                           <ImageView fitHeight="214.0" fitWidth="190.0" pickOnBounds="true" preserveRatio="false">
+                              <image>
+                                 <Image url="@../images/gl.png" />
+                              </image>
+                           </ImageView>
+                        </children>
+                     </StackPane>
+
+                     <StackPane fx:id="backPane5" prefHeight="214.0" prefWidth="190.0" visible="true">
+                        <children>
+                           <Rectangle fill="WHITE" height="214.0" width="190.0" />
+
+                           <Button fx:id="postuler5" layoutX="35.0" layoutY="160.0" prefHeight="50.0" prefWidth="120.0">
+                              <graphic>
+                                 <ImageView fitHeight="40.0" fitWidth="40.0">
+                                    <image>
+                                       <Image url="@../images/postuler.png" />
+                                    </image>
+                                 </ImageView>
+                              </graphic>
+                           </Button>
+                        </children>
+                     </StackPane>
+                  </Group>
+               </children>
+            </StackPane>
+         </HBox>
+
+         <Region prefHeight="10.0" />
+         <!-- Espace contact (numéro et emplacement) -->
+         <VBox alignment="CENTER" spacing="10.0" styleClass="contact-info">
+            <Label styleClass="section-title" stylesheets="@../Styles/Acceuil.css" text="Contactez-Nous" textFill="#1323b2">
+               <font>
+                  <Font size="24.0" />
+               </font></Label>
+            <Label styleClass="contact-info" stylesheets="@../Styles/Acceuil.css" text="Téléphone: +1 234 567 890">
+               <font>
+                  <Font size="18.0" />
+               </font></Label>
+            <Label styleClass="contact-info" stylesheets="@../Styles/Acceuil.css" text="Emplacement: 123 Rue Exemple, Ville, Pays">
+               <font>
+                  <Font size="18.0" />
+               </font></Label>
+         </VBox>
+
+         <Region prefHeight="150.0" />
+         <!-- HBox pour afficher les cartes "Qui sommes-nous ?" et "Nos Solutions" -->
+         <HBox alignment="CENTER" spacing="100">
+
+            <!-- Carte "Qui sommes-nous ?" -->
+            <StackPane fx:id="cardAboutUs" prefHeight="250.0" prefWidth="400.0" styleClass="info-card" stylesheets="@../Styles/background.css">
+
+               <children>
+                  <VBox alignment="CENTER" spacing="15">
+                     <Label styleClass="card-title" text="Qui sommes-nous ?" />
+                     <Label maxWidth="350" styleClass="card-description" text="Nous sommes une équipe dynamique et passionnée par l'innovation numérique, dédiée à la conception et au développement de sites web sur mesure pour les professionnels des ressources humaines." wrapText="true" />
+                  </VBox>
+               </children>
+            </StackPane>
+
+            <!-- Carte "Nos Solutions" -->
+            <StackPane fx:id="cardSolutions" prefHeight="250.0" prefWidth="400.0" styleClass="info-card" stylesheets="@../Styles/background.css">
+               <children>
+                  <VBox alignment="CENTER" spacing="15">
+                     <Label styleClass="card-title" text="Nos Solutions" />
+                     <Label maxWidth="350" styleClass="card-description" text="Nous proposons des solutions adaptées aux besoins de nos clients : Adaptation des processus en fonction des spécificités organisationnelles des PME  aussi  Une tarification abordable pour les entreprises aux ressources limitées." wrapText="true" />
+                  </VBox>
+               </children>
+            </StackPane>
+
+         </HBox>
+      </VBox>
+   </content>
+</ScrollPane>

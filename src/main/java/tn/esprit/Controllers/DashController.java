@@ -162,20 +162,31 @@ public class DashController {
         });
     }
 
+
+    /**
+     * Définit le bouton actif (change la couleur de fond)
+     */
     private void setActiveButton(Button selectedButton) {
         sidebarButtons.forEach(button -> button.getStyleClass().remove("selected"));
         selectedButton.getStyleClass().add("selected");
     }
 
+    /**
+     * Charge dynamiquement une vue dans le `contentArea`
+     */
     private void loadView(String fxmlFile) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(fxmlFile));
             contentArea.getChildren().setAll(root);
         } catch (IOException e) {
             e.printStackTrace();
+            System.out.println("⚠ Erreur de chargement : " + fxmlFile);
         }
     }
 
+    /**
+     * Récupère le bon FXML en fonction du bouton
+     */
     private String getFxmlPath(Button button) {
         return switch (button.getId()) {
             case "btnDashboard" -> "/fxml/dashboardAdminRH.fxml";
@@ -191,6 +202,9 @@ public class DashController {
         };
     }
 
+    /**
+     * Animation pour basculer un sous-menu
+     */
     private void toggleSubMenu(VBox subMenu, ImageView arrowIcon, boolean isVisible) {
         boolean newState = !isVisible;
         Timeline timeline = new Timeline(
@@ -203,6 +217,9 @@ public class DashController {
         arrowIcon.setRotate(newState ? 90 : 0);
     }
 
+    /**
+     * Basculer le sous-menu Gestion Congés
+     */
     @FXML
     private void toggleSubMenuConges() {
         toggleSubMenu(subMenuConges, arrowIconConges, isSubMenuCongesVisible);
@@ -232,6 +249,10 @@ public class DashController {
         toggleSubMenu(subMenuTransport, arrowIconTransports, isSubMenuTransportVisible);
         isSubMenuTransportVisible = !isSubMenuTransportVisible;
     }
+
+    /**
+     * Cacher tous les sous-menus au démarrage
+     */
     private void hideAllSubMenus() {
         subMenuConges.setVisible(false);
         subMenuConges.setManaged(false);
@@ -258,6 +279,7 @@ public class DashController {
         setActiveButton(btnUser);
         loadView("/fxml/listUsers.fxml");
     }
+
     @FXML
     private void handleGestionProjet() {
         setActiveButton(btnDashboard);
@@ -302,6 +324,22 @@ public class DashController {
             }
         }
     }
+    @FXML
+    private void showCandidats() {
+        loadView("/fxml/Listcondidate.fxml");
+    }
+
+    @FXML
+    private void showOffres() {
+        loadView("/fxml/Listoffre.fxml");
+    }
+
+    @FXML
+    private void showListOffresCandidates() {
+        loadView("/fxml/listoffreCandidates.fxml");
+    }
+
+
     @FXML
     private void handleProfil() {
         loadView("/fxml/employeeProfile.fxml");

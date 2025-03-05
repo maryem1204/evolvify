@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="659.0" prefWidth="600.0" styleClass="backglist" stylesheets="@../java/tn/esprit/Styles/formulCond.css" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.ModifierOffre">
+   <children>
+      <AnchorPane layoutX="13.0" layoutY="15.0" prefHeight="625.0" prefWidth="574.0" styleClass="white-bg" stylesheets="@../java/tn/esprit/Styles/color.css">
+         <children>
+            <Label layoutX="46.0" layoutY="325.0" prefHeight="27.0" prefWidth="141.0" text="Date Publication">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <DatePicker fx:id="datepub" layoutX="282.0" layoutY="326.0" styleClass="shadow-effect" />
+            <Button fx:id="buttonAdd" layoutX="198.0" layoutY="538.0" maxWidth="212.0" mnemonicParsing="false" onAction="#handleModifier" prefHeight="59.0" prefWidth="168.0" styleClass="gradient-button" stylesheets="@../java/tn/esprit/Styles/color.css" text="Confirme">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Button>
+            <Label fx:id="dateExpir" layoutX="46.0" layoutY="386.0" prefHeight="27.0" prefWidth="141.0" text="Date Expiration">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <DatePicker fx:id="dateexp" layoutX="279.0" layoutY="387.0" styleClass="shadow-effect" />
+            <Label layoutX="52.0" layoutY="49.0" prefHeight="27.0" prefWidth="64.0" text="Titre">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <TextField fx:id="titre" layoutX="52.0" layoutY="89.0" prefHeight="34.0" prefWidth="461.0" styleClass="shadow-effect" stylesheets="@../java/tn/esprit/Styles/formulCond.css" />
+            <Label layoutX="52.0" layoutY="151.0" text="Description">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <TextArea fx:id="description" layoutX="48.0" layoutY="178.0" prefHeight="111.0" prefWidth="470.0" styleClass="shadow-effect" stylesheets="@../java/tn/esprit/Styles/formulCond.css" />
+            <Label layoutX="46.0" layoutY="455.0" prefHeight="27.0" prefWidth="73.0" text="Status">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <ChoiceBox fx:id="status" layoutX="279.0" layoutY="456.0" prefHeight="25.0" prefWidth="174.0" styleClass="shadow-effect" stylesheets="@../java/tn/esprit/Styles/color.css" />
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
