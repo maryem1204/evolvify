@@ -121,6 +121,15 @@
                     </ImageView>
                 </graphic>
             </Button>
+            <Button fx:id="btnTrajets" onAction="#handleTrajets" styleClass="sidebar-button" text="Trajets">
+                <graphic>
+                    <ImageView fitHeight="30.0" fitWidth="30.0">
+                        <image>
+                            <Image url="@/images/transportDash.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
 
             <!-- Offres -->
             <Button fx:id="btnOffres" onAction="#handleOffres" styleClass="sidebar-button" text="  Offres">

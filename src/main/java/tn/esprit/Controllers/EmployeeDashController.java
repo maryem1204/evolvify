@@ -29,6 +29,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.sql.SQLException;
 
 public class EmployeeDashController {
@@ -44,7 +46,7 @@ public class EmployeeDashController {
     @FXML
     private Button btnAbsence;
     @FXML
-    private Button btnAbonnements;
+    private Button btnAbonnements,btnTrajets;
     @FXML
     private Button btnOffres;
     @FXML
@@ -78,6 +80,8 @@ public class EmployeeDashController {
     private final UtilisateurService utilisateurService = new UtilisateurService();
 
     public void initialize() {
+
+
         // Set active button styling for dashboard by default
         setActiveButton(btnProfil);
 
@@ -277,7 +281,7 @@ public class EmployeeDashController {
                     utilisateur.getLastname().toLowerCase() + "_" +
                     timestamp + "." + fileExtension;
 
-            // Define destination directory
+            // Define destination directory (adjust path as needed)
             File uploadDir = new File("C:/xampp/htdocs/evolvify/");
             if (!uploadDir.exists()) {
                 uploadDir.mkdirs();
@@ -303,7 +307,10 @@ public class EmployeeDashController {
             // Update user's profile photo
             utilisateur.setProfilePhoto(newImagePath);
 
-            // Update user in database
+            // Update the navbar profile image
+            updateNavbarProfileImage(utilisateur);
+
+            // Optional: Update user in database
             utilisateurService.update(utilisateur);
 
             // ✅ Force Navbar Update in JavaFX Thread
@@ -317,6 +324,7 @@ public class EmployeeDashController {
         }
     }
 
+    // Helper method to get file extension
     private String getFileExtension(File file) {
         String name = file.getName();
         int lastIndexOf = name.lastIndexOf(".");
@@ -431,7 +439,12 @@ public class EmployeeDashController {
     @FXML
     private void handleAbonnements() throws IOException {
         setActiveButton(btnAbonnements);
-        //loadView("EmployeeSubscriptions.fxml");
+        loadView("/fxml/FrontAbonnement.fxml");
+    }
+    @FXML
+    private void handleTrajets() throws IOException {
+        setActiveButton(btnTrajets);
+        loadView("/fxml/FrontTransport.fxml");
     }
 
     @FXML

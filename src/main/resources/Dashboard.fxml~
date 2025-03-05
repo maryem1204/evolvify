@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1500.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.Dashboard">
+
+   <children>
+      <AnchorPane prefHeight="900.0" prefWidth="1500.0">
+         <children>
+            <BorderPane fx:id="mainContent" layoutX="14.0" layoutY="-14.0" prefHeight="600.0" prefWidth="1100.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="-14.0" AnchorPane.topAnchor="-14.0">
+
+               <!-- Barre du haut avec logo et bouton profil -->
+               <top>
+                  <AnchorPane prefHeight="57.0" prefWidth="1089.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <AnchorPane fx:id="logo" layoutX="-11.0" layoutY="49.0" prefHeight="86.0" prefWidth="1108.0">
+                           <children>
+                              <ImageView fitHeight="66.0" fitWidth="200.0" layoutX="14.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@/tn/esprit/Images/logo.png" />
+                                 </image>
+                              </ImageView>
+                              <Button layoutX="1046.0" layoutY="9.0" maxHeight="55.0" maxWidth="63.0" minWidth="41.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="41.0" styleClass="circular-button" stylesheets="@/tn/esprit/Styles/color.css">
+                                 <graphic>
+                                    <ImageView fitHeight="56.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@/tn/esprit/Images/profileicon.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </AnchorPane>
+               </top>
+
+               <!-- Barre de navigation gauche -->
+               <left>
+                  <AnchorPane prefHeight="542.0" prefWidth="215.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <AnchorPane fx:id="gests" layoutX="-15.0" prefHeight="523.0" prefWidth="215.0" styleClass="root" stylesheets="@/tn/esprit/Styles/color.css">
+                           <children>
+                              <Button fx:id="logout" layoutX="14.0" layoutY="470.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="38.0" styleClass="nav-btn" stylesheets="@/tn/esprit/Styles/color.css">
+                                 <graphic>
+                                    <ImageView fitHeight="29.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@/tn/esprit/Images/logout.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+
+                              <Button fx:id="gestutiliser" layoutX="7.0" layoutY="49.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="202.0" styleClass="nav-btn" stylesheets="@/tn/esprit/Styles/color.css" text="Gestion Utilisateur">
+                                 <graphic>
+                                    <ImageView fitHeight="43.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@/tn/esprit/Images/user.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+
+                              <Button fx:id="gestrec" layoutX="7.0" layoutY="101.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="202.0" styleClass="nav-btn" stylesheets="@/tn/esprit/Styles/color.css" text="Gestion Recrutement">
+                                 <graphic>
+                                    <ImageView fitHeight="40.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@/tn/esprit/Images/recrut.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                              <Button fx:id="gestpro" layoutX="6.0" layoutY="160.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="202.0" styleClass="nav-btn" stylesheets="@../java/tn/esprit/Styles/color.css" text="Gestion Projet" textFill="#9e1470">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <graphic>
+                                    <ImageView accessibleRole="BUTTON" fitHeight="40.0" fitWidth="46.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../java/tn/esprit/Images/projet.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                              <Button fx:id="gestcong" layoutX="6.0" layoutY="218.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="202.0" styleClass="nav-btn" stylesheets="@../java/tn/esprit/Styles/color.css" text="Gestion Conge" textFill="#9e1470">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <graphic>
+                                    <ImageView accessibleRole="BUTTON" fitHeight="40.0" fitWidth="46.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../java/tn/esprit/Images/conge.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+
+                              <MenuButton fx:id="gestran" layoutX="7.0" layoutY="275.0" mnemonicParsing="false" prefHeight="56.0" prefWidth="202.0" styleClass="nav-btn" stylesheets="@/tn/esprit/Styles/color.css" text="Gestion Transport">
+                                 <graphic>
+                                    <ImageView fitHeight="39.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@/tn/esprit/Images/transport.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <items>
+                                    <MenuItem fx:id="menuGererTransport" text="Gérer Transport" />
+                                    <MenuItem fx:id="menuGererAbonnement" text="Gérer Abonnement" />
+                                    <MenuItem fx:id="menuGererTrajet" text="Gérer Trajet" />
+                                 </items>
+                              </MenuButton>
+
+                              <Label fx:id="logoutlabel" layoutX="70.0" layoutY="477.0" text="Log out">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </AnchorPane>
+               </left>
+
+               <!-- Contenu central -->
+               <center>
+                  <AnchorPane fx:id="tableblanche" prefHeight="472.0" prefWidth="807.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <AnchorPane layoutY="-12.0" prefHeight="513.0" prefWidth="843.0" styleClass="white-bg" stylesheets="@/tn/esprit/Styles/color.css" />
+                     </children>
+                  </AnchorPane>
+               </center>
+
+            </BorderPane>
+         </children>
+      </AnchorPane>
+   </children>
+</StackPane>

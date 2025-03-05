@@ -1,0 +1,46 @@
+.root {
+    -fx-background-color: #F5F5F5;
+    -fx-font-family: "Arial Rounded MT Bold";
+}
+
+Label {
+    -fx-font-size: 16px;
+    -fx-text-fill: #0047AB;
+}
+
+#add_transport {
+    -fx-background-color: white;
+    -fx-padding: 20px;
+    -fx-border-radius: 10px;
+    -fx-border-color: #0F82E6;
+}
+
+TextField, SplitMenuButton {
+    -fx-pref-height: 35px;
+    -fx-border-radius: 5px;
+    -fx-border-color: #A53BD4;
+    -fx-font-size: 14px;
+}
+
+Button {
+    -fx-background-color: #FF7A45;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-border-radius: 5px;
+}
+
+Button:hover {
+    -fx-background-color: #E54091;
+}
+.gradient-button {
+    -fx-background-color: linear-gradient(to right, #af40ff, #5b42f3 50%, #00ddeb);
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(151, 65, 252, 0.4), 10, 0, 0, 5);
+    -fx-transition: all 0.3s;
+}

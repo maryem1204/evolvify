@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<?import java.util.ArrayList?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.util.Callback?>
+<BorderPane xmlns="http://javafx.com/javafx/8.0" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.Controllers.CalendarController"
+            style="-fx-background-color: transparent; -fx-padding: 20px;"
+            stylesheets="@../Styles/ListAbsences.css">
+
+    <!-- En-tête avec titre et bouton d'ajout -->
+    <top>
+        <HBox spacing="10" style="-fx-padding: 10px;" alignment="CENTER_LEFT">
+            <Label text="Liste des Absences" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #0047AB;"/>
+            <Pane HBox.hgrow="ALWAYS"/>
+            <Button text="+ Ajouter Absence" styleClass="gradient-button" />
+        </HBox>
+    </top>
+
+    <!-- Zone de recherche et tableau des absences -->
+    <center>
+        <VBox spacing="10">
+            <!-- Sélecteurs de mois et d'année -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <ComboBox fx:id="monthComboBox" prefWidth="150" />
+                <ComboBox fx:id="yearComboBox" prefWidth="150" />
+                <Button fx:id="applyButton" text="Appliquer" onAction="#onApplyButtonClicked"/>
+            </HBox>
+
+            <HBox spacing="20" alignment="CENTER"/>
+
+            <HBox spacing="20" alignment="CENTER">
+                <!-- Tableau des absences -->
+                <TableView fx:id="attendanceTable" prefHeight="400" prefWidth="800">
+                    <columns>
+                        <!-- Nom des employés en première colonne -->
+                        <TableColumn fx:id="colEmploye" text="Employé" prefWidth="120">
+                            <cellValueFactory>
+                                <PropertyValueFactory property="nomEmploye"/>
+                            </cellValueFactory>
+                        </TableColumn>
+
+                        <!-- Colonne des jours du mois, contenant un GridPane -->
+                        <TableColumn fx:id="colCalendar" text="Calendrier">
+                            <cellValueFactory>
+                                <PropertyValueFactory property="calendarGrid"/>
+                            </cellValueFactory>
+                        </TableColumn>
+
+                    </columns>
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <!-- Les lignes des employés seront ajoutées dynamiquement -->
+                        </FXCollections>
+                    </items>
+                </TableView>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>

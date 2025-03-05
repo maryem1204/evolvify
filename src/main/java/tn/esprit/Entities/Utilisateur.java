@@ -43,6 +43,8 @@ public class Utilisateur implements Serializable {
     public void setBirthdate_edited(boolean birthdate_edited) {
         this.birthdate_edited = birthdate_edited;
     }
+    // private boolean firstLogin = true; // Default to true for new users
+
 
 
     // private boolean firstLogin = true; // Default to true for new users

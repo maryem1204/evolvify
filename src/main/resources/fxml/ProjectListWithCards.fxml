@@ -40,7 +40,7 @@
             </StackPane>
 
             <!-- Bouton Ajouter projet -->
-            <Button onAction="#openAjoutProjetPopup" prefHeight="54.0" prefWidth="188.0" styleClass="gradient-button" text="+ Ajouter projet">
+            <Button fx:id="btnAjouterProjet" onAction="#openAjoutProjetPopup" prefHeight="54.0" prefWidth="188.0" styleClass="gradient-button" text="+ Ajouter projet">
                 <HBox.margin>
                     <Insets left="10.0" />
                 </HBox.margin>

@@ -8,6 +8,7 @@ import tn.esprit.Entities.Tache;
 import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Services.TacheService;
 import tn.esprit.Utils.MyDataBase;
+import tn.esprit.Utils.SessionManager;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -36,9 +37,19 @@ public class AjoutTacheController {
     // Maps pour la conversion des chaînes en énumérations
     private final Map<String, Tache.Priority> priorityMap = new HashMap<>();
     private final Map<String, Tache.Status> statusMap = new HashMap<>();
+    private int projectId; // To store the project ID
 
+    // Method to set the project ID from the calling controller
+    public void setProjectId(int projectId) {
+        this.projectId = projectId;
+    }
     @FXML
     private void initialize() {
+        Utilisateur currentUser = SessionManager.getUtilisateurConnecte();
+        if (currentUser != null) {
+            employeNameLabel.setText("Employé : " + currentUser.getFirstname() + " " + currentUser.getLastname());
+        }
+
         // Initialisation des ComboBox
         priorityComboBox.getItems().addAll("Low", "Medium", "High");
         priorityComboBox.setValue("Medium");
@@ -59,12 +70,6 @@ public class AjoutTacheController {
         statusMap.put("Done", Tache.Status.DONE);
         statusMap.put("Canceled", Tache.Status.CANCELED);
 
-        try {
-            List<Utilisateur> utilisateurs = getEmployees();
-            employeNameLabel.setText("Employé : " + utilisateurs.get(0).getFirstname() + " " + utilisateurs.get(0).getLastname());
-        } catch (SQLException e) {
-            System.err.println("Erreur lors de la récupération des employés: " + e.getMessage());
-        }
     }
 
     private List<Utilisateur> getEmployees() throws SQLException {
@@ -114,11 +119,22 @@ public class AjoutTacheController {
         LocalDate createdAtDate = Date.valueOf(createdAt).toLocalDate();
 
         // Assignation d'id_employe et id_projet statiques
-        int idEmploye = 5;  // Exemple d'ID d'employé statique
-        int idProjet = 72;   // Exemple d'ID de projet statique
+        Utilisateur currentUser = SessionManager.getUtilisateurConnecte();
+        if (currentUser == null) {
+            showError("Utilisateur non connecté!");
+            return;
+        }
+
+        int idEmploye = currentUser.getId_employe();
+
+        // Use the project ID passed from the project details
+        if (projectId <= 0) {
+            showError("Projet non spécifié!");
+            return;
+        }
 
         // Créer la tâche avec des id statiques
-        Tache tache = new Tache(description, status, createdAtDate, idEmploye, idProjet, priority, location);
+        Tache tache = new Tache(description, status, createdAtDate, idEmploye, projectId, priority, location);
 
         try {
             int result = tacheService.add(tache);

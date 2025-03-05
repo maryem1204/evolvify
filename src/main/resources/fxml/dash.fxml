@@ -18,7 +18,7 @@
     <!-- Navbar -->
     <AnchorPane layoutX="-17.0" layoutY="-11.0" prefHeight="106.0" prefWidth="1882.0" style="-fx-background-color: rgba(255,255,255,0.61);" styleClass="navbar" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
 
-        <HBox alignment="CENTER_RIGHT" prefHeight="66.0" spacing="20" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <HBox alignment="CENTER_RIGHT" prefHeight="66.0" spacing="20" AnchorPane.rightAnchor="20.0">
             <Region HBox.hgrow="ALWAYS" />
 
             <!-- Profil utilisateur + Déconnexion -->
@@ -27,8 +27,11 @@
                     <Insets bottom="10" left="10" right="10" top="30" />
                 </padding>
 
-                <ImageView fx:id="userIcon" fitHeight="51.0" fitWidth="53.0" styleClass="user-icon"/>
-
+                <ImageView fx:id="userIcon" fitHeight="51.0" fitWidth="53.0" styleClass="user-icon">
+                    <image>
+                        <Image url="@/images/profile.png" />
+                    </image>
+                </ImageView>
 
                 <Label fx:id="username" prefHeight="50.0" maxWidth="Infinity" styleClass="username" text="Meriem Sassi" />
 
@@ -50,7 +53,7 @@
 
     <!-- Logo -->
     <VBox alignment="CENTER" prefHeight="174.0" prefWidth="330.0" style="-fx-background-color: #2A1B50;" AnchorPane.topAnchor="0.0">
-        <ImageView fx:id="logoImage" fitHeight="173.0" fitWidth="230.0" layoutX="25.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+        <ImageView fx:id="logoImage" fitHeight="173.0" fitWidth="230.0" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@/images/evolve.png" />
             </image>
@@ -58,10 +61,12 @@
     </VBox>
 
     <!-- Scrollable Sidebar -->
-    <ScrollPane fx:id="scrollSidebar" fitToHeight="true" fitToWidth="true" prefWidth="330.0" styleClass="sidebar-scrollpane" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="173.0">
-        <VBox fx:id="sidebar" alignment="CENTER" prefWidth="330.0" spacing="25" style="-fx-background-color: #2A1B50; -fx-alignment: TOP_CENTER;">
+    <ScrollPane fx:id="scrollSidebar" fitToHeight="true" fitToWidth="true" prefWidth="330.0"
+                styleClass="sidebar-scrollpane" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="173.0">
+        <VBox fx:id="sidebar" alignment="CENTER" prefWidth="330.0" spacing="25"
+              style="-fx-background-color: #2A1B50; -fx-alignment: TOP_CENTER;">
             <!-- Dashboard -->
-            <Button fx:id="btnDashboard" onAction="#handleDashboard" styleClass="sidebar-button" text="  Tableau de bord">
+            <Button fx:id="btnDashboard" onAction="#handleDashboard" styleClass="sidebar-button" text="  Dashboard">
                 <graphic>
                     <ImageView fitHeight="30.0" fitWidth="30.0">
                         <image>
@@ -101,9 +106,11 @@
                     </HBox>
                 </graphic>
             </Button>
-            <VBox fx:id="subMenuConges" managed="false" visible="false">
-                <Button fx:id="btnConges" styleClass="sidebar-sub-button" text="Congés" />
-                <Button fx:id="btnAbsences" styleClass="sidebar-sub-button" text="Absences" />
+
+            <!-- Sous-menu Congés (Caché par défaut) -->
+            <VBox fx:id="subMenuConges" visible="false" managed="false">
+                <Button fx:id="btnConges" onAction="#handleConge" text="Congés" styleClass="sidebar-sub-button" />
+                <Button fx:id="btnAbsences" onAction="#handleAbsence" text="Absences" styleClass="sidebar-sub-button" />
             </VBox>
 
 
@@ -176,11 +183,10 @@
                     </HBox>
                 </graphic>
             </Button>
-            <VBox fx:id="subMenuTransport" managed="false" visible="false">
-                <Button fx:id="btnTransport" styleClass="sidebar-sub-button" text="Tâches" />
-                <Button fx:id="btnTrajet" styleClass="sidebar-sub-button" text="Équipe" />
-                <Button fx:id="btnAb" styleClass="sidebar-sub-button" text="Équipe" />
-
+            <VBox fx:id="subMenuTransport" spacing="5" visible="false" managed="false">
+                <Button fx:id="menuGererTransport"  text="Transport" styleClass="sidebar-sub-button"/>
+                <Button fx:id="menuGererAbonnement" onAction="#handleAbonnement" text="Abonnement" styleClass="sidebar-sub-button"/>
+                <Button fx:id="menuGererTrajet" text="Trajet" styleClass="sidebar-sub-button"/>
             </VBox>
         </VBox>
     </ScrollPane>

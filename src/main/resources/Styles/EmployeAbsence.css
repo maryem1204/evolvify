@@ -1,0 +1,272 @@
+/* Variables globales */
+* {
+    -fx-primary: #3498db;
+    -fx-secondary: #e74c3c;
+    -fx-success: #2ecc71;
+    -fx-white: #ffffff;
+    -fx-dark: #2c3e50;
+    -fx-light-gray: #ecf0f1;
+    -fx-medium-gray: #bdc3c7;
+    -fx-dark-gray: #7f8c8d;
+    -fx-shadow: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 2);
+    -fx-card-radius: 8px;
+    -fx-button-radius: 5px;
+}
+
+/* Conteneur principal */
+.main-container {
+    -fx-background-color: #f5f7fa;
+}
+
+.content-wrapper {
+    -fx-background-color: transparent;
+}
+
+/* Carte du statut actuel */
+.status-card {
+    -fx-background-color: -fx-white;
+    -fx-background-radius: 10px;
+    -fx-padding: 20px;
+    -fx-spacing: 15px;
+    -fx-effect: -fx-shadow;
+}
+
+/* Carte de l'historique */
+.history-card {
+    -fx-background-color: -fx-white;
+    -fx-background-radius: 8px;
+    -fx-padding: 20px;
+    -fx-spacing: 15px;
+    -fx-effect: -fx-shadow;
+}
+
+/* Labels */
+.title-label {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-dark;
+}
+
+.status-prompt-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: -fx-dark-gray;
+}
+
+.status-value-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.summary-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: -fx-dark-gray;
+    -fx-padding: 5px 0px 0px 0px;
+}
+
+/* Conteneur de boutons */
+.button-container {
+    -fx-padding: 10px 0px 0px 0px;
+}
+
+/* Styles des boutons */
+.button {
+    -fx-background-radius: 5px;
+    -fx-padding: 8px 15px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+    -fx-text-fill: -fx-white;
+}
+
+.button:hover {
+    -fx-opacity: 0.9;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 1);
+}
+
+.present-button {
+    -fx-background-color: -fx-success;
+}
+
+.absent-button {
+    -fx-background-color: -fx-secondary;
+}
+
+.leave-button {
+    -fx-background-color: -fx-primary;
+}
+
+/* TableView */
+.history-table {
+    -fx-background-color: transparent;
+    -fx-background-radius: 5px;
+    -fx-padding: 0px;
+}
+
+.history-table .column-header-background {
+    -fx-background-color: -fx-light-gray;
+    -fx-background-radius: 5px 5px 0px 0px;
+}
+
+.history-table .column-header {
+    -fx-background-color: transparent;
+    -fx-padding: 10px 5px;
+}
+
+.history-table .column-header .label {
+    -fx-text-fill: -fx-dark;
+    -fx-font-weight: bold;
+}
+
+.history-table .table-row-cell {
+    -fx-border-color: transparent;
+    -fx-table-cell-border-color: transparent;
+}
+
+.history-table .table-row-cell:even {
+    -fx-background-color: rgba(236, 240, 241, 0.5);
+}
+
+.history-table .table-row-cell:odd {
+    -fx-background-color: transparent;
+}
+
+.history-table .table-row-cell:hover {
+    -fx-background-color: rgba(52, 152, 219, 0.1);
+}
+
+.history-table .table-row-cell:selected {
+    -fx-background-color: rgba(52, 152, 219, 0.2);
+}
+
+.history-table .table-row-cell:selected .text {
+    -fx-fill: -fx-dark;
+}
+
+/* Pied de page */
+.footer-container {
+    -fx-padding: 10px 0px 0px 0px;
+}
+
+/* Statuts dans le tableau */
+.status-present {
+    -fx-text-fill: -fx-success !important;
+    -fx-font-weight: bold;
+}
+
+.status-absent {
+    -fx-text-fill: -fx-secondary !important;
+    -fx-font-weight: bold;
+}
+
+.status-leave {
+    -fx-text-fill: -fx-primary !important;
+    -fx-font-weight: bold;
+}
+
+/* Styles pour les filtres */
+.date-picker {
+    -fx-background-color: transparent;
+    -fx-border-color: -fx-medium-gray;
+    -fx-border-radius: 5px;
+    -fx-font-size: 13px;
+}
+
+.date-picker .arrow-button {
+    -fx-background-color: -fx-medium-gray;
+    -fx-background-radius: 0px -fx-button-radius -fx-button-radius 0px;
+}
+
+.date-picker .arrow-button:hover {
+    -fx-background-color: -fx-dark-gray;
+}
+
+.date-picker .arrow-button .arrow {
+    -fx-background-color: -fx-white;
+}
+
+.date-picker .cell {
+    -fx-background-color: -fx-white;
+    -fx-text-fill: -fx-dark;
+    -fx-font-size: 12px;
+}
+
+.date-picker .cell:hover {
+    -fx-background-color: -fx-light-gray;
+}
+
+.date-picker .cell:focused {
+    -fx-background-color: -fx-primary;
+    -fx-text-fill: -fx-white;
+}
+
+.date-picker .selected {
+    -fx-background-color: -fx-primary;
+    -fx-text-fill: -fx-white;
+}
+
+.date-picker .today {
+    -fx-border-color: -fx-primary;
+}
+
+.date-picker-popup {
+    -fx-effect: -fx-shadow;
+}
+
+.date-picker-popup .month-year-pane {
+    -fx-background-color: -fx-primary;
+}
+
+.date-picker-popup .month-year-pane .label {
+    -fx-text-fill: -fx-white;
+}
+
+.date-picker-popup .spinner .button {
+    -fx-background-color: transparent;
+}
+
+.date-picker-popup .spinner .button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+
+.date-picker-popup .spinner .button .left-arrow,
+.date-picker-popup .spinner .button .right-arrow {
+    -fx-background-color: -fx-white;
+}
+
+/* Boutons de filtre */
+#applyFilterButton {
+    -fx-background-color: -fx-primary;
+}
+
+#resetFilterButton {
+    -fx-background-color: -fx-dark-gray;
+}
+
+/* Container des filtres */
+HBox {
+    -fx-spacing: 10;
+    -fx-padding: 10px 0px 10px 0px;
+}
+/* Style pour le ScrollPane */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-opacity: 0.8;
+}
+
+.scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: -fx-medium-gray;
+}
+
+.scroll-pane .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: -fx-dark-gray;
+}
