@@ -108,6 +108,8 @@ public class EmployeeDashController {
 
         checkFirstTimeLoginNotification();
         setupNotificationIcon();
+        updateNavbarProfileImage(utilisateur);
+
     }
 
 

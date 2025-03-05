@@ -139,6 +139,9 @@ public class DashController {
         username.setOnMouseClicked(event -> {
             handleProfil();
         });
+        logoutIcon.setOnMouseClicked(event -> {
+            handleLogout();
+        });
     }
     private void addButtonIfNotNull(List<Button> list, Button button) {
         if (button != null) {
@@ -148,6 +151,7 @@ public class DashController {
 
     private void loadUserProfileImage() {
         Utilisateur utilisateur = SessionManager.getInstance().getUtilisateurConnecte();
+
         if (utilisateur == null) {
             username.setText("Utilisateur non connecté");
             setDefaultProfileImage();
@@ -159,8 +163,8 @@ public class DashController {
         username.setMaxWidth(Double.MAX_VALUE);
         username.setWrapText(true);
 
-        // Handle profile image
         String imagePath = utilisateur.getProfilePhoto();
+
         if (imagePath == null || imagePath.isEmpty()) {
             setDefaultProfileImage();
             return;
@@ -168,27 +172,35 @@ public class DashController {
 
         Platform.runLater(() -> {
             try {
-                File imageFile = new File(imagePath);
-                if (imageFile.exists()) {
-                    Image profileImage = new Image(imageFile.toURI().toString());
+                Image profileImage;
 
-                    // Check if image is loaded successfully
-                    if (profileImage.isError()) {
-                        setDefaultProfileImage();
-                    } else {
-                        userIcon.setImage(profileImage);
-                        Circle clip = new Circle(25, 25, 25);
-                        userIcon.setClip(clip);
-                    }
+                if (imagePath.startsWith("http")) {
+                    // Load image from URL
+                    profileImage = new Image(imagePath, true);
                 } else {
+                    // Load image from local file
+                    File imageFile = new File(imagePath);
+                    if (!imageFile.exists()) {
+                        setDefaultProfileImage();
+                        return;
+                    }
+                    profileImage = new Image(imageFile.toURI().toString());
+                }
+
+                // If loading the image failed, use default
+                if (profileImage.isError()) {
                     setDefaultProfileImage();
+                } else {
+                    userIcon.setImage(profileImage);
+                    userIcon.setClip(new Circle(userIcon.getFitWidth() / 2, userIcon.getFitHeight() / 2, userIcon.getFitWidth() / 2));
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                System.err.println("Error loading profile image: " + e.getMessage());
                 setDefaultProfileImage();
             }
         });
     }
+
 
     private void setDefaultProfileImage() {
         Platform.runLater(() -> {
