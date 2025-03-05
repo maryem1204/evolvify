@@ -31,6 +31,17 @@ public class Conge {
 
     }
 
+    public Conge(Date leave_start, Date leave_end, int number_of_days, Statut status, int id_employe, Reason reason, String description) {
+        this.leave_start = leave_start;
+        this.leave_end = leave_end;
+        this.number_of_days = number_of_days;
+        this.status = (status == null) ? Statut.EN_COURS : status;
+        this.id_employe = id_employe;
+
+        this.reason = reason;
+        this.description = description;
+    }
+
     // Getters & Setters
 
     public int getId_Conge() {

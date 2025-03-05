@@ -1,6 +1,7 @@
 package tn.esprit.Entities;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 public class Projet {
@@ -12,34 +13,33 @@ public class Projet {
     private LocalDate end_date;
     private LocalDate starter_at;
     private String abbreviation;
-    private int id_employe;
     private byte[] uploaded_files;
-
-
+    private List<Integer> employes; // Liste des IDs des employés associés
 
     public enum Status {
         IN_PROGRESS,
-        COMPLETED,
+        COMPLETED
     }
 
+    // Constructeur par défaut (obligatoire pour certaines utilisations comme JSON serialization)
+    public Projet() {}
 
-
-
+    // Constructeur sans ID (pour l'ajout d'un projet)
     public Projet(String name, String description, Status status, LocalDate end_date, LocalDate starter_at,
-                  String abbreviation, int id_employe, byte[] uploaded_files) {
+                  String abbreviation, byte[] uploaded_files, List<Integer> employes) {
         this.name = name;
         this.description = description;
         this.status = status;
         this.end_date = end_date;
         this.starter_at = starter_at;
         this.abbreviation = abbreviation;
-        this.id_employe = id_employe;
-        this.uploaded_files = uploaded_files != null ? uploaded_files : new byte[0];
+        this.uploaded_files = (uploaded_files != null) ? uploaded_files : new byte[0];
+        this.employes = employes;
     }
 
-
+    // Constructeur avec ID (pour la récupération d'un projet existant)
     public Projet(int id_projet, String name, String description, Status status, LocalDate end_date,
-                  LocalDate starter_at, String abbreviation, int id_employe, byte[] uploaded_files) {
+                  LocalDate starter_at, String abbreviation, byte[] uploaded_files, List<Integer> employes) {
         this.id_projet = id_projet;
         this.name = name;
         this.description = description;
@@ -47,11 +47,11 @@ public class Projet {
         this.end_date = end_date;
         this.starter_at = starter_at;
         this.abbreviation = abbreviation;
-        this.id_employe = id_employe;
-        this.uploaded_files = uploaded_files;
+        this.uploaded_files = (uploaded_files != null) ? uploaded_files : new byte[0];
+        this.employes = employes;
     }
 
-
+    // Getters et Setters
     public int getId_projet() {
         return id_projet;
     }
@@ -59,6 +59,7 @@ public class Projet {
     public void setId_projet(int id_projet) {
         this.id_projet = id_projet;
     }
+
     public String getName() {
         return name;
     }
@@ -107,22 +108,23 @@ public class Projet {
         this.abbreviation = abbreviation;
     }
 
-    public int getId_employe() {
-        return id_employe;
-    }
-
-    public void setId_employe(int id_employe) {
-        this.id_employe = id_employe;
-    }
-
     public byte[] getUploaded_files() {
         return uploaded_files;
     }
 
     public void setUploaded_files(byte[] uploaded_files) {
-        this.uploaded_files = uploaded_files;
+        this.uploaded_files = (uploaded_files != null) ? uploaded_files : new byte[0];
     }
 
+    public List<Integer> getEmployes() {
+        return employes;
+    }
+
+    public void setEmployes(List<Integer> employes) {
+        this.employes = employes;
+    }
+
+    // Méthodes equals et hashCode (basées sur id_projet)
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -136,18 +138,18 @@ public class Projet {
         return Objects.hash(id_projet);
     }
 
+    // Méthode toString (affichage détaillé)
     @Override
     public String toString() {
         return "Projet{" +
                 "id_projet=" + id_projet +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", status=" + status +  // Affichage du statut comme Enum
-                ", end_date=" + end_date +  // Affichage de la date
-                ", starter_at=" + starter_at +  // Affichage de la date
+                ", status=" + status +
+                ", end_date=" + end_date +
+                ", starter_at=" + starter_at +
                 ", abbreviation='" + abbreviation + '\'' +
-                ", id_employe=" + id_employe +
+                ", employes=" + employes +
                 '}';
     }
-
 }

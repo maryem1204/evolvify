@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.AbsenceController" stylesheets="@../Styles/Attendance.css">
+    <children>
+        <VBox spacing="20" prefWidth="900" AnchorPane.topAnchor="10" AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10">
+            <!-- En-tête avec titre et filtres de date -->
+            <BorderPane>
+                <!-- Titre à gauche -->
+                <left>
+                    <Label text="Gestion des Absences" styleClass="header-title"/>
+                </left>
+
+                <!-- Filtres de date à droite -->
+                <right>
+                    <HBox spacing="10" styleClass="filter-section, date-filter">
+                        <ComboBox fx:id="monthComboBox" prefWidth="150" promptText="Mois"/>
+                        <ComboBox fx:id="yearComboBox" prefWidth="100" promptText="Année"/>
+                        <Button text="Rechercher" onAction="#loadAbsences"/>
+                    </HBox>
+                </right>
+            </BorderPane>
+
+            <!-- Buttons for PDF generation -->
+            <HBox spacing="10" styleClass="button-section">
+                <Button fx:id="generateAllPdfButton" text="Générer PDF pour tous" />
+                <Button fx:id="generateSelectedPdfButton" text="Générer PDF pour sélection" />
+            </HBox>
+
+            <!-- Filtres de recherche -->
+            <HBox spacing="10" styleClass="filter-section">
+                <TextField fx:id="searchEmployeeField" promptText="Rechercher un employé..." prefWidth="200" onKeyReleased="#applyFilters"/>
+                <ComboBox fx:id="statusFilterComboBox" promptText="Filtrer par statut" prefWidth="150" onAction="#applyFilters"/>
+            </HBox>
+
+            <!-- ScrollPane pour éviter la coupure du tableau -->
+            <ScrollPane fitToWidth="true" fitToHeight="true">
+                <content>
+                    <TableView fx:id="absenceTable" prefHeight="400">
+                        <columns>
+                            <!-- Colonne Employé -->
+                            <TableColumn text="Employé" fx:id="employeeColumn" prefWidth="200"/>
+                        </columns>
+                    </TableView>
+                </content>
+            </ScrollPane>
+        </VBox>
+    </children>
+</AnchorPane>

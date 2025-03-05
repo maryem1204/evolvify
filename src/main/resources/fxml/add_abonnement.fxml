@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ColorPicker?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.ScrollPane?>
+
+<?import java.lang.String?>
+<ScrollPane fitToWidth="true" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.AddAbonnementController">
+    <content>
+        <VBox spacing="20" style="-fx-padding: 20;">
+            <HBox spacing="20">
+                <!-- Formulaire d'ajout d'abonnement -->
+                <VBox spacing="15" prefWidth="350">
+                    <Label text="Ajouter un nouveau abonnement" style="-fx-font-size: 20; -fx-font-weight: bold;" />
+
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label prefWidth="150" text="Type d'abonnement" />
+                        <ComboBox fx:id="type_ab" prefWidth="176">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="Quotidien"/>
+                                    <String fx:value="Mensuel"/>
+                                    <String fx:value="Annuel"/>
+                                </FXCollections>
+                            </items>
+                        </ComboBox>
+                    </HBox>
+
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label prefWidth="150" text="Date de debut :" />
+                        <DatePicker fx:id="date_deb" prefWidth="176" />
+                    </HBox>
+
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label prefWidth="150" text="Date d'expiration :" />
+                        <DatePicker fx:id="date_exp" prefWidth="176" />
+                    </HBox>
+
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label prefWidth="150" text="Prix : " />
+                        <TextField fx:id="prix" prefWidth="176" />
+                    </HBox>
+
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label prefWidth="150" text="Employé : " />
+                        <TextField fx:id="id_employe" prefWidth="176" editable="false" />
+
+                    </HBox>
+
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label prefWidth="150" text="Status : " />
+                        <ComboBox fx:id="status" prefWidth="176">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="ACTIF"/>
+                                    <String fx:value="SUSPENDU"/>
+                                    <String fx:value="INACTIF"/>
+                                </FXCollections>
+                            </items>
+                        </ComboBox>
+                    </HBox>
+
+                    <Button fx:id="ajouter" styleClass="gradient-button" text="Ajouter" onAction="#ajouterAbonnement" />
+                </VBox>
+
+                <!-- Section QR Code -->
+                <VBox spacing="15" prefWidth="250" alignment="CENTER">
+                    <Label text="QR Code Abonnement" style="-fx-font-size: 16; -fx-font-weight: bold;" />
+                    <ImageView fx:id="qrCodeImageView" fitHeight="200" fitWidth="200" preserveRatio="true" />
+                    <Label text="Scannez ce QR code pour les détails de l'abonnement" wrapText="true" textAlignment="CENTER" />
+                </VBox>
+            </HBox>
+        </VBox>
+    </content>
+</ScrollPane>

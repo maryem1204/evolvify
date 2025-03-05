@@ -14,6 +14,16 @@
 
 <AnchorPane prefHeight="607.0" prefWidth="945.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.KanbanController">
     <VBox alignment="CENTER" spacing="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="20">
+      <HBox prefHeight="57.0" prefWidth="906.0" spacing="400.0">
+         <children>
+            <Label prefHeight="84.0" prefWidth="428.0" text="Liste des tâches " textFill="#0004c2">
+               <font>
+                  <Font name="System Bold" size="43.0" />
+               </font>
+            </Label>
+              <Button fx:id="closeButton" onAction="#handleClose" prefHeight="64.0" prefWidth="71.0" style="-fx-background-color: transparent; -fx-font-size: 30px;" text="✖" textFill="RED" />
+         </children>
+      </HBox>
         <!-- Barre de Recherche avec Bouton Ajouter -->
         <HBox alignment="CENTER_LEFT" prefHeight="46.0" prefWidth="890.0" spacing="100.0">
             <TextField fx:id="searchField" prefHeight="40.0" prefWidth="574.0" promptText="Rechercher une tâche...">

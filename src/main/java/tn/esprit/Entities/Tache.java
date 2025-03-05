@@ -14,6 +14,9 @@ public class Tache {
     private Priority priority;  // Changed to enum Priority
     private String location;
 
+    public Tache() {
+    }
+
 
     public enum Status {
         TO_DO,

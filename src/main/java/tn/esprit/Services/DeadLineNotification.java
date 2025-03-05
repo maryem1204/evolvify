@@ -1,6 +1,5 @@
 package tn.esprit.Services;
 import javafx.application.Application;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.controlsfx.control.Notifications;
 import java.sql.Connection;

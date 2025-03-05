@@ -9,6 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -16,6 +17,28 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.text.FontWeight;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import javafx.scene.text.FontWeight;
+
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.BaseColor;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -24,11 +47,13 @@ import tn.esprit.Entities.Projet;
 import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Services.ProjetService;
 import tn.esprit.Services.UtilisateurService;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,88 +66,140 @@ public class ProjectListController {
     @FXML private TableColumn<Projet, Projet.Status> colStatus;
     @FXML private TableColumn<Projet, Date> colEndDate;
     @FXML private TableColumn<Projet, Date> colStarterDate;
-    @FXML private TableColumn<Projet, String> colEmployeId;  // Afficher le nom au lieu de l'ID
+    @FXML private TableColumn<Projet, List<Integer>> colEmployeId;
     @FXML private TableColumn<Projet, Void> colActions;
     @FXML private TextField recherche;
 
     private ObservableList<Projet> projets = FXCollections.observableArrayList();
-    private ObservableList<Projet> filteredProjet = FXCollections.observableArrayList();
-
     private ProjetService projectService = new ProjetService();
-    private Map<Integer, String> userMap = new HashMap<>(); // ✅ Stocke les ID -> Noms
-
-    private static ProjectListController instance;
-
-    public ProjectListController() {
-        instance = this;
-    }
-
-    public static ProjectListController getInstance() {
-        return instance;
-    }
+    private Map<Integer, Utilisateur> userMap = new HashMap<>();
 
     public void initialize() throws SQLException {
-
         loadUsers();
         projectTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        setupTableColumns();
+        loadProjects();
+        addActionsColumn();
+        // Appliquer des styles CSS personnalisés
+        applyCustomStyles();
+        recherche.textProperty().addListener((observable, oldValue, newValue) -> filterProjets(newValue));
+    }
 
-        // 🔹 Mapper les colonnes aux attributs correspondants
+    private void applyCustomStyles() {
+        projectTable.getStyleClass().add("table-view");
+
+        // Appliquer des styles aux boutons
+        recherche.getStyleClass().add("searchInput");
+        projectTable.getStyleClass().add("no-empty-rows");
+    }
+
+    private void setupTableColumns() {
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colAbbreviation.setCellValueFactory(new PropertyValueFactory<>("abbreviation"));
-        colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
-        colStatus.setCellFactory(column -> new TableCell<Projet, Projet.Status>() {
-            private final Label statusLabel = new Label();
 
+        // Configuration de la colonne de statut avec un badge visuel
+        colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
+        colStatus.setCellFactory(col -> new TableCell<Projet, Projet.Status>() {
             @Override
             protected void updateItem(Projet.Status status, boolean empty) {
                 super.updateItem(status, empty);
 
                 if (empty || status == null) {
                     setGraphic(null);
-                } else {
-                    statusLabel.setText(status.toString());
-                    statusLabel.getStyleClass().clear();
-                    statusLabel.getStyleClass().add("status-label");
-
-                    if (status == Projet.Status.IN_PROGRESS) {
-                        statusLabel.getStyleClass().add("status-inprogress");
-                    } else if (status == Projet.Status.COMPLETED) {
-                        statusLabel.getStyleClass().add("status-completed");
-                    }
-
-                    setGraphic(statusLabel);
+                    setText(null);
+                    return;
                 }
+
+                Label statusLabel = new Label(status.toString());
+                statusLabel.getStyleClass().addAll("status-label"); // Base status label style
+
+                // Apply specific status styles based on the status
+                switch (status) {
+                    case IN_PROGRESS:
+                        statusLabel.getStyleClass().add("status-inprogress");
+                        break;
+                    case COMPLETED:
+                        statusLabel.getStyleClass().add("status-completed");
+                        break;
+                    // Add more cases for other statuses if needed
+                    default:
+                        // Default style if no specific style is defined
+                        statusLabel.getStyleClass().add("status-default");
+                }
+
+                setGraphic(statusLabel);
+                setText(null);
             }
         });
-
 
         colEndDate.setCellValueFactory(new PropertyValueFactory<>("end_date"));
         colStarterDate.setCellValueFactory(new PropertyValueFactory<>("starter_at"));
 
-        // 🔹 Personnaliser l'affichage du nom de l'employé avec firstName et lastName
-        colEmployeId.setCellValueFactory(cellData -> {
-            int userId = cellData.getValue().getId_employe();
-            String fullName = userMap.getOrDefault(userId, "Inconnu"); // On récupère le nom complet
-            return new javafx.beans.property.SimpleStringProperty(fullName);
+        // Configuration de la colonne des employés pour afficher les utilisateurs l'un sous l'autre
+        colEmployeId.setCellValueFactory(new PropertyValueFactory<>("employes"));
+        colEmployeId.setCellFactory(col -> new TableCell<Projet, List<Integer>>() {
+            @Override
+            protected void updateItem(List<Integer> employes, boolean empty) {
+                super.updateItem(employes, empty);
+
+                if (empty || employes == null || employes.isEmpty()) {
+                    setGraphic(null);
+                    setText(null);
+                    return;
+                }
+
+                VBox userContainer = new VBox();
+                userContainer.getStyleClass().add("users-cell");
+                userContainer.setSpacing(5);
+
+                for (Integer employeId : employes) {
+                    Utilisateur user = userMap.get(employeId);
+                    if (user != null) {
+                        HBox userItem = new HBox();
+                        userItem.getStyleClass().add("user-item");
+                        userItem.setSpacing(5);
+
+                        // Créer l'avatar avec les initiales
+                        Circle avatar = new Circle(12.5);
+                        avatar.getStyleClass().add("user-avatar");
+                        avatar.setFill(getColorForId(employeId));
+
+                        String initials = getInitials(user.getLastname(), user.getFirstname());
+                        Text initialsText = new Text(initials);
+                        initialsText.setFill(Color.WHITE);
+                        //initialsText.setFont(new Font("System", 10.0)); // Sans le FontWeight
+
+                        StackPane avatarPane = new StackPane(avatar, initialsText);
+                        avatarPane.setAlignment(Pos.CENTER);
+
+                        // Créer le label pour le nom d'utilisateur
+                        Label userName = new Label(user.getFirstname() + " " + user.getLastname());
+                        userName.getStyleClass().add("user-name");
+
+                        userItem.getChildren().addAll(avatarPane, userName);
+                        userContainer.getChildren().add(userItem);
+                    }
+                }
+
+                setGraphic(userContainer);
+            }
+
+            private Color getColorForId(int id) {
+                String[] colors = {
+                        "#1E88E5", "#43A047", "#E53935", "#8E24AA",
+                        "#FB8C00", "#00ACC1", "#3949AB", "#7CB342"
+                };
+                return Color.web(colors[Math.abs(id) % colors.length]);
+            }
+
+            private String getInitials(String lastName, String firstName) {
+                return (firstName.isEmpty() ? "" : firstName.substring(0, 1)) +
+                        (lastName.isEmpty() ? "" : lastName.substring(0, 1));
+            }
         });
-
-
-        // Charger les projets après avoir chargé les utilisateurs
-        loadProjects();
-
-        // Ajouter les colonnes d'actions
-        addActionsColumn();
-
-        // Mettre à jour la table lorsque l'utilisateur tape dans la barre de recherche
-        recherche.textProperty().addListener((observable, oldValue, newValue) -> handleSearch());
     }
 
-
-    @FXML
-    private void handleSearch() {
-        String keyword = recherche.getText();
-        filterProjets(keyword);
-    }
+    private ObservableList<Projet> filteredProjet = FXCollections.observableArrayList();
 
     private void filterProjets(String keyword) {
         if (keyword == null || keyword.trim().isEmpty()) {
@@ -138,7 +215,9 @@ public class ProjectListController {
                     String abbreviation = projet.getAbbreviation() != null ? projet.getAbbreviation().toLowerCase() : "";
                     String status = projet.getStatus() != null ? projet.getStatus().toString().toLowerCase() : "";
 
-                    return name.contains(searchKeyword) || abbreviation.contains(searchKeyword) || status.contains(searchKeyword);
+                    return name.contains(searchKeyword) ||
+                            abbreviation.contains(searchKeyword) ||
+                            status.contains(searchKeyword);
                 })
                 .collect(Collectors.toList());
 
@@ -146,42 +225,22 @@ public class ProjectListController {
         projectTable.setItems(filteredProjet);
     }
 
-
-
-    private void loadProjects() throws SQLException {
-        List<Projet> projetsList = projectService.showAll();
-        projets.setAll(projetsList); // Mise à jour de la liste observable
-        projectTable.setItems(projets); // Mise à jour de la table
-    }
-
-
     private void addActionsColumn() {
         colActions.setCellFactory(param -> new TableCell<Projet, Void>() {
             private final ImageView editIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/editIcon.png")));
             private final ImageView deleteIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/deleteIconn.png")));
-            private final HBox hbox = new HBox(10, editIcon, deleteIcon);
+            private final HBox hbox = new HBox(10);
 
             {
-                // Taille des icônes
                 editIcon.setFitHeight(20);
                 editIcon.setFitWidth(20);
                 deleteIcon.setFitHeight(20);
                 deleteIcon.setFitWidth(20);
 
-                // Ajout du curseur main pour montrer qu'ils sont cliquables
                 editIcon.setStyle("-fx-cursor: hand;");
                 deleteIcon.setStyle("-fx-cursor: hand;");
 
-                // Actions sur clic des icônes
-                editIcon.setOnMouseClicked(event -> {
-                    Projet projet = getTableView().getItems().get(getIndex());
-                    showEditPopup(projet);
-                });
-
-                deleteIcon.setOnMouseClicked(event -> {
-                    Projet projet = getTableView().getItems().get(getIndex());
-                    showDeleteConfirmation(projet);
-                });
+                hbox.getChildren().addAll(editIcon, deleteIcon);
             }
 
             @Override
@@ -190,6 +249,17 @@ public class ProjectListController {
                 if (empty) {
                     setGraphic(null);
                 } else {
+                    // Réassigner les actions à chaque mise à jour
+                    editIcon.setOnMouseClicked(event -> {
+                        Projet projet = getTableView().getItems().get(getIndex());
+                        showEditPopup(projet);
+                    });
+
+                    deleteIcon.setOnMouseClicked(event -> {
+                        Projet projet = getTableView().getItems().get(getIndex());
+                        deleteProjet(projet);
+                    });
+
                     setGraphic(hbox);
                 }
             }
@@ -197,25 +267,38 @@ public class ProjectListController {
     }
 
 
-    private void showDeleteConfirmation(Projet projet) {
+
+    private void deleteProjet(Projet projet) {
         try {
+            // Charger le fichier FXML
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/DeleteProjet.fxml"));
             Parent root = loader.load();
+
+            // Obtenir le contrôleur et passer le projet sélectionné
             DeleteProjetController controller = loader.getController();
             controller.setProjet(projet);
-            controller.setProjectListController(this); // ✅ Passer l'instance actuelle
+            controller.setProjectListController(this); // Référence au contrôleur parent
 
-            Stage deleteStage = new Stage();
-            deleteStage.initStyle(StageStyle.UNDECORATED);
-            deleteStage.setTitle("Suppression de Projet");
-            deleteStage.setScene(new Scene(root));
-            deleteStage.show();
+            // Créer une nouvelle fenêtre pour la confirmation
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL); // Bloquer l'interaction avec la fenêtre principale
+            stage.setTitle("Confirmation de suppression");
+            stage.setScene(new Scene(root));
+            stage.showAndWait(); // Attendre la fermeture de la fenêtre avant de continuer
         } catch (IOException e) {
             e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'ouvrir la boîte de dialogue de suppression.");
         }
     }
 
 
+    private void showAlert(Alert.AlertType type, String title, String content) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
 
     private void showEditPopup(Projet projet) {
         try {
@@ -223,156 +306,198 @@ public class ProjectListController {
             Parent root = loader.load();
             ModifierProjetController controller = loader.getController();
             controller.setUserData(projet);
-            controller.setListUsersController(this);
+
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.initStyle(StageStyle.UNDECORATED);
             stage.setScene(new Scene(root));
             stage.showAndWait();
             refreshProjetList();
-
         } catch (IOException e) {
             e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur",
+                    "Impossible d'ouvrir la fenêtre de modification: " + e.getMessage());
         }
     }
+
+    private void loadUsers() throws SQLException {
+        UtilisateurService utilisateurService = new UtilisateurService();
+        List<Utilisateur> users = utilisateurService.showAll();
+        userMap.clear();
+        for (Utilisateur user : users) {
+            userMap.put(user.getId_employe(), user);
+        }
+    }
+
     @FXML
     private void openAjoutProjetPopup() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AjoutProjet.fxml"));
             Parent root = loader.load();
-
             Stage popupStage = new Stage();
             popupStage.initModality(Modality.APPLICATION_MODAL);
-            popupStage.initStyle(StageStyle.UNDECORATED);// Empêche l'interaction avec la fenêtre principale
+            popupStage.initStyle(StageStyle.UNDECORATED);
             popupStage.setTitle("Ajouter un projet");
             popupStage.setScene(new Scene(root));
             popupStage.showAndWait();
             refreshProjetList();
-
-
         } catch (IOException e) {
             e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur",
+                    "Impossible d'ouvrir la fenêtre d'ajout: " + e.getMessage());
         }
     }
 
     public void refreshProjetList() {
         try {
-            List<Projet> projetList = projectService.showAll();
-            projets.setAll(projetList); // ✅ Mise à jour directe de la liste observable
+            projets.setAll(projectService.showAll());
             projectTable.setItems(projets);
+
+            // Réappliquer la configuration des colonnes et des actions
+            setupTableColumns();
+            addActionsColumn();
         } catch (SQLException e) {
             e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur de chargement",
+                    "Erreur lors du chargement des projets: " + e.getMessage());
         }
     }
 
-
-    private void loadUsers() throws SQLException {
-        UtilisateurService utilisateurService = new UtilisateurService();
-        List<Utilisateur> users = utilisateurService.showAll(); // Récupérer tous les utilisateurs
-
-        userMap.clear(); // Vider la map avant de la remplir
-        for (Utilisateur user : users) {
-            String fullName = user.getFirstname() + " " + user.getLastname(); // Concaténer prénom + nom
-            userMap.put(user.getId_employe(), fullName);
-        }
-
-        System.out.println("User Map Loaded: " + userMap); // Vérifier le contenu dans la console
-    }
-
-
+    @FXML
     public void exportTableViewToPDF() {
         try {
             // FileChooser for saving the PDF
             FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Save PDF");
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
-            File file = fileChooser.showSaveDialog(null); // No need for Stage
+            fileChooser.setTitle("Enregistrer en PDF");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichiers PDF", "*.pdf"));
+            File file = fileChooser.showSaveDialog(null);
 
             if (file != null) {
                 Document document = new Document();
                 PdfWriter.getInstance(document, new FileOutputStream(file));
                 document.open();
 
-                // ================== ✅ ADD LOGO ==================
+                // Logo
                 String logoPath = getClass().getResource("/images/logo.png").getPath();
                 com.itextpdf.text.Image logo = com.itextpdf.text.Image.getInstance(logoPath);
                 logo.scaleToFit(100, 100);
                 logo.setAlignment(Element.ALIGN_LEFT);
                 document.add(logo);
-                // =================================================
 
-                // Title
-                Font titleFont = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD);
-                Paragraph title = new Paragraph("Projet", titleFont);
+                // Titre du document
+                Font titleFont = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD, new BaseColor(0, 71, 171));
+                Paragraph title = new Paragraph("Liste des Projets", titleFont);
                 title.setAlignment(Element.ALIGN_CENTER);
                 document.add(title);
                 document.add(Chunk.NEWLINE);
 
-                // Count visible columns (excluding "modifier" and "supprimer")
+                // Date d'exportation
+                Font dateFont = new Font(Font.FontFamily.HELVETICA, 10, Font.ITALIC);
+                Paragraph dateParagraph = new Paragraph("Exporté le: " + new java.util.Date(), dateFont);
+                dateParagraph.setAlignment(Element.ALIGN_RIGHT);
+                document.add(dateParagraph);
+                document.add(Chunk.NEWLINE);
+
+                // Nombre de colonnes visibles (excluant "Actions")
                 long visibleColumnCount = projectTable.getColumns().stream()
                         .filter(column -> !column.getText().equalsIgnoreCase("Actions"))
                         .count();
 
-                // Create PDF Table with the correct number of columns
+                // Création du tableau PDF
                 PdfPTable pdfTable = new PdfPTable((int) visibleColumnCount);
+                pdfTable.setWidthPercentage(100);
 
-                // Add table headers (excluding "modifier" and "supprimer")
+                // Style pour les en-têtes
+                Font headerFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.WHITE);
+                BaseColor headerBackground = BaseColor.LIGHT_GRAY;
+
+                // Ajout des en-têtes
                 for (TableColumn<Projet, ?> column : projectTable.getColumns()) {
-                    if (!column.getText().equalsIgnoreCase("Actions") )
-                    {
-                        PdfPCell header = new PdfPCell(new Phrase(column.getText()));
-                        header.setBackgroundColor(BaseColor.LIGHT_GRAY);
+                    if (!column.getText().equalsIgnoreCase("Actions")) {
+                        PdfPCell header = new PdfPCell(new Phrase(column.getText(), headerFont));
+                        header.setBackgroundColor(headerBackground);
+                        header.setPadding(8);
+                        header.setHorizontalAlignment(Element.ALIGN_CENTER);
                         pdfTable.addCell(header);
                     }
                 }
 
-                // Add table data
+                // Style pour les données
+                Font cellFont = new Font(Font.FontFamily.HELVETICA, 10);
+                BaseColor evenRowColor = BaseColor.CYAN;
+                BaseColor oddRowColor = BaseColor.WHITE;
+
+                // Ajout des données
                 ObservableList<Projet> items = projectTable.getItems();
+                int rowNum = 0;
                 for (Projet item : items) {
+                    BaseColor rowColor = (rowNum % 2 == 0) ? evenRowColor : oddRowColor;
+                    rowNum++;
+
                     for (TableColumn<Projet, ?> column : projectTable.getColumns()) {
-                        if (!column.getText().equalsIgnoreCase("Actions") )
-                        {
-                            String cellValue = column.getCellObservableValue(item) != null ?
-                                    column.getCellObservableValue(item).getValue().toString() : "";
-                            pdfTable.addCell(cellValue);
+                        if (!column.getText().equalsIgnoreCase("Actions")) {
+                            PdfPCell cell = new PdfPCell();
+
+                            // Traitement spécial pour la colonne "assigné à"
+                            if (column.getText().equalsIgnoreCase("assigné à")) {
+                                List<Integer> employes = item.getEmployes();
+                                if (employes != null && !employes.isEmpty()) {
+                                    StringBuilder employesList = new StringBuilder();
+                                    for (Integer employeId : employes) {
+                                        Utilisateur user = userMap.get(employeId);
+                                        if (user != null) {
+                                            if (employesList.length() > 0) {
+                                                employesList.append("\n");
+                                            }
+                                            employesList.append(user.getFirstname()).append(" ").append(user.getLastname());
+                                        }
+                                    }
+                                    cell = new PdfPCell(new Phrase(employesList.toString(), cellFont));
+                                } else {
+                                    cell = new PdfPCell(new Phrase("", cellFont));
+                                }
+                            } else {
+                                // Autres colonnes
+                                String cellValue = column.getCellObservableValue(item) != null ?
+                                        column.getCellObservableValue(item).getValue().toString() : "";
+                                cell = new PdfPCell(new Phrase(cellValue, cellFont));
+                            }
+
+                            cell.setBackgroundColor(rowColor);
+                            cell.setPadding(5);
+                            pdfTable.addCell(cell);
                         }
                     }
                 }
 
                 document.add(pdfTable);
+
+                // Pied de page
+                Paragraph footer = new Paragraph("Document généré automatiquement", new Font(Font.FontFamily.HELVETICA, 8));
+                footer.setAlignment(Element.ALIGN_CENTER);
+                document.add(Chunk.NEWLINE);
+                document.add(footer);
+
                 document.close();
 
-                System.out.println("PDF created successfully with logo!");
-
+                showAlert(Alert.AlertType.INFORMATION, "PDF Créé",
+                        "Le document PDF a été créé avec succès !");
             }
 
         } catch (Exception e) {
             e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur PDF",
+                    "Une erreur est survenue lors de la création du PDF: " + e.getMessage());
         }
     }
-    @FXML
-    private void openTacheList(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ListTacheRH.fxml")); // Remplace par le chemin correct
-            Parent root = loader.load();
+    private void loadProjects() throws SQLException {
+        // Clear existing projects
+        projets.clear();
 
-            // Récupérer le contrôleur et passer le projet sélectionné
-            tacheListController taskController = loader.getController();
-            Projet selectedProjet = projectTable.getSelectionModel().getSelectedItem();
+        // Fetch all projects from the project service
+        projets.addAll(projectService.showAll());
 
-            if (selectedProjet != null) {
-                taskController.setProjet(selectedProjet); // Passer le projet pour charger ses tâches
-            }
-
-            // Obtenir la scène actuelle et changer la vue
-            Stage stage = (Stage) projectTable.getScene().getWindow();
-            stage.setScene(new Scene(root));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        // Set the projects in the table view
+        projectTable.setItems(projets);
     }
-
-
 }

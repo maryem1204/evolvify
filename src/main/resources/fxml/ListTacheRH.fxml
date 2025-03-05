@@ -3,6 +3,7 @@
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -13,7 +14,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.tacheListController">
+<BorderPane fx:id="root" prefHeight="674.0" prefWidth="1180.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.tacheListController">
 
     <stylesheets>
         <URL value="@../Styles/AjoutProjet.css" />
@@ -22,25 +23,41 @@
     </stylesheets>
 
         <top>
-            <VBox spacing="10">
-                <HBox spacing="10" style="-fx-padding: 10px;">
-                    <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #0047AB;" text="Liste des taches">
+            <VBox prefWidth="1188.0" spacing="10">
+                <HBox prefHeight="73.0" prefWidth="1188.0" spacing="10.0" style="-fx-padding: 10px;">
+                    <Label prefHeight="42.0" prefWidth="207.0" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #0047AB;" text="Liste des taches">
                <padding>
                   <Insets top="7.0" />
-               </padding></Label>
-                    <HBox alignment="CENTER_LEFT" maxWidth="700" spacing="10" styleClass="searchBox">
-                        <TextField fx:id="recherche" maxWidth="700" prefHeight="31.0" prefWidth="515.0" promptText="Rechercher une tache..." styleClass="searchInput" />
+               </padding>
+               <HBox.margin>
+                  <Insets top="5.0" />
+               </HBox.margin></Label>
+                    <HBox alignment="CENTER_LEFT" maxWidth="700" prefHeight="59.0" prefWidth="287.0" spacing="10" styleClass="searchBox">
+                        <TextField fx:id="recherche" maxWidth="700" prefHeight="31.0" prefWidth="300.0" promptText="Rechercher une tache..." styleClass="searchInput" />
+                    </HBox>
+                    <!-- Date filter controls -->
+                    <HBox alignment="CENTER" prefHeight="59.0" prefWidth="499.0" spacing="10">
+                        <ComboBox fx:id="monthFilter" prefHeight="38.0" prefWidth="130.0" promptText="Mois" styleClass="filter-combo" />
+                        <ComboBox fx:id="yearFilter" prefWidth="100.0" promptText="Année" styleClass="filter-combo" />
+                        <Button fx:id="filterButton" styleClass="filter-button" text="Rechercher" />
+                        <Button onAction="#resetFilters" styleClass="reset-button" text="Réinitialiser" />
                     </HBox>
                     <Pane HBox.hgrow="ALWAYS" />
-                    <Button onAction="#openAjoutTachePopup" styleClass="gradient-button" text="+ Ajouter tache" />
+
+               <HBox.margin>
+                  <Insets top="5.0" />
+               </HBox.margin>
+            <VBox.margin>
+               <Insets />
+            </VBox.margin>
                 </HBox>
             </VBox>
         </top>
 
             <!-- Ajout d'un ScrollPane pour la table -->
     <center>
-    <AnchorPane prefHeight="600.0" prefWidth="1200.0">
-                <TableView fx:id="tacheTable" prefHeight="600.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+    <AnchorPane prefHeight="600.0" prefWidth="1188.0">
+                <TableView fx:id="tacheTable" prefHeight="600.0" prefWidth="1188.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columns>
                         <TableColumn fx:id="colDescription" prefWidth="141.59999990463257" text="Tache description" />
                         <TableColumn fx:id="colStatus" prefWidth="83.19998168945312" text="Status" />

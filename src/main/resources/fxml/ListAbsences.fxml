@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8.0" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.Controllers.ListAbsencesController"
+            style="-fx-background-color: transparent; -fx-padding: 20px;"
+            stylesheets="@../Styles/ListAbsences.css">
+
+    <!-- Header avec titre et barre de recherche -->
+    <top>
+        <VBox spacing="10">
+            <HBox spacing="10" style="-fx-padding: 10px;">
+                <Label text="Liste des Absences"
+                       style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #0047AB; " />
+                <Pane HBox.hgrow="ALWAYS"/>
+                <Button text="+ Ajouter Absence"
+                        styleClass="gradient-button"/>
+            </HBox>
+
+            <!-- Barre de recherche -->
+            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="searchBox" maxWidth="400">
+                <TextField fx:id="searchField" promptText="Rechercher une absence..."
+                           styleClass="searchInput" maxWidth="300"/>
+                <Button fx:id="searchButton"
+                        styleClass="searchButton" alignment="TOP_RIGHT">
+                    <graphic>
+                        <ImageView fitWidth="20" fitHeight="20">
+                            <image>
+                                <Image url="@../images/search-1.jpg"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="10">
+            <!-- Calendrier interactif -->
+            <GridPane fx:id="calendarGrid" hgap="5" vgap="5" alignment="CENTER" >
+                <Label text="Dim" style="-fx-font-weight: bold; -fx-alignment: center;"/>
+                <Label text="Lun" style="-fx-font-weight: bold; -fx-alignment: center;"/>
+                <Label text="Mar" style="-fx-font-weight: bold; -fx-alignment: center;"/>
+                <Label text="Mer" style="-fx-font-weight: bold; -fx-alignment: center;"/>
+                <Label text="Jeu" style="-fx-font-weight: bold; -fx-alignment: center;"/>
+                <Label text="Ven" style="-fx-font-weight: bold; -fx-alignment: center;"/>
+                <Label text="Sam" style="-fx-font-weight: bold; -fx-alignment: center;"/>
+
+                <!-- Exemples de jours, à remplacer dynamiquement dans le code -->
+                <Button text="1" fx:id="day1" style="-fx-padding: 10px;" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <Button text="2" fx:id="day2" style="-fx-padding: 10px;" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                <Button text="3" fx:id="day3" style="-fx-padding: 10px;" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+                <!-- Continuez pour chaque jour du mois -->
+
+                <!-- Autres jours de la semaine -->
+                <Button text="4" fx:id="day4" style="-fx-padding: 10px;" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <Button text="5" fx:id="day5" style="-fx-padding: 10px;" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                <Button text="6" fx:id="day6" style="-fx-padding: 10px;" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+                <!-- Ajoutez tous les jours du mois comme ci-dessus -->
+            </GridPane>
+
+        </VBox>
+    </center>
+
+</BorderPane>

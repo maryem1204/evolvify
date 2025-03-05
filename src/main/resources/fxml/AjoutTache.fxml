@@ -18,7 +18,7 @@
 
     <!-- Bouton de fermeture en haut à droite -->
     <HBox alignment="TOP_RIGHT" prefHeight="66.0" prefWidth="510.0">
-   
+
        <Label prefHeight="68.0" prefWidth="287.0" style="-fx-font-size: 22px; -fx-font-weight: bold;" text="Créer une Tâche" textFill="#480fd9">
          <font>
             <Font size="21.0" />

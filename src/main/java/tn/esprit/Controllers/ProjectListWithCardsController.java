@@ -1,4 +1,6 @@
 package tn.esprit.Controllers;
+import tn.esprit.Entities.Role;
+import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Services.DeadLineNotification;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -21,6 +23,7 @@ import tn.esprit.Entities.Projet;
 import tn.esprit.Services.ProjetService;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -28,6 +31,8 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 import javafx.scene.control.Alert.AlertType;
+import tn.esprit.Utils.SessionManager;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -38,18 +43,23 @@ public class ProjectListWithCardsController {
     private ProjetService projetService = new ProjetService();
     private List<Projet> allProjets;
 
-    @FXML
-    private GridPane projectListContainer;  // Container pour les cartes de projets
+    @FXML private GridPane projectListContainer;  // Container pour les cartes de projets
     @FXML private TextField recherche;
-
+    @FXML private Button btnAjouterProjet;
     @FXML private ImageView notificationIcon;
     @FXML private Label notificationBadge;
 
-    @FXML
-    public void initialize() {
+    @FXML public void initialize() {
         loadProjects();
         loadNotificationIcon();
 
+        if (btnAjouterProjet != null) {
+            Utilisateur utilisateur = SessionManager.getUtilisateurConnecte();
+            if (utilisateur != null && utilisateur.getRole() == Role.EMPLOYEE) {
+                btnAjouterProjet.setDisable(true);
+                btnAjouterProjet.setOpacity(0.5);
+            }
+        }
         // Vérifier si les composants existent avant d'agir dessus
         if (notificationBadge != null) {
             notificationBadge.setText("");
@@ -78,12 +88,37 @@ public class ProjectListWithCardsController {
 
     private void loadProjects() {
         try {
-            allProjets = projetService.showAll();  // Charger tous les projets
-            updateProjectList(allProjets);  // Afficher tous les projets
+            // Get the currently logged-in user
+            Utilisateur utilisateurConnecte = SessionManager.getUtilisateurConnecte();
+
+            if (utilisateurConnecte == null) {
+                // If no user is logged in, show an error or empty list
+                allProjets = new ArrayList<>();
+                updateProjectList(allProjets);
+                return;
+            }
+
+            // Check if the user is an admin (show all projects)
+            if (utilisateurConnecte.getRole() == Role.EMPLOYEE) {
+                allProjets = projetService.showAll();
+            } else {
+                // For other roles, get projects assigned to the current user
+                allProjets = projetService.getProjectsByEmployee(utilisateurConnecte.getId_employe());
+            }
+
+            updateProjectList(allProjets);
         } catch (SQLException e) {
             e.printStackTrace();
+            // Handle the error appropriately, perhaps show an alert
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Erreur de chargement des projets");
+            alert.setContentText("Impossible de charger les projets. Veuillez réessayer.");
+            alert.showAndWait();
         }
     }
+
+
 
     @FXML
     private void handleSearch() {
@@ -130,7 +165,7 @@ public class ProjectListWithCardsController {
             projectListContainer.add(card, col, row);
 
             col++;
-            if (col > 2) {  // Trois cartes par ligne
+            if (col > 3) {  // Trois cartes par ligne
                 col = 0;
                 row++;
             }
@@ -174,23 +209,46 @@ public class ProjectListWithCardsController {
         eyeIcon.setFitHeight(40);
         eyeIcon.setFitWidth(40);
 
-        // Changer le curseur quand la souris passe dessus
-        editIcon.setStyle("-fx-cursor: hand;");
-        deleteIcon.setStyle("-fx-cursor: hand;");
+        // Vérifier le rôle de l'utilisateur connecté
+        Utilisateur utilisateur = SessionManager.getUtilisateurConnecte();
+        boolean isEmployee = false;
+
+        // Vérifier si l'utilisateur est un employé
+        if (utilisateur != null && utilisateur.getRole() == Role.EMPLOYEE) {
+            isEmployee = true;
+        }
+
+        // Appliquer les styles et les actions en fonction du rôle
+        if (isEmployee) {
+            // Désactiver les icônes pour les employés
+            editIcon.setOpacity(0.5);
+            deleteIcon.setOpacity(0.5);
+            editIcon.setStyle("-fx-cursor: default;");
+            deleteIcon.setStyle("-fx-cursor: default;");
+            // Ne pas ajouter d'événements de clic pour les employés
+        } else {
+            // Actions pour les administrateurs et autres rôles
+            editIcon.setStyle("-fx-cursor: hand;");
+            deleteIcon.setStyle("-fx-cursor: hand;");
+            editIcon.setOnMouseClicked(event -> showEditPopup(projet));
+            deleteIcon.setOnMouseClicked(event -> showDeleteConfirmation(projet));
+        }
+
+        // L'icône pour voir les détails reste toujours active
         eyeIcon.setStyle("-fx-cursor: hand;");
-        // Actions lors du clic sur les icônes
-        editIcon.setOnMouseClicked(event -> showEditPopup(projet));
-        deleteIcon.setOnMouseClicked(event -> showDeleteConfirmation(projet));
         eyeIcon.setOnMouseClicked(event -> {
             afficherDetailsProjet(projet);
         });
-        // Action pour afficher les détails du projet
+
+        // Ajouter toutes les icônes à la boîte de boutons
         buttonBox.getChildren().addAll(editIcon, deleteIcon, eyeIcon);
         content.getChildren().addAll(nameText, descText, statusText, buttonBox);
         card.getChildren().add(content);
 
         return card;
     }
+
+
 
     private void showEditPopup(Projet projet) {
         // Ouvrir la fenêtre pour éditer un projet
@@ -307,4 +365,3 @@ public class ProjectListWithCardsController {
     }
 
 }
-

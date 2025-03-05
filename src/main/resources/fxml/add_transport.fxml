@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SplitMenuButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="add_transport" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.AddTransportController">
+    <children>
+        <Label layoutX="128.0" layoutY="39.0" prefHeight="46.0" prefWidth="348.0" text="Nouveau Moyen de Transport" textFill="#ef4907">
+            <font>
+                <Font size="26.0" />
+            </font>
+        </Label>
+        <Label layoutX="80.0" layoutY="133.0" text="Type :">
+            <font>
+                <Font size="17.0" />
+            </font>
+        </Label>
+        <Label layoutX="80.0" layoutY="183.0" text="Capacité :">
+            <font>
+                <Font size="17.0" />
+            </font>
+        </Label>
+        <Label layoutX="80.0" layoutY="233.0" text="Immatriculation">
+            <font>
+                <Font size="17.0" />
+            </font>
+        </Label>
+        <Label layoutX="90.0" layoutY="293.0" text="Status :">
+            <font>
+                <Font size="17.0" />
+            </font>
+        </Label>
+        <TextField fx:id="type" layoutX="274.0" layoutY="133.0" />
+        <SplitMenuButton fx:id="status" layoutX="274.0" layoutY="275.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0" text="Status">
+            <items>
+
+            </items>
+        </SplitMenuButton>
+        <TextField fx:id="immatriculation" layoutX="275.0" layoutY="233.0" />
+        <Button fx:id="Ajouter" layoutX="476.0" layoutY="335.0" mnemonicParsing="false" onAction="#ajouterTransport" styleClass="gradient-button" stylesheets="@../../java/tn/esprit/Styles/add_transport.css" text="Ajouter" />
+        <TextField fx:id="Capacité" layoutX="276.0" layoutY="184.0" />
+    </children>
+   <stylesheets>
+      <URL value="@../Styles/add_transport.css" />
+      <URL value="@../../java/tn/esprit/Styles/color.css" />
+   </stylesheets>
+</AnchorPane>

@@ -32,18 +32,18 @@ public class KanbanController {
     @FXML private VBox inProgressTasks;
     @FXML private VBox doneTasks;
     @FXML private VBox canceledTasks;
-    @FXML
-    private ProgressBar progressBar50;
-
-    @FXML
-    private ProgressBar progressBar100;
-
-
+    @FXML private ProgressBar progressBar50;
+    @FXML Button closeButton;
+    @FXML private ProgressBar progressBar100;
     private final TacheService tacheService = new TacheService();
+    private int projectId;
 
-    @FXML
-    public void initialize() {
-        loadTaches();
+    public void setProjectId(int projectId) {
+        this.projectId = projectId;
+    }
+
+    @FXML public void initialize() {
+        // Don't load tasks here - wait until projectId is set
         setUpSearchListener();
         addTaskButton.setOnAction(event -> openAjoutTachePopup());
     }
@@ -52,18 +52,19 @@ public class KanbanController {
         searchField.textProperty().addListener((observable, oldValue, newValue) -> handleSearch(newValue));
     }
 
-    private void handleSearch(String keyword) {
-        loadTaches(keyword);
+    /**
+     * Load tasks for the current project
+     */
+    public void loadTachesForProject(int projectId) {
+        loadTachesForProject(projectId, "");
     }
 
-    private void loadTaches() {
-        loadTaches("");
-
-    }
-
-    private void loadTaches(String keyword) {
+    /**
+     * Load tasks for the current project with optional search filter
+     */
+    private void loadTachesForProject(int projectId, String keyword) {
         try {
-            List<Tache> taches = tacheService.showAll();
+            List<Tache> taches = tacheService.getTachesByProjetId(projectId);
             if (!keyword.isEmpty()) {
                 String searchKeyword = keyword.toLowerCase();
                 taches = taches.stream()
@@ -75,6 +76,10 @@ public class KanbanController {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private void handleSearch(String keyword) {
+        loadTachesForProject(projectId, keyword);
     }
 
     private String getPriorityColor(Tache.Priority priority) {
@@ -95,8 +100,6 @@ public class KanbanController {
         inProgressTasks.getChildren().clear();
         doneTasks.getChildren().clear();
         canceledTasks.getChildren().clear();
-
-
 
         for (Tache tache : taches) {
             VBox taskBox = createTaskBox(tache);
@@ -120,7 +123,7 @@ public class KanbanController {
     }
 
     private VBox createTaskBox(Tache tache) {
-        VBox taskBox = new VBox();
+        VBox taskBox = new VBox(5); // 5px spacing between elements
         taskBox.setStyle(
                 "-fx-background-color: white; " +
                         "-fx-padding: 10px; " +
@@ -131,6 +134,62 @@ public class KanbanController {
                         "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0, 2, 2);"
         );
 
+        // Ajouter une barre de progression selon le statut - maintenant au-dessus des labels
+        if (tache.getStatus() == Tache.Status.IN_PROGRESS) {
+            // Conteneur pour barre et pourcentage
+            VBox progressContainer = new VBox(3);
+
+            // Etiquette indiquant "Progression"
+            Label titleLabel = new Label("Progression:");
+            titleLabel.setStyle("-fx-font-weight: bold;");
+
+            // Conteneur horizontal pour barre et pourcentage
+            HBox progressBox = new HBox(5);
+
+            // Barre de progression plus grande et plus visible
+            ProgressBar progressBar = new ProgressBar(0.5); // 50% de progression
+            progressBar.setPrefWidth(120); // Largeur réduite pour s'adapter à une petite interface
+            progressBar.setPrefHeight(20); // Hauteur augmentée pour meilleure visibilité
+            progressBar.setStyle("-fx-accent: #f39c12; -fx-control-inner-background: #fff7d4;"); // Couleur orangée avec fond plus visible
+
+            // Label pour le pourcentage en gras et plus grand
+            Label progressLabel = new Label("50%");
+            progressLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #f39c12; -fx-font-size: 14px;");
+
+            progressBox.getChildren().addAll(progressBar, progressLabel);
+            progressBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+            progressContainer.getChildren().addAll(titleLabel, progressBox);
+            taskBox.getChildren().add(progressContainer);
+        } else if (tache.getStatus() == Tache.Status.DONE) {
+            // Conteneur pour barre et pourcentage
+            VBox progressContainer = new VBox(3);
+
+            // Etiquette indiquant "Progression"
+            Label titleLabel = new Label("Progression:");
+            titleLabel.setStyle("-fx-font-weight: bold;");
+
+            // Conteneur horizontal pour barre et pourcentage
+            HBox progressBox = new HBox(5);
+
+            // Barre de progression plus grande et plus visible
+            ProgressBar progressBar = new ProgressBar(1.0); // 100% de progression
+            progressBar.setPrefWidth(120); // Largeur réduite pour s'adapter à une petite interface
+            progressBar.setPrefHeight(20); // Hauteur augmentée pour meilleure visibilité
+            progressBar.setStyle("-fx-accent: #2ecc71; -fx-control-inner-background: #d4f7d4;"); // Couleur verte avec fond plus visible
+
+            // Label pour le pourcentage en gras et plus grand
+            Label progressLabel = new Label("100%");
+            progressLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #2ecc71; -fx-font-size: 10px;");
+
+            progressBox.getChildren().addAll(progressBar, progressLabel);
+            progressBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+            progressContainer.getChildren().addAll(titleLabel, progressBox);
+            taskBox.getChildren().add(progressContainer);
+        }
+
+        // Labels de détails de la tâche
         Label descLabel = new Label("Description: " + tache.getDescription());
         descLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #333;");
 
@@ -139,9 +198,12 @@ public class KanbanController {
         Label priorityLabel = new Label("Priorité: " + tache.getPriority());
         priorityLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: " + getPriorityColor(tache.getPriority()) + ";");
 
+        // Ajouter les labels après les barres de progression
+        taskBox.getChildren().addAll(descLabel, dateLabel, employeLabel, priorityLabel);
+
         // Icône de suppression
         ImageView deleteIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/deleteIconn.png")));
-        deleteIcon.setFitWidth(20);  // Augmenter la taille pour meilleure visibilité
+        deleteIcon.setFitWidth(20);
         deleteIcon.setFitHeight(20);
         deleteIcon.setPreserveRatio(true);
         deleteIcon.setStyle("-fx-cursor: hand;");
@@ -151,8 +213,10 @@ public class KanbanController {
         HBox deleteBox = new HBox(deleteIcon);
         deleteBox.setStyle("-fx-alignment: center-right; -fx-padding: 5px;");
 
-        // Ajouter les éléments au VBox
-        taskBox.getChildren().addAll(descLabel, dateLabel, employeLabel, priorityLabel, deleteBox);
+        // Ajouter l'icône de suppression en dernier
+        taskBox.getChildren().add(deleteBox);
+
+        // Configurer le drag-and-drop
         addDragAndDropFunctionality(taskBox, tache);
 
         return taskBox;
@@ -204,7 +268,7 @@ public class KanbanController {
                                 tacheService.update(movedTask); // Met à jour la BDD
 
                                 // Recharger l'affichage
-                                loadTaches();
+                                loadTachesForProject(projectId);
                                 success = true;
                             }
                         }
@@ -216,9 +280,9 @@ public class KanbanController {
                 event.setDropCompleted(success); // Confirmer si l'opération a été réussie
                 event.consume();
             });
-
         }
     }
+
     private Tache.Status getStatusFromVBox(VBox column) {
         if (column == todoTasks) return Tache.Status.TO_DO;
         if (column == inProgressTasks) return Tache.Status.IN_PROGRESS;
@@ -232,6 +296,8 @@ public class KanbanController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AjoutTache.fxml"));
             Parent root = loader.load();
+            AjoutTacheController controller = loader.getController();
+            controller.setProjectId(projectId);
             Stage popupStage = new Stage();
             popupStage.initModality(Modality.APPLICATION_MODAL);
             popupStage.initStyle(StageStyle.UNDECORATED);
@@ -241,10 +307,20 @@ public class KanbanController {
             popupStage.showAndWait();
 
             // Recharger les tâches après fermeture du popup
-            loadTaches();
+            loadTachesForProject(projectId);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void handleClose() {
+        closeWindow();
+    }
+
+    private void closeWindow() {
+        Stage stage = (Stage) closeButton.getScene().getWindow();
+        stage.close();
     }
 
     private void showDeleteConfirmation(Tache tache) {
@@ -265,9 +341,9 @@ public class KanbanController {
             e.printStackTrace();
         }
     }
+
     public void refreshKanban() {
-        loadTaches(); // Recharger toutes les tâches
+        // Use the current project ID to refresh the tasks
+        loadTachesForProject(projectId);
     }
-
-
 }

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.ComboBox?>
+
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<AnchorPane prefHeight="502.0" prefWidth="600.0"
+            stylesheets="@../Styles/add_transport.css"
+            xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.Controllers.ModifierAbonnementController">
+
+    <children>
+        <Label layoutX="201.0" layoutY="29.0" text="Modifier l'abonnement">
+            <font>
+                <Font size="25.0"/>
+            </font>
+        </Label>
+
+        <!-- Labels -->
+        <Label layoutX="83.0" layoutY="101.0" text="Type d'abonnement:"/>
+        <Label layoutX="83.0" layoutY="144.0" text="Date de début:"/>
+        <Label layoutX="83.0" layoutY="191.0" text="Date d'expiration:"/>
+        <Label layoutX="83.0" layoutY="229.0" text="Prix:"/>
+        <Label layoutX="83.0" layoutY="289.0" text="Id Employé:"/>
+        <Label layoutX="83.0" layoutY="346.0" text="Status:"/>
+
+        <!-- Champs de saisie -->
+        <ComboBox fx:id="type_ab" layoutX="325.0" layoutY="93.0" prefHeight="26.0" prefWidth="176.0">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="Quotidien"/>
+                    <String fx:value="Mensuel"/>
+                    <String fx:value="Annuel"/>
+                </FXCollections>
+            </items>
+        </ComboBox>        <DatePicker fx:id="date_deb" layoutX="325.0" layoutY="142.0"/>
+        <DatePicker fx:id="date_exp" layoutX="325.0" layoutY="188.0"/>
+        <TextField fx:id="prix" layoutX="325.0" layoutY="231.0" prefHeight="26.0" prefWidth="176.0"/>
+        <TextField fx:id="id_employe" layoutX="325.0" layoutY="287.0" prefHeight="26.0" prefWidth="176.0"/>
+
+        <ComboBox fx:id="status" layoutX="325.0" layoutY="332.0" prefHeight="26.0" prefWidth="176.0">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="ACTIF"/>
+                    <String fx:value="SUSPENDU"/>
+                    <String fx:value="INACTIF"/>
+                </FXCollections>
+            </items>
+        </ComboBox>
+        <!-- Boutons -->
+        <Button fx:id="modifier" layoutX="357.0" layoutY="404.0"
+                onAction="#handleModifier"
+                styleClass="gradient-button"
+                text="Modifier"/>
+
+        <Button fx:id="annuler" layoutX="142.0" layoutY="403.0"
+                onAction="#handleAnnuler"
+                styleClass="gradient-button"
+                text="Annuler"/>
+    </children>
+</AnchorPane>
