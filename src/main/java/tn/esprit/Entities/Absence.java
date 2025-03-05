@@ -1,5 +1,13 @@
 package tn.esprit.Entities;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import tn.esprit.Services.UtilisateurService;
+
+import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
 
@@ -19,6 +27,16 @@ public class Absence {
         this.status = status;
         this.date = date;
         this.id_employe = idEmployee;
+
+    }
+    // Ajout de la propriété JavaFX
+    private StringProperty employeeName = new SimpleStringProperty();
+
+    public StringProperty employeeNameProperty() {
+        if (employeeName.get() == null || employeeName.get().isEmpty()) {
+            employeeName.set(getEmployeeName()); // Initialise avec la valeur réelle
+        }
+        return employeeName;
     }
 
     // Getters et Setters
@@ -54,6 +72,25 @@ public class Absence {
         this.id_employe = idEmployee;
     }
 
+    // Méthode pour récupérer le nom de l'employé via son ID
+    public String getEmployeeName() {
+        UtilisateurService utilisateurService = new UtilisateurService();
+        try {
+            return utilisateurService.getUserById(id_employe).getFirstname() + " " + utilisateurService.getUserById(id_employe).getLastname();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "Inconnu";  // Si l'employé n'est pas trouvé
+        }
+    }
+
+    // Propriété JavaFX pour le statut
+    private ObjectProperty<StatutAbsence> statusProperty = new SimpleObjectProperty<>();
+
+    public ObjectProperty<StatutAbsence> statusProperty() {
+        statusProperty.set(getStatus()); // Initialise avec la valeur actuelle
+        return statusProperty;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -75,6 +112,14 @@ public class Absence {
                 ", date=" + date +
                 ", idEmployee=" + id_employe +
                 '}';
+    }
+
+    public void setId_employe(int idEmploye) {
+        this.id_employe = idEmploye;
+    }
+
+    public int getId_employe() {
+        return id_employe;
     }
 }
 

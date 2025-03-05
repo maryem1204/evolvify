@@ -15,7 +15,7 @@ public class Utilisateur implements Serializable {
     private String lastname;
     private String email;
     private String password;
-    private byte[] profilePhoto;
+    private String profilePhoto;
     private Date birthdayDate;
     private Date joiningDate;
     private Role role;
@@ -24,11 +24,37 @@ public class Utilisateur implements Serializable {
     private byte[] uploaded_cv;
     private String num_tel;
     private String profilePhotoPath;
-    private Gender gender; // Ajout du genre
+    private Gender gender; // Ajout du genreµ
+    private boolean birthdate_edited;
+    private boolean firstLogin = true;
 
-    public Utilisateur() {}
+    public Utilisateur(int id_employe, String firstname, String lastname, String email, String num_tel) {
+        this.id_employe = id_employe;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+        this.num_tel = num_tel;
+    }
 
-    public Utilisateur(int id_employe, String firstname, String lastname, String email, String password, byte[] profilePhoto, Date birthdayDate, Date joiningDate, Role role, int tt_restants, int conge_restant, byte[] uploaded_cv, String num_tel, Gender gender) {
+    public boolean isBirthdate_edited() {
+        return birthdate_edited;
+    }
+
+    public void setBirthdate_edited(boolean birthdate_edited) {
+        this.birthdate_edited = birthdate_edited;
+    }
+    // private boolean firstLogin = true; // Default to true for new users
+
+
+
+    // private boolean firstLogin = true; // Default to true for new users
+
+
+    public Utilisateur() {
+        this.firstLogin = true;
+    }
+
+    public Utilisateur(int id_employe, String firstname, String lastname, String email, String password, String profilePhoto, Date birthdayDate, Date joiningDate, Role role, int tt_restants, int conge_restant, byte[] uploaded_cv, String num_tel, Gender gender) {
         this.id_employe = id_employe;
         this.firstname = firstname;
         this.lastname = lastname;
@@ -43,9 +69,10 @@ public class Utilisateur implements Serializable {
         this.uploaded_cv = uploaded_cv;
         this.num_tel = num_tel;
         this.gender = (gender != null) ? gender : Gender.HOMME; // 🔥 Assurer une valeur par défaut
+        this.firstLogin = true;
     }
 
-    public Utilisateur(String firstname, String lastname, String email, String password, byte[] profilePhoto, Date birthdayDate, Date joiningDate, Role role, int tt_restants, int conge_restant, byte[] uploaded_cv, String num_tel, Gender gender) {
+    public Utilisateur(String firstname, String lastname, String email, String password, String profilePhoto, Date birthdayDate, Date joiningDate, Role role, int tt_restants, int conge_restant, byte[] uploaded_cv, String num_tel, Gender gender) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
@@ -59,6 +86,17 @@ public class Utilisateur implements Serializable {
         this.uploaded_cv = uploaded_cv;
         this.num_tel = num_tel;
         this.gender = (gender != null) ? gender : Gender.HOMME; // 🔥 Assurer une valeur par défaut
+        this.firstLogin = true;
+
+    }
+
+    public Utilisateur(int id_employe, String email, String password, Role role) {
+        this.id_employe = id_employe;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.firstLogin = true;
+
     }
 
     // Getters et Setters
@@ -102,11 +140,11 @@ public class Utilisateur implements Serializable {
         this.password = password;
     }
 
-    public byte[] getProfilePhoto() {
+    public String getProfilePhoto() {
         return profilePhoto;
     }
 
-    public void setProfilePhoto(byte[] profilePhoto) {
+    public void setProfilePhoto(String profilePhoto) {
         this.profilePhoto = profilePhoto;
     }
 
@@ -174,11 +212,28 @@ public class Utilisateur implements Serializable {
         this.gender = gender;
     }
 
+    public String getProfilePhotoPath() {
+        return profilePhotoPath;
+    }
+
+    public void setProfilePhotoPath(String profilePhotoPath) {
+        this.profilePhotoPath = profilePhotoPath;
+    }
+
+    public boolean isFirstLogin() {
+        return firstLogin;
+    }
+
+    // Setter for firstLogin
+    public void setFirstLogin(boolean firstLogin) {
+        this.firstLogin = firstLogin;
+    }
+
     // Image par défaut si la photo de profil n'existe pas
     public ImageView getProfilePhotoImageView() {
         Image image;
         if (profilePhotoPath == null || profilePhotoPath.isEmpty()) {
-            URL imageUrl = getClass().getResource("/images/DefaultProfilePhoto.jpg");
+            URL imageUrl = getClass().getResource("/images/profile.png");
             if (imageUrl == null) {
                 return new ImageView();
             } else {
@@ -190,14 +245,14 @@ public class Utilisateur implements Serializable {
                 if (file.exists()) {
                     image = new Image(new FileInputStream(file));
                 } else {
-                    URL imageUrl = getClass().getResource("/images/DefaultProfilePhoto.jpg");
+                    URL imageUrl = getClass().getResource("/images/profile.png");
                     if (imageUrl == null) {
                         return new ImageView();
                     }
                     image = new Image(imageUrl.toExternalForm());
                 }
             } catch (FileNotFoundException e) {
-                URL imageUrl = getClass().getResource("/images/DefaultProfilePhoto.jpg");
+                URL imageUrl = getClass().getResource("/images/profile.png");
                 if (imageUrl == null) {
                     return new ImageView();
                 }
@@ -242,6 +297,6 @@ public class Utilisateur implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id_employe, firstname, lastname, email, password, Arrays.hashCode(profilePhoto), birthdayDate, joiningDate, role, tt_restants, conge_restant, Arrays.hashCode(uploaded_cv), num_tel, profilePhotoPath, gender);
+        return Objects.hash(id_employe, firstname, lastname, email, password, profilePhoto, birthdayDate, joiningDate, role, tt_restants, conge_restant, Arrays.hashCode(uploaded_cv), num_tel, profilePhotoPath, gender);
     }
 }

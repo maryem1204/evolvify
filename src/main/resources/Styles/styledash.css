@@ -6,26 +6,27 @@
 
 /* 🟣 Sidebar */
 .sidebar {
-    -fx-background-color: #2C1E50;
-    -fx-padding: 20px;
-    -fx-spacing: 15px;
-    -fx-alignment: center;
+    -fx-background-color: #2A1B50;
+    -fx-padding: 0px;
+    -fx-border-width: 0px;
 }
 
 .logo {
-    -fx-padding: 10px;
-    -fx-alignment: center;
+    -fx-padding: 0px;
+    -fx-border-width: 0px;
 }
+
 
 /* 📌 Boutons sidebar */
 .sidebar-button {
     -fx-background-color: transparent;
     -fx-text-fill: white;
     -fx-font-size: 14px;
-    -fx-pref-width: 200px;
+    -fx-pref-width: 245px;
     -fx-alignment: CENTER-LEFT;
     -fx-padding: 10px;
     -fx-border-radius: 5px;
+    -fx-cursor: hand;
 }
 
 .sidebar-button:hover {
@@ -41,7 +42,7 @@
 
 /* 🔵 Navbar */
 .navbar {
-    -fx-background-color: #F8F9FA;
+    -fx-background-color: #00060b;
     -fx-padding: 10px;
     -fx-pref-height: 66px;
     -fx-pref-width: 100%;
@@ -69,13 +70,142 @@
 .user-icon {
     -fx-clip-shape: circle;
     -fx-border-radius: 50%;
+    -fx-cursor: hand;
 }
 
 .username {
-    -fx-text-fill: white;
+    -fx-text-fill: #00060b;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
+    -fx-cursor: hand;
 }
 .online-indicator {
     -fx-fill: #28A745;
+}
+.sidebar-sub-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 5px 130px; /* Augmenter la marge à gauche*/
+    -fx-alignment: CENTER_LEFT;
+}
+
+.sidebar-sub-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+/* Bouton sélectionné (actif) */
+.active-sidebar-button {
+    -fx-background-color: #7B61FF !important; /* Mauve foncé */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10px;
+    -fx-font-size: 14px;
+    -fx-border-radius: 5px;
+}
+.sidebar-item.active {
+    background-color: #6a0dad; /* Couleur mauve */
+    color: white;
+    font-weight: bold;
+}
+.selected {
+    -fx-background-color: #7B61FF; /* Couleur mauve */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+#subMenuConges {
+    -fx-max-height: 0;
+    -fx-opacity: 0;
+    -fx-transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+#subMenuConges.visible {
+    -fx-max-height: 100px; /* Ajustez selon la hauteur nécessaire */
+    -fx-opacity: 1;
+}
+.sidebar-scrollpane {
+    -fx-background-color: #2A1B50; /* Assurez-vous que c'est la même couleur que la sidebar */
+    -fx-border-width: 0;
+}
+
+.sidebar, .sidebar-scrollpane {
+    -fx-pref-width: 270px;
+}
+/* Scrollbar vertical */
+.sidebar-scrollpane .scroll-bar:vertical {
+    -fx-background-color: #2A1B50;
+}
+
+/* Piste de la scrollbar */
+.sidebar-scrollpane .scroll-bar:vertical .track {
+    -fx-background-color: #2A1B50; /* Mauve foncé */
+}
+
+/* Bouton de défilement */
+.sidebar-scrollpane .scroll-bar:vertical .thumb {
+    -fx-background-color: #2A1B50; /* Mauve clair */
+    -fx-background-radius: 5px;
+}
+.menu-button {
+    -fx-min-width: 200px; /* Ajuste la largeur selon ton design */
+    -fx-max-width: 200px;
+    -fx-alignment: center-left;
+}
+/* Add these styles to your styledash.css file */
+
+/* Adjust the HBox inside sidebar buttons to properly expand */
+.sidebar-button .graphic-container {
+    -fx-alignment: center-left;
+    -fx-spacing: 10px;
+    -fx-pref-width: 200px; /* Match the button width */
+    -fx-fill-width: true;
+}
+
+/* Style for arrow icons */
+
+/* Ensure sub-menu buttons have proper width */
+
+/* Add these styles to your styledash.css file */
+
+/* Adjust the HBox inside sidebar buttons to properly expand */
+.graphic-container {
+    -fx-alignment: center-left;
+    -fx-spacing: 10px;
+    -fx-fill-width: true;
+    -fx-pref-width: 230px; /* Match the width of your sidebar */
+}
+
+/* Style for arrow icons */
+.arrow-icon {
+    -fx-alignment: center-right;
+}
+
+/* Make the spacer pane fill all available space */
+/*.spacer-pane {
+    -fx-pref-width: 1000; /* Large value to ensure it takes all available space
+}*/
+
+.sidebar-scrollpane {
+    -fx-pref-width: 330px; /* Mets la même largeur que la section du logo */
+}
+
+#sidebar {
+    -fx-pref-width: 330px;
+}
+/* Logout button style */
+.logout-button {
+    -fx-background-color: #2A1B50;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 8 15 8 15;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.logout-button:hover {
+    -fx-background-color: #3c2973;
+}
+
+.logout-button:pressed {
+    -fx-background-color: #1e1438;
 }

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="20" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="tn.esprit.Controllers.CongeEmployeController" stylesheets="@../Styles/CongeEmploye.css">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Mes demandes de congés" styleClass="title-label"/>
+    <TableView fx:id="tableConges" prefHeight="200">
+        <columns>
+            <TableColumn fx:id="colCongeDebut" text="Date de début" prefWidth="120"/>
+            <TableColumn fx:id="colCongeFin" text="Date de fin" prefWidth="120"/>
+            <TableColumn fx:id="colCongeRaison" text="Raison" prefWidth="100"/>
+            <TableColumn fx:id="colCongeJours" text="Jours" prefWidth="60"/>
+            <TableColumn fx:id="colCongeStatut" text="Statut" prefWidth="80"/>
+        </columns>
+    </TableView>
+
+    <HBox spacing="10">
+        <Button text="Modifier" fx:id="modifierConge" styleClass="action-button"/>
+        <Button text="Supprimer" fx:id="supprimerConge" styleClass="action-button"/>
+    </HBox>
+
+    <TitledPane text="Nouvelle demande de congé" expanded="false">
+        <GridPane hgap="15" vgap="10">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER" minWidth="100"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="200"/>
+            </columnConstraints>
+
+            <Label text="Date de début :" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <DatePicker fx:id="dateDebutConge" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+            <Label text="Date de fin :" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <DatePicker fx:id="dateFinConge" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+            <Label text="Raison :" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <ComboBox fx:id="raisonConge" GridPane.rowIndex="2" GridPane.columnIndex="1" prefWidth="200"/>
+
+            <Label text="Description :" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+            <TextField fx:id="descConge" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+            <Label text="Nombre de jours :" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+            <TextField fx:id="joursConge" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+            <Button text="Soumettre" fx:id="submitConge"
+                    GridPane.rowIndex="5" GridPane.columnIndex="1"
+                    GridPane.halignment="RIGHT" styleClass="submit-button"/>
+        </GridPane>
+    </TitledPane>
+
+    <Separator/>
+
+    <Label text="Mes demandes de télétravail" styleClass="title-label"/>
+    <TableView fx:id="tableTT" prefHeight="200">
+        <columns>
+            <TableColumn fx:id="colTTDebut" text="Date de début" prefWidth="120"/>
+            <TableColumn fx:id="colTTFin" text="Date de fin" prefWidth="120"/>
+            <TableColumn fx:id="colTTJours" text="Jours" prefWidth="60"/>
+            <TableColumn fx:id="colTTStatut" text="Statut" prefWidth="80"/>
+        </columns>
+    </TableView>
+
+    <HBox spacing="10">
+        <Button text="Modifier" fx:id="modifierTT" styleClass="action-button"/>
+        <Button text="Supprimer" fx:id="supprimerTT" styleClass="action-button"/>
+    </HBox>
+
+    <TitledPane text="Nouvelle demande de télétravail" expanded="false">
+        <GridPane hgap="15" vgap="10">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER" minWidth="100"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="200"/>
+            </columnConstraints>
+
+            <Label text="Date de début :" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <DatePicker fx:id="dateDebutTT" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+            <Label text="Date de fin :" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <DatePicker fx:id="dateFinTT" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+            <Label text="Nombre de jours :" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <TextField fx:id="joursTT" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+            <Button text="Soumettre" fx:id="submitTT"
+                    GridPane.rowIndex="3" GridPane.columnIndex="1"
+                    GridPane.halignment="RIGHT" styleClass="submit-button"/>
+        </GridPane>
+    </TitledPane>
+</VBox>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+
+<?import javafx.scene.text.Font?>
+<AnchorPane xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.Controllers.ModifierProjetController"
+            stylesheets="@/Styles/AjoutProjet.css">
+    <VBox alignment="CENTER" spacing="15" prefWidth="500" prefHeight="600"
+          style="-fx-background-color: #ffdcee; -fx-padding: 20px; -fx-background-radius: 10px; -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);-fx-border-color: grey;">
+
+        <!-- Titre -->
+        <Label text="Modifier un projet" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #086147;" />
+
+        <!-- Formulaire -->
+        <GridPane hgap="15" vgap="10">
+            <columnConstraints>
+                <ColumnConstraints halignment="RIGHT" prefWidth="120"/>
+                <ColumnConstraints hgrow="ALWAYS" prefWidth="250"/>
+            </columnConstraints>
+
+            <children>
+                <HBox spacing="5" GridPane.rowIndex="0" GridPane.columnIndex="0">
+                    <Label text="Nom du projet " />
+                    <Label text="*" styleClass="required"/>
+                </HBox>
+                <TextField fx:id="nomProjetField" promptText="Entrez le nom du projet"
+                           GridPane.rowIndex="0" GridPane.columnIndex="1" styleClass="text-field"/>
+
+                <HBox spacing="5" GridPane.rowIndex="1" GridPane.columnIndex="0">
+                    <Label text="Description " />
+                    <Label text="*" styleClass="required"/>
+                </HBox>
+                <TextArea fx:id="descriptionField" promptText="Décrivez le projet" prefHeight="80.0"
+                          GridPane.rowIndex="1" GridPane.columnIndex="1" styleClass="text-field"/>
+
+                <HBox spacing="5" GridPane.rowIndex="2" GridPane.columnIndex="0">
+                    <Label text="Date de début " />
+                    <Label text="*" styleClass="required"/>
+                </HBox>
+                <DatePicker fx:id="startDatePicker" GridPane.rowIndex="2" GridPane.columnIndex="1" styleClass="combo-box"/>
+
+                <HBox spacing="5" GridPane.rowIndex="3" GridPane.columnIndex="0">
+                    <Label text="Date de fin " />
+                    <Label text="*" styleClass="required"/>
+                </HBox>
+                <DatePicker fx:id="endDatePicker" GridPane.rowIndex="3" GridPane.columnIndex="1" styleClass="combo-box"/>
+
+                <HBox spacing="5" GridPane.rowIndex="4" GridPane.columnIndex="0">
+                    <Label text="Statut " />
+                    <Label text="*" styleClass="required"/>
+                </HBox>
+                <ComboBox fx:id="statusComboBox" promptText="Sélectionner un statut"
+                          GridPane.rowIndex="4" GridPane.columnIndex="1" styleClass="combo-box"/>
+
+                <HBox spacing="5" GridPane.rowIndex="5" GridPane.columnIndex="0">
+                    <Label text="Abréviation " />
+                    <Label text="*" styleClass="required"/>
+                </HBox>
+                <TextField fx:id="abbreviationField" promptText="Entrez une abréviation"
+                           GridPane.rowIndex="5" GridPane.columnIndex="1" styleClass="text-field"/>
+
+                <HBox spacing="5" GridPane.rowIndex="6" GridPane.columnIndex="0">
+                    <Label text="Assigné à " />
+                    <Label text="*" styleClass="required"/>
+                </HBox>
+                <ListView fx:id="employeListView" GridPane.rowIndex="6" GridPane.columnIndex="1"
+                          prefHeight="100" />
+
+                <HBox spacing="5" GridPane.rowIndex="7" GridPane.columnIndex="0">
+                    <Label text="Fichier " />
+                    <Label text="*" styleClass="required"/>
+                </HBox>
+                <Button onAction="#handleUploadFile" fx:id="uploadButton" text="Choisir un fichier"
+                        GridPane.rowIndex="7" GridPane.columnIndex="1" styleClass="gradient-button"/>
+                <Label fx:id="fileNameLabel" text="Aucun fichier sélectionné"
+                       GridPane.rowIndex="8" GridPane.columnIndex="1" styleClass="label-error"/>
+            </children>
+        </GridPane>
+
+        <!-- Boutons d'action -->
+        <HBox spacing="20" alignment="CENTER">
+            <Button fx:id="enregistrerButton" text="Enregistrer" onAction="#handleEdit"
+                    styleClass="gradient-button"/>
+            <Button fx:id="annulerButton" onAction="#handleAnnuler" prefHeight="42.0" prefWidth="100.0" style="-fx-background-color: #dc3545; -fx-text-fill: white;" text="Annuler">
+                <font>
+                    <Font size="18.0" />
+                </font></Button>
+        </HBox>
+    </VBox>
+</AnchorPane>

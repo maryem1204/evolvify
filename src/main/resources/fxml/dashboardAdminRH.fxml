@@ -16,39 +16,88 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Line?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 
-<AnchorPane maxHeight="Infinity" maxWidth="Infinity" prefHeight="691.0" prefWidth="1500.0" stylesheets="@/Styles/style.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.DashAdminRHController">
+<AnchorPane maxHeight="Infinity" maxWidth="Infinity" prefHeight="750.0" prefWidth="1400.0" stylesheets="@/Styles/style.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.DashAdminRHController">
     <stylesheets>
         <URL value="@../Styles/style.css" />
     </stylesheets>
 
     <children>
-        <AnchorPane minHeight="50" minWidth="700" prefHeight="200" prefWidth="1500">
-
-            <!-- Ligne des statistiques -->
-            <HBox layoutX="20" layoutY="20" spacing="20">
+        <!-- Grand conteneur blanc -->
+        <AnchorPane layoutX="0" layoutY="0" prefHeight="750.0" prefWidth="1400.0" styleClass="main-container">
+            <!-- Première ligne - Cards -->
+            <HBox layoutX="25" layoutY="20" spacing="12">
                 <!-- Statistiques -->
-                <VBox prefHeight="200" prefWidth="230" styleClass="card">
+                <VBox prefHeight="180" prefWidth="230" styleClass="card, hover-effect">
                     <Label styleClass="card-title" text="Statistiques" />
-                    <PieChart fx:id="pieChart" prefHeight="160" prefWidth="200" />
+                    <Pane prefHeight="150" prefWidth="220">
+                        <!-- Better balanced size -->
+                        <PieChart fx:id="pieChart" prefHeight="130" prefWidth="170" layoutX="25" layoutY="10" />
+                        <!-- Repositioned labels -->
+                        <Label text="Quotidien" layoutX="40" layoutY="15" style="-fx-font-size: 12px;" />
+                        <Label text="Trimestriel" layoutX="140" layoutY="15" style="-fx-font-size: 12px;" />
+                        <Label text="Mensuel" layoutX="90" layoutY="115" style="-fx-font-size: 12px;" />
+                    </Pane>
                 </VBox>
 
-                <!-- Performance -->
-                <VBox prefHeight="200" prefWidth="480" styleClass="card">
-                    <Label styleClass="card-title" text="Performance" />
-                    <BarChart fx:id="barChat" prefHeight="160" prefWidth="280">
-                        <xAxis>
-                            <CategoryAxis fx:id="categorAxis" />
-                        </xAxis>
-                        <yAxis>
-                            <NumberAxis />
-                        </yAxis>
-                    </BarChart>
+                <!-- Card Projets -->
+                <VBox prefHeight="170" prefWidth="210" styleClass="card, hover-effect">
+                    <HBox spacing="10" alignment="CENTER_LEFT" prefHeight="40">
+                        <Label styleClass="card-title" text="Projects" translateX="10" />
+                        <ImageView fitHeight="35" fitWidth="35" translateX="100">
+                            <image>
+                                <Image url="@/images/dashProject.png" />
+                            </image>
+                        </ImageView>
+                    </HBox>
+                    <Label fx:id="projectsCount" styleClass="card-number" text="4" style="-fx-text-fill: #6a5acd; -fx-font-size: 60px; -fx-alignment: center;" translateY="20" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" />
+                </VBox>
+
+                <!-- Card Tâches -->
+                <VBox prefHeight="170" prefWidth="210" styleClass="card, hover-effect">
+                    <HBox spacing="10" alignment="CENTER_LEFT" prefHeight="40">
+                        <Label styleClass="card-title" text="Tasks" translateX="10" />
+                        <ImageView fitHeight="35" fitWidth="35" translateX="110">
+                            <image>
+                                <Image url="@/images/taskDash.png" />
+                            </image>
+                        </ImageView>
+                    </HBox>
+                    <Label fx:id="tasksCount" styleClass="card-number" text="5" style="-fx-text-fill: #6a5acd; -fx-font-size: 60px; -fx-alignment: center;" translateY="20" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" />
+                </VBox>
+
+                <!-- Card Abonnements -->
+                <VBox prefHeight="170" prefWidth="210" styleClass="card, hover-effect">
+                    <HBox spacing="10" alignment="CENTER_LEFT" prefHeight="40">
+                        <Label styleClass="card-title" text="Abonnements" translateX="10" />
+                        <ImageView fitHeight="35" fitWidth="35" translateX="65">
+                            <image>
+                                <Image url="@/images/transportDash.png" />
+                            </image>
+                        </ImageView>
+                    </HBox>
+                    <Label fx:id="abonnementsCount" styleClass="card-number" text="23" style="-fx-text-fill: #6a5acd; -fx-font-size: 60px; -fx-alignment: center;" translateY="20" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" />
+                </VBox>
+
+                <!-- Card Absence -->
+                <VBox prefHeight="170" prefWidth="210" styleClass="card, hover-effect">
+                    <HBox spacing="10" alignment="CENTER_LEFT" prefHeight="40">
+                        <Label styleClass="card-title" text="Absence" translateX="10" />
+                        <ImageView fitHeight="35" fitWidth="35" translateX="100">
+                            <image>
+                                <Image url="@/images/absenceDash.png" />
+                            </image>
+                        </ImageView>
+                    </HBox>
+                    <Label fx:id="absenceCount" styleClass="card-number" text="0" style="-fx-text-fill: #6a5acd; -fx-font-size: 60px; -fx-alignment: center;" translateY="20" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" />
                 </VBox>
             </HBox>
 
             <!-- Effectifs -->
-            <VBox fx:id="effectifs" layoutX="20" layoutY="250" prefHeight="420" prefWidth="220" spacing="50" styleClass="card">
+
+            <VBox fx:id="effectifs" layoutX="20" layoutY="210" prefHeight="450" prefWidth="220" spacing="15" styleClass="card">
                 <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Effectifs" />
                 <Pane>
                     <VBox layoutX="10" layoutY="5" prefHeight="334.0" prefWidth="14.0" spacing="70">
@@ -56,78 +105,67 @@
                         <Circle fill="orange" radius="8" />
                         <Circle fill="#9e63f8" radius="8" />
                         <Circle fill="green" radius="8" />
-                        <Circle fill="blue" radius="8" />
                     </VBox>
-                    <Line endX="20" endY="370" startX="20" startY="10" stroke="gray" strokeWidth="1" />
-                    <VBox layoutX="40" layoutY="0" spacing="60">
+                    <Line endX="18.0" endY="350.6000061035156" startX="18.0" startY="20.9999942779541" stroke="gray" strokeWidth="1" />
+                    <VBox layoutX="40" layoutY="0" spacing="65">
                         <Label fx:id="labelHommes" style="-fx-text-fill: red; -fx-font-size: 16px; -fx-font-weight: bold;" />
                         <Label fx:id="labelFemmes" style="-fx-text-fill: orange; -fx-font-size: 16px; -fx-font-weight: bold;" />
                         <Label fx:id="labelTotalEmployes" style="-fx-text-fill: rgba(158,99,248,0.65); -fx-font-size: 16px; -fx-font-weight: bold;" />
                         <Label fx:id="labelCongesAcceptes" style="-fx-text-fill: green; -fx-font-size: 16px; -fx-font-weight: bold;" />
                         <Label fx:id="labelCandidats" style="-fx-text-fill: blue; -fx-font-size: 16px; -fx-font-weight: bold;" />
                     </VBox>
+                    <Circle fill="blue" layoutX="18.0" layoutY="351.0" radius="8" />
                 </Pane>
             </VBox>
+            <!-- Seconde ligne -->
+            <HBox layoutX="250" layoutY="210" spacing="15">
 
-            <!-- Nouvelle disposition des tableaux et graphiques -->
-            <HBox layoutX="260" layoutY="250" spacing="20">
-                <!-- Liste des employés (réduite en largeur) -->
-                <VBox prefHeight="200" prefWidth="450" styleClass="card" spacing="50">
+
+                <!-- Liste des employés -->
+                <VBox prefHeight="220" prefWidth="550" styleClass="card, hover-effect">
                     <Label styleClass="card-title" text="Liste des employés" />
                     <TextField fx:id="searchField" promptText="Rechercher..." />
-                    <TableView fx:id="employeeTable" prefHeight="130" prefWidth="430">
+                    <TableView fx:id="employeeTable" prefHeight="150">
                         <columns>
-                            <TableColumn fx:id="nameColumn" text="Nom" />
-                            <TableColumn fx:id="numberColumn" text="Numéro" />
-                            <TableColumn fx:id="dateColumn" text="Date" />
-                            <TableColumn fx:id="statusColumn" text="Statut" />
+                            <TableColumn fx:id="nameColumn" text="Nom" prefWidth="130" />
+                            <TableColumn fx:id="numberColumn" text="Email" prefWidth="150" />
+                            <TableColumn fx:id="dateColumn" text="Date" prefWidth="120" />
+                            <TableColumn fx:id="statusColumn" text="Role" prefWidth="130" />
                         </columns>
                     </TableView>
                 </VBox>
 
-                <!-- Courbe déplacée ici -->
-                <VBox prefHeight="200" prefWidth="430" styleClass="card">
+                <!-- Courbe -->
+                <VBox prefHeight="220" prefWidth="320" styleClass="card, hover-effect">
                     <Label styleClass="card-title" text="Courbe" />
-                    <LineChart fx:id="lineChart" prefHeight="160" prefWidth="380">
+                    <LineChart fx:id="lineChart" prefHeight="240" createSymbols="true">
                         <xAxis>
-                            <CategoryAxis fx:id="lineChartXAxis" />
+                            <CategoryAxis fx:id="lineChartXAxis" label="Semaine" />
                         </xAxis>
                         <yAxis>
-                            <NumberAxis />
+                            <NumberAxis upperBound="125" tickUnit="25" />
                         </yAxis>
                     </LineChart>
                 </VBox>
             </HBox>
 
-            <!-- Progression et courbe -->
-            <HBox layoutX="260" layoutY="470" spacing="20">
+            <!-- Troisième ligne -->
+            <HBox layoutX="250" layoutY="460" spacing="10">
                 <!-- Progression -->
-                <VBox fx:id="progressionBox" prefHeight="100" prefWidth="450" styleClass="card" spacing="50">
+                <VBox fx:id="progressionBox" prefHeight="90" prefWidth="870" styleClass="card, hover-effect">
                     <Label styleClass="card-title" text="Progression" />
-                    <BarChart fx:id="progressChart" prefHeight="50" prefWidth="400">
+                    <BarChart fx:id="progressChart" prefHeight="140" animated="false">
                         <xAxis>
                             <CategoryAxis fx:id="progressChartXAxis" />
                         </xAxis>
                         <yAxis>
-                            <NumberAxis />
+                            <NumberAxis upperBound="150" tickUnit="50" />
                         </yAxis>
                     </BarChart>
                 </VBox>
 
                 <!-- Performance -->
-                <VBox prefHeight="200" prefWidth="450" styleClass="card">
-                    <Label styleClass="card-title" text="Performance" />
-                    <BarChart fx:id="barChart" prefHeight="160" prefWidth="280">
-                        <xAxis>
-                            <CategoryAxis fx:id="categoryAxis" />
-                        </xAxis>
-                        <yAxis>
-                            <NumberAxis />
-                        </yAxis>
-                    </BarChart>
-                </VBox>
-            </HBox>
-
+        </HBox>
         </AnchorPane>
     </children>
 </AnchorPane>

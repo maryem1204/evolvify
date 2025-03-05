@@ -19,30 +19,39 @@ public class MainFXDash extends Application {
             Parent root = loader.load();
             primaryStage.setTitle("Dashboard");
 
-            // Obtenir les dimensions de l'écran SANS cacher la barre des tâches
+            // Obtenir les dimensions de l'écran
             Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
 
-            // Ajustements pour occuper toute la zone visible
-            double correctionX = 5;  // Élargir un peu vers la droite
-            double correctionY = 5;  // Agrandir vers le bas
+            // Créer la scène avec les dimensions de l'écran
+            Scene scene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight());
 
-            primaryStage.setX(screenBounds.getMinX() - 6); // Déplace légèrement à gauche
+            // Ajouter des styles CSS pour rendre le contenu responsive si nécessaire
+            //scene.getStylesheets().add(getClass().getResource("/css/responsive.css").toExternalForm());
+
+            // Configurer la fenêtre pour utiliser tout l'écran disponible
+            primaryStage.setX(screenBounds.getMinX());
             primaryStage.setY(screenBounds.getMinY());
-            primaryStage.setWidth(screenBounds.getWidth() + 5);
-            primaryStage.setHeight(screenBounds.getHeight() + correctionY);
+            primaryStage.setWidth(screenBounds.getWidth());
+            primaryStage.setHeight(screenBounds.getHeight());
 
-            // Empêcher le redimensionnement
-            primaryStage.setResizable(false);
-            primaryStage.setFullScreen(false);
+            // Permettre le redimensionnement
+            primaryStage.setResizable(true);
 
-            primaryStage.setScene(new Scene(root));
+            // Utiliser le mode maximisé pour garder les contrôles de la fenêtre visibles
+            primaryStage.setMaximized(true);
+
+            // Commentez ou supprimez ces lignes pour le mode plein écran
+            // primaryStage.setFullScreen(true);
+            // primaryStage.setFullScreenExitHint("Appuyez sur Échap pour quitter le plein écran");
+
+            primaryStage.setScene(scene);
             primaryStage.show();
+
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Erreur lors du chargement de l'interface FXML !");
         }
     }
-
     public static void main(String[] args) {
         launch(args);
     }
