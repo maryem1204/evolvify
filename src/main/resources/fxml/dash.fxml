@@ -134,8 +134,10 @@
                 </graphic>
             </Button>
             <VBox fx:id="subMenuRecrutements" managed="false" visible="false">
-                <Button fx:id="btnCandidats" styleClass="sidebar-sub-button" text="Candidats" />
-                <Button fx:id="btnEntretiens" styleClass="sidebar-sub-button" text="Entretiens" />
+                <Button fx:id="btnCandidats" onAction="#showCandidats" styleClass="sidebar-sub-button" text="Candidats" />
+                <Button fx:id="btnOffre" onAction="#showOffres" styleClass="sidebar-sub-button" text="Offre" />
+                <Button fx:id="btnEntretiens" onAction="#showListOffresCandidates" styleClass="sidebar-sub-button" text="Entretiens" />
+
             </VBox>
 
             <!-- Gestion Projets -->
