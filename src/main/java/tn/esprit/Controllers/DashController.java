@@ -33,7 +33,7 @@ public class DashController {
     @FXML
     private Button btnDashboard, btnUser, btnRecrutements, btnProjets, btnTransports, btnTaches, btnEquipe;
     @FXML
-    private Button btnConges, btnAbsences, btnGestionConges, btnCandidats, btnEntretiens, btnTrajet, btnAb, btnTransport;
+    private Button btnConges, btnAbsences, btnGestionConges, btnCandidats, btnEntretiens, btnTrajet, btnAb, btnTransport,btnOffre;
     @FXML
     private ImageView userIcon, arrowIconConges, arrowIconRecrutements, arrowIconProjets, arrowIconTransports, logoImage, logoutIcon;
     @FXML
@@ -366,4 +366,19 @@ public class DashController {
     private void handleProfil() {
         loadView("/fxml/employeeProfile.fxml");
     }
+    @FXML
+    private void showCandidats() {
+        loadView("/fxml/ListCondidate.fxml");
+    }
+
+    @FXML
+    private void showOffres() {
+        loadView("/fxml/ListOffre.fxml");
+    }
+
+    @FXML
+    private void showListOffresCandidates() {
+        loadView("/fxml/ListOffreCandidates.fxml");
+    }
+
 }

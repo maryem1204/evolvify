@@ -125,22 +125,12 @@
                 <graphic>
                     <ImageView fitHeight="30.0" fitWidth="30.0">
                         <image>
-                            <Image url="@/images/transportDash.png" />
-                        </image>
-                    </ImageView>
-                </graphic>
-            </Button>
-
-            <!-- Offres -->
-            <Button fx:id="btnOffres" onAction="#handleOffres" styleClass="sidebar-button" text="  Offres">
-                <graphic>
-                    <ImageView fitHeight="30.0" fitWidth="30.0">
-                        <image>
                             <Image url="@/images/recrutement.png" />
                         </image>
                     </ImageView>
                 </graphic>
             </Button>
+
 
             <!-- Mon Profil -->
             <Button fx:id="btnProfil" onAction="#handleProfil" styleClass="sidebar-button" text="  Mon Profil">
