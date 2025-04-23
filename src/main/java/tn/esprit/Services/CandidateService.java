@@ -30,7 +30,7 @@ public class CandidateService implements CRUD<Utilisateur> {
         ps.setString(2, user.getLastname());
         ps.setString(3, user.getEmail());
         ps.setString(4, user.getPassword());
-        ps.setBytes(5, user.getProfilePhoto());
+        //ps.setBytes(5, user.getProfilePhoto());
         ps.setDate(6, new Date(user.getBirthdayDate().getTime()));  // Conversion de Date en SQL Date
         ps.setDate(7, new Date(user.getJoiningDate().getTime()));
         ps.setInt(8, 0);
