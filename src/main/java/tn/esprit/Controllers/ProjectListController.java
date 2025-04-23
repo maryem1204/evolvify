@@ -1,15 +1,13 @@
 package tn.esprit.Controllers;
-
-import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -21,22 +19,12 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.text.FontWeight;
-import com.itextpdf.text.FontFactory;
-import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import javafx.scene.text.FontWeight;
-
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Font;
-import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.BaseColor;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
@@ -51,6 +39,7 @@ import tn.esprit.Services.UtilisateurService;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -227,20 +216,53 @@ public class ProjectListController {
 
     private void addActionsColumn() {
         colActions.setCellFactory(param -> new TableCell<Projet, Void>() {
-            private final ImageView editIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/editIcon.png")));
-            private final ImageView deleteIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/deleteIconn.png")));
+            // Create a safer way to load images
+            private ImageView createSafeImageView(String path) {
+                try {
+                    InputStream stream = getClass().getResourceAsStream(path);
+                    if (stream != null) {
+                        return new ImageView(new Image(stream));
+                    } else {
+                        System.err.println("Resource not found: " + path);
+                        return null;
+                    }
+                } catch (Exception e) {
+                    System.err.println("Error loading " + path + ": " + e.getMessage());
+                    return null;
+                }
+            }
+
+            private final ImageView editIcon = createSafeImageView("/images/editIcon.png");
+            private final ImageView deleteIcon = createSafeImageView("/images/deleteIconn.png");
+            private final ImageView tasksIcon = createSafeImageView("/images/tasks.png");
             private final HBox hbox = new HBox(10);
 
             {
-                editIcon.setFitHeight(20);
-                editIcon.setFitWidth(20);
-                deleteIcon.setFitHeight(20);
-                deleteIcon.setFitWidth(20);
+                // Configure icons with proper null checks
+                configureIcon(editIcon, 20, 20);
+                configureIcon(deleteIcon, 20, 20);
 
-                editIcon.setStyle("-fx-cursor: hand;");
-                deleteIcon.setStyle("-fx-cursor: hand;");
+                // If tasks image fails to load, create a button as fallback
+                if (tasksIcon != null) {
+                    configureIcon(tasksIcon, 20, 20);
+                    hbox.getChildren().add(tasksIcon);
+                } else {
+                    Button tasksBtn = new Button("Tasks");
+                    tasksBtn.getStyleClass().add("task-button");
+                    tasksBtn.setStyle("-fx-background-color: #0052cc; -fx-text-fill: white; -fx-cursor: hand;");
+                    hbox.getChildren().add(tasksBtn);
+                }
 
-                hbox.getChildren().addAll(editIcon, deleteIcon);
+                hbox.setAlignment(Pos.CENTER);
+            }
+
+            private void configureIcon(ImageView icon, double width, double height) {
+                if (icon != null) {
+                    icon.setFitWidth(width);
+                    icon.setFitHeight(height);
+                    icon.setStyle("-fx-cursor: hand;");
+                    hbox.getChildren().add(icon);
+                }
             }
 
             @Override
@@ -249,16 +271,34 @@ public class ProjectListController {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    // Réassigner les actions à chaque mise à jour
-                    editIcon.setOnMouseClicked(event -> {
-                        Projet projet = getTableView().getItems().get(getIndex());
-                        showEditPopup(projet);
-                    });
+                    // Configure click handlers
+                    if (editIcon != null) {
+                        editIcon.setOnMouseClicked(event -> {
+                            Projet projet = getTableView().getItems().get(getIndex());
+                            showEditPopup(projet);
+                        });
+                    }
 
-                    deleteIcon.setOnMouseClicked(event -> {
-                        Projet projet = getTableView().getItems().get(getIndex());
-                        deleteProjet(projet);
-                    });
+                    if (deleteIcon != null) {
+                        deleteIcon.setOnMouseClicked(event -> {
+                            Projet projet = getTableView().getItems().get(getIndex());
+                            deleteProjet(projet);
+                        });
+                    }
+
+                    // Gérer le clic sur l'icône ou le bouton des tâches
+                    Node tasksNode = hbox.getChildren().get(hbox.getChildren().size() - 1);
+                    if (tasksNode instanceof ImageView) {
+                        ((ImageView) tasksNode).setOnMouseClicked(event -> {
+                            Projet projetSelectionne = getTableView().getItems().get(getIndex());
+                            openTasksList(projetSelectionne);
+                        });
+                    } else if (tasksNode instanceof Button) {
+                        ((Button) tasksNode).setOnAction(event -> {
+                            Projet projetSelectionne = getTableView().getItems().get(getIndex());
+                            openTasksList(projetSelectionne);
+                        });
+                    }
 
                     setGraphic(hbox);
                 }
@@ -266,6 +306,28 @@ public class ProjectListController {
         });
     }
 
+    private void openTasksList(Projet projetSelectionne) {
+        try {
+            System.out.println("Opening tasks for project: " + projetSelectionne.getName()
+                    + " (ID: " + projetSelectionne.getId_projet() + ")");
+
+            // Change this line to use the correct filename
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ListTacheRH.fxml"));
+            Parent root = loader.load();
+            tacheListController controller = loader.getController();
+
+            // Pass the selected project to the task controller
+            controller.setProjet(projetSelectionne);
+
+            Stage stage = new Stage();
+            stage.setTitle("Liste des tâches pour " + projetSelectionne.getName());
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'ouvrir la liste des tâches");
+        }
+    }
 
 
     private void deleteProjet(Projet projet) {

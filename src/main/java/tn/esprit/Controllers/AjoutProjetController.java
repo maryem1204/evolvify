@@ -143,8 +143,12 @@ public class AjoutProjetController {
         }
 
         try {
-            byte[] fileBytes = (selectedFile != null) ? Files.readAllBytes(selectedFile.toPath()) : new byte[0];
-            Projet projet = new Projet(nomProjet, description, statut, endDate, startDate, abbreviation, fileBytes, selectedEmployees);
+            // Au lieu de lire les octets du fichier
+            String filePath = (selectedFile != null) ? selectedFile.getPath() : "";
+            // Ou si vous préférez juste le nom du fichier
+            // String fileName = (selectedFile != null) ? selectedFile.getName() : "";
+
+            Projet projet = new Projet(nomProjet, description, statut, endDate, startDate, abbreviation, filePath, selectedEmployees);
 
             int result = projetService.add(projet);
             if (result > 0) {

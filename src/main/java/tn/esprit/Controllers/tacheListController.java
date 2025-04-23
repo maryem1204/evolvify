@@ -175,7 +175,13 @@ public class tacheListController {
 
     public void setProjet(Projet projet) throws SQLException {
         this.projetActuel = projet;
-        loadTaches(); // Charger les tâches associées à ce projet
+        loadTaches(); // Reload tasks with the new project filter
+
+        // You might want to update window title to reflect the project name
+        Stage stage = (Stage) tacheTable.getScene().getWindow();
+        if (stage != null && projet != null) {
+            stage.setTitle("Tâches du projet: " + projet.getName());
+        }
     }
 
     private void setupStatusColumn() {
@@ -274,9 +280,19 @@ public class tacheListController {
     }
 
     private void loadTaches() throws SQLException {
-        List<Tache> tachesList = tacheService.showAll();
+        List<Tache> tachesList;
+        if (projetActuel != null) {
+            System.out.println("Loading tasks for project ID: " + projetActuel.getId_projet());
+            tachesList = tacheService.getTachesByProjetId(projetActuel.getId_projet());
+        } else {
+            System.out.println("Loading all tasks (no project filter)");
+            tachesList = tacheService.showAll();
+        }
         taches.setAll(tachesList);
         tacheTable.setItems(taches);
+
+        // For troubleshooting
+        System.out.println("Loaded " + tachesList.size() + " tasks");
     }
 
     private void addActionsColumn() {
@@ -372,11 +388,17 @@ public class tacheListController {
 
     public void refreshTacheList() {
         try {
-            List<Tache> tacheList = tacheService.showAll();
+            List<Tache> tacheList;
+            if (projetActuel != null) {
+                tacheList = tacheService.getTachesByProjetId(projetActuel.getId_projet());
+            } else {
+                tacheList = tacheService.showAll();
+            }
             taches.setAll(tacheList);
             tacheTable.setItems(taches);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 }
