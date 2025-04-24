@@ -311,24 +311,32 @@ public class ProjectListController {
             System.out.println("Opening tasks for project: " + projetSelectionne.getName()
                     + " (ID: " + projetSelectionne.getId_projet() + ")");
 
-            // Change this line to use the correct filename
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ListTacheRH.fxml"));
             Parent root = loader.load();
+
+            // Obtenir le contrôleur
             tacheListController controller = loader.getController();
 
-            // Pass the selected project to the task controller
+            // Créer et configurer la scène
+            Stage stage = new Stage();
+            stage.setTitle("Liste des tâches pour " + projetSelectionne.getName()); // Titre initial
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+
+            // Définir le projet après avoir créé la scène mais avant l'affichage
             controller.setProjet(projetSelectionne);
 
-            Stage stage = new Stage();
-            stage.setTitle("Liste des tâches pour " + projetSelectionne.getName());
-            stage.setScene(new Scene(root));
+            // Afficher la fenêtre
             stage.show();
+
+            // Maintenant que la fenêtre est affichée, mettre à jour le titre
+            controller.updateWindowTitle();
+
         } catch (IOException | SQLException e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'ouvrir la liste des tâches");
         }
     }
-
 
     private void deleteProjet(Projet projet) {
         try {

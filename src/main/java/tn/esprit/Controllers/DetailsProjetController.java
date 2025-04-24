@@ -14,10 +14,8 @@ import tn.esprit.Services.UtilisateurService;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+
+import static tn.esprit.Controllers.ProjectListWithCardsController.stripHtmlTags;
 
 public class DetailsProjetController {
 
@@ -28,6 +26,7 @@ public class DetailsProjetController {
     @FXML private Label lblEndDate;
     @FXML private Label lblAbbreviation;
     @FXML private Label lblIdEmploye;
+    @FXML private Label lblIdEmployeTitle;
     @FXML private Label lblUploadedFiles;
 
     private Projet projet;
@@ -39,8 +38,8 @@ public class DetailsProjetController {
 
     private void afficherDetails() {
         if (projet != null) {
-            lblNomProjet.setText(projet.getName());
-            lblDescription.setText(projet.getDescription());
+            lblNomProjet.setText(stripHtmlTags(projet.getName()));
+            lblDescription.setText(stripHtmlTags(projet.getDescription()));
             lblStatus.setText(projet.getStatus().name());
             lblStartDate.setText(projet.getStarter_at().toString());
             lblEndDate.setText(projet.getEnd_date().toString());
@@ -49,25 +48,44 @@ public class DetailsProjetController {
             UtilisateurService utilisateurService = new UtilisateurService();
 
             if (projet.getEmployes() != null && !projet.getEmployes().isEmpty()) {
-                List<String> employesNames = projet.getEmployes().stream()
-                        .map(id -> {
-                            try {
-                                Utilisateur user = utilisateurService.getUserById(id);
-                                return user != null ? user.getFirstname() + " " + user.getLastname() : "Inconnu";
-                            } catch (SQLException e) {
-                                e.printStackTrace();
-                                return "Erreur";
-                            }
-                        })
-                        .collect(Collectors.toList());
+                lblIdEmployeTitle.setText("Employés Assignés :");
 
-                lblIdEmploye.setText(String.join(", ", employesNames));
+                StringBuilder employesNames = new StringBuilder();
+
+                for (int i = 0; i < projet.getEmployes().size(); i++) {
+                    Integer id = projet.getEmployes().get(i);
+                    try {
+                        Utilisateur user = utilisateurService.getUserById(id);
+                        if (user != null) {
+                            employesNames.append(user.getFirstname()).append(" ").append(user.getLastname());
+                        } else {
+                            employesNames.append("Utilisateur #").append(id);
+                        }
+
+                        // Add comma only between names, not after the last one
+                        if (i < projet.getEmployes().size() - 1) {
+                            employesNames.append(", ");
+                        }
+                    } catch (SQLException e) {
+                        employesNames.append("Inconnu");
+                        if (i < projet.getEmployes().size() - 1) {
+                            employesNames.append(", ");
+                        }
+                        e.printStackTrace();
+                    }
+                }
+
+                // Set the complete text without truncation
+                lblIdEmploye.setText(employesNames.toString());
+
+                // Make sure the label can wrap text if needed
+                lblIdEmploye.setWrapText(true);
             } else {
+                lblIdEmployeTitle.setText("Employés Assignés :");
                 lblIdEmploye.setText("Aucun employé assigné");
             }
         }
     }
-
     @FXML
     private void fermerFenetre() {
         Stage stage = (Stage) lblNomProjet.getScene().getWindow();
@@ -81,16 +99,16 @@ public class DetailsProjetController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ListTacheChefP.fxml"));
             Parent root = loader.load();
-            // Get the controller and pass the project ID
+            // Récupérer le contrôleur et passer l'ID du projet
             KanbanController kanbanController = loader.getController();
             kanbanController.setProjectId(projet.getId_projet());
 
-            // Load tasks for this specific project
+            // Charger les tâches pour ce projet spécifique
             kanbanController.loadTachesForProject(projet.getId_projet());
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.initStyle(StageStyle.UNDECORATED);
-            stage.setTitle("Liste des Tâches du Chef");
+            stage.setTitle("Liste des Tâches du Projet");
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {

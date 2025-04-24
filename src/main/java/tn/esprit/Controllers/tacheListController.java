@@ -175,15 +175,19 @@ public class tacheListController {
 
     public void setProjet(Projet projet) throws SQLException {
         this.projetActuel = projet;
-        loadTaches(); // Reload tasks with the new project filter
+        loadTaches(); // Charger les tâches avec le filtre du projet
 
-        // You might want to update window title to reflect the project name
-        Stage stage = (Stage) tacheTable.getScene().getWindow();
-        if (stage != null && projet != null) {
-            stage.setTitle("Tâches du projet: " + projet.getName());
-        }
+        // Ne pas essayer d'accéder à la scène ici car elle pourrait être null
+        // Créez plutôt une méthode pour mettre à jour le titre qui sera appelée après l'affichage
     }
 
+    // Ajoutez cette méthode pour mettre à jour le titre après que la fenêtre soit affichée
+    public void updateWindowTitle() {
+        if (tacheTable.getScene() != null && tacheTable.getScene().getWindow() != null && projetActuel != null) {
+            Stage stage = (Stage) tacheTable.getScene().getWindow();
+            stage.setTitle("Tâches du projet: " + projetActuel.getName());
+        }
+    }
     private void setupStatusColumn() {
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
         colStatus.setCellFactory(column -> new TableCell<Tache, Tache.Status>() {

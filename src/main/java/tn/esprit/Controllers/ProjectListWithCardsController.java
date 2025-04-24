@@ -184,10 +184,12 @@ public class ProjectListWithCardsController {
         VBox content = new VBox(10);
         content.setAlignment(Pos.CENTER);
 
-        Text nameText = new Text(projet.getName());
+        // Appliquer stripHtmlTags au nom du projet
+        Text nameText = new Text(stripHtmlTags(projet.getName()));
         nameText.getStyleClass().add("project-title");
 
-        Text descText = new Text(projet.getDescription());
+        // Appliquer stripHtmlTags à la description du projet
+        Text descText = new Text(stripHtmlTags(projet.getDescription()));
         descText.getStyleClass().add("project-description");
 
         Text statusText = new Text(projet.getStatus().toString());
@@ -363,5 +365,8 @@ public class ProjectListWithCardsController {
             }
         });
     }
-
+    public static String stripHtmlTags(String html) {
+        if (html == null) return "";
+        return html.replaceAll("<[^>]*>", "");
+    }
 }
