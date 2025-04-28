@@ -113,10 +113,7 @@ public class DashController {
             setActiveButton(btnProjets);
             loadView("/fxml/ListProjet.fxml");
         });
-        btnEquipe.setOnAction(event -> {
-            setActiveButton(btnProjets);
-            loadView("/fxml/ListTacheRH.fxml");
-        });
+
 
         //username.setText("Meriem Sassi");
         hideAllSubMenus();

@@ -155,7 +155,7 @@
             </Button>
             <VBox fx:id="subMenuProjets" managed="false" visible="false">
                 <Button fx:id="btnTaches" styleClass="sidebar-sub-button" text="Projets" />
-                <Button fx:id="btnEquipe" styleClass="sidebar-sub-button" text="Taches" />
+                <!-- <Button fx:id="btnEquipe" styleClass="sidebar-sub-button" text="Taches" /> -->
             </VBox>
 
             <!-- Gestion Transports -->

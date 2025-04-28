@@ -53,6 +53,7 @@ public class ProjectListWithCardsController {
         loadProjects();
         loadNotificationIcon();
 
+
         if (btnAjouterProjet != null) {
             Utilisateur utilisateur = SessionManager.getUtilisateurConnecte();
             if (utilisateur != null && utilisateur.getRole() == Role.EMPLOYEE) {
@@ -60,6 +61,8 @@ public class ProjectListWithCardsController {
                 btnAjouterProjet.setOpacity(0.5);
             }
         }
+
+
         // Vérifier si les composants existent avant d'agir dessus
         if (notificationBadge != null) {
             notificationBadge.setText("");
@@ -211,6 +214,7 @@ public class ProjectListWithCardsController {
         eyeIcon.setFitHeight(40);
         eyeIcon.setFitWidth(40);
 
+
         // Vérifier le rôle de l'utilisateur connecté
         Utilisateur utilisateur = SessionManager.getUtilisateurConnecte();
         boolean isEmployee = false;
@@ -235,6 +239,13 @@ public class ProjectListWithCardsController {
             editIcon.setOnMouseClicked(event -> showEditPopup(projet));
             deleteIcon.setOnMouseClicked(event -> showDeleteConfirmation(projet));
         }
+
+
+        // Instead, enable all buttons regardless of role
+        editIcon.setStyle("-fx-cursor: hand;");
+        deleteIcon.setStyle("-fx-cursor: hand;");
+        editIcon.setOnMouseClicked(event -> showEditPopup(projet));
+        deleteIcon.setOnMouseClicked(event -> showDeleteConfirmation(projet));
 
         // L'icône pour voir les détails reste toujours active
         eyeIcon.setStyle("-fx-cursor: hand;");

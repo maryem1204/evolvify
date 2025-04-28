@@ -15,9 +15,15 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import tn.esprit.Entities.Projet;
 import tn.esprit.Entities.Tache;
+import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Services.TacheService;
+import tn.esprit.Services.UtilisateurService;
+import tn.esprit.Utils.MyDataBase;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
@@ -37,6 +43,7 @@ public class KanbanController {
     @FXML private ProgressBar progressBar100;
     private final TacheService tacheService = new TacheService();
     private int projectId;
+    private final UtilisateurService utilisateurService = new UtilisateurService();
 
     public void setProjectId(int projectId) {
         this.projectId = projectId;
@@ -92,6 +99,25 @@ public class KanbanController {
                 return "#007BFF"; // Bleu pour basse priorité
             default:
                 return "#000000"; // Noir par défaut
+        }
+    }
+
+    // Nouvelle méthode pour obtenir le nom complet de l'employé à partir de son ID
+    private String getEmployeeName(int employeId) {
+        try {
+            Connection cnx = MyDataBase.getInstance().getCnx();
+            String query = "SELECT firstname, lastname FROM Users WHERE id_employe = ?";
+            PreparedStatement pst = cnx.prepareStatement(query);
+            pst.setInt(1, employeId);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("firstname") + " " + rs.getString("lastname");
+            }
+            return "Employé inconnu";
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "Employé #" + employeId;
         }
     }
 
@@ -194,7 +220,10 @@ public class KanbanController {
         descLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #333;");
 
         Label dateLabel = new Label("Date: " + tache.getCreated_at());
-        Label employeLabel = new Label("Employé ID: " + tache.getId_employe());
+
+        // Utiliser la méthode getEmployeeName pour afficher le nom et prénom de l'employé
+        Label employeLabel = new Label("Employé: " + getEmployeeName(tache.getId_employe()));
+
         Label priorityLabel = new Label("Priorité: " + tache.getPriority());
         priorityLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: " + getPriorityColor(tache.getPriority()) + ";");
 
