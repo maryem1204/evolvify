@@ -241,8 +241,8 @@ public class DashController {
             case "btnAbsences" -> "/fxml/absences.fxml";
             case "btnTaches" -> "/fxml/ListProjet.fxml";
             case "btnEquipe" -> "/fxml/ListTacheRH.fxml";
-            case "btnCandidats" -> "/fxml/conges.fxml";
-            case "btnEntretiens" -> "/fxml/absences.fxml";
+            case "btnCandidats" -> "/fxml/ListCondidate.fxml";
+            case "btnEntretiens" -> "/fxml/ListOffreCandidates.fxml";
             case "btnTransport", "btnTrajet", "btnAb" -> "/fxml/ListTacheRH.fxml";
             default -> null;
         };
@@ -363,4 +363,13 @@ public class DashController {
     private void handleProfil() {
         loadView("/fxml/employeeProfile.fxml");
     }
+    @FXML
+    private void showCandidats() {loadView("/fxml/ListCondidate.fxml");}
+    @FXML
+    private void showOffres() {
+        loadView("/fxml/Listoffre.fxml");
+    }
+
+    @FXML
+    private void showListOffresCandidates(){ loadView("/fxml/ListOffreCandidates.fxml");}
 }

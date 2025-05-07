@@ -35,7 +35,7 @@ public class CandidateService implements CRUD<Utilisateur> {
         ps.setDate(7, new Date(user.getJoiningDate().getTime()));
         ps.setInt(8, 0);
         ps.setInt(9, 0);
-        ps.setBytes(10, user.getUploadedCv());
+        ps.setString(10, user.getUploadedCv());
         ps.setString(11, user.getNum_tel());
         ps.setString(12, "CONDIDAT");
         // Afficher la requête pour débogage
@@ -93,7 +93,7 @@ public class CandidateService implements CRUD<Utilisateur> {
                 utilisateur.setLastname(rs.getString("lastname"));
                 utilisateur.setEmail(rs.getString("email"));
                 utilisateur.setPassword(rs.getString("password"));
-                utilisateur.setUploadedCv(rs.getBytes("uploaded_cv"));
+                utilisateur.setUploadedCv(rs.getString("uploaded_cv"));
                 utilisateur.setBirthdayDate(rs.getDate("birthdayDate"));
                 utilisateur.setJoiningDate(rs.getDate("joiningDate"));
                 utilisateur.setNum_tel(rs.getString("num_tel"));

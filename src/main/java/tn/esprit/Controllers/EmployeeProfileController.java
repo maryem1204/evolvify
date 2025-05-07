@@ -197,7 +197,8 @@ public class EmployeeProfileController implements Initializable {
     }
 
     private void handleDownloadCV() {
-        if (currentUser.getUploadedCv() == null || currentUser.getUploadedCv().length == 0) {
+        //|| currentUser.getUploadedCv().length == 0
+        if (currentUser.getUploadedCv() == null ) {
             System.out.println("No CV available for download");
             return;
         }

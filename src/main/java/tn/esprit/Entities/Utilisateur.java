@@ -24,7 +24,7 @@ public class Utilisateur implements Serializable {
     private Role role;
     private int tt_restants;
     private int conge_restant;
-    private byte[] uploaded_cv;
+    private String uploaded_cv;
     private String num_tel;
     private String profilePhotoPath;
     private Gender gender; // Ajout du genreµ
@@ -57,7 +57,7 @@ public class Utilisateur implements Serializable {
         this.firstLogin = true;
     }
 
-    public Utilisateur(int id_employe, String firstname, String lastname, String email, String password, String profilePhoto, Date birthdayDate, Date joiningDate, Role role, int tt_restants, int conge_restant, byte[] uploaded_cv, String num_tel, Gender gender) {
+    public Utilisateur(int id_employe, String firstname, String lastname, String email, String password, String profilePhoto, Date birthdayDate, Date joiningDate, Role role, int tt_restants, int conge_restant, String uploaded_cv, String num_tel, Gender gender) {
         this.id_employe = id_employe;
         this.firstname = firstname;
         this.lastname = lastname;
@@ -75,7 +75,7 @@ public class Utilisateur implements Serializable {
         this.firstLogin = true;
     }
 
-    public Utilisateur(String firstname, String lastname, String email, String password, String profilePhoto, Date birthdayDate, Date joiningDate, Role role, int tt_restants, int conge_restant, byte[] uploaded_cv, String num_tel, Gender gender) {
+    public Utilisateur(String firstname, String lastname, String email, String password, String profilePhoto, Date birthdayDate, Date joiningDate, Role role, int tt_restants, int conge_restant, String uploaded_cv, String num_tel, Gender gender) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
@@ -101,7 +101,7 @@ public class Utilisateur implements Serializable {
         this.firstLogin = true;
 
     }
-    public Utilisateur(String firstname, String lastname, String email,  Date birthdayDate, Date joiningDate, byte[] uploaded_cv, String num_tel) {
+    public Utilisateur(String firstname, String lastname, String email,  Date birthdayDate, Date joiningDate, String uploaded_cv, String num_tel) {
 
         this.firstname = firstname;
         this.lastname = lastname;
@@ -117,17 +117,7 @@ public class Utilisateur implements Serializable {
         this.num_tel = num_tel;
     }
 
-    // Convertir un fichier en byte[]
-    public static byte[] fileToBytes(String filePath) throws IOException {
-        Path path = Paths.get(filePath);
-        return Files.readAllBytes(path);
-    }
 
-    // Convertir un byte[] en fichier
-    public static void bytesToFile(byte[] fileData, String outputPath) throws IOException {
-        Path path = Paths.get(outputPath);
-        Files.write(path, fileData);
-    }
 
     // Getters et Setters
     public int getId_employe() {
@@ -218,11 +208,11 @@ public class Utilisateur implements Serializable {
         this.conge_restant = conge_restant;
     }
 
-    public byte[] getUploadedCv() {
+    public String getUploadedCv() {
         return uploaded_cv;
     }
 
-    public void setUploadedCv(byte[] uploaded_cv) {
+    public void setUploadedCv(String uploaded_cv) {
         this.uploaded_cv = uploaded_cv;
     }
 
@@ -327,6 +317,6 @@ public class Utilisateur implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id_employe, firstname, lastname, email, password, profilePhoto, birthdayDate, joiningDate, role, tt_restants, conge_restant, Arrays.hashCode(uploaded_cv), num_tel, profilePhotoPath, gender);
+        return Objects.hash(id_employe, firstname, lastname, email, password, profilePhoto, birthdayDate, joiningDate, role, tt_restants, conge_restant, uploaded_cv, num_tel, profilePhotoPath, gender);
     }
 }
