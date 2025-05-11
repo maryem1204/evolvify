@@ -67,7 +67,7 @@ public class ListCandidateController {
 
     private static final Logger logger = Logger.getLogger(Dashboard.class.getName());
     private final CandidateService candidateService = new CandidateService();
-    private static final String API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMjI2ZDk2ZTItNTE5Yy00NGNiLTk5MDktODk4ZDFhNmI4YjVkIiwidHlwZSI6ImFwaV90b2tlbiJ9.LF_cOmX4DsGe4JNRibkmARi92rf_-c4CJRWqH6uhpDs"; // Utilisez une variable d'environnement pour sécuriser la clé API
+    private static final String API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiY2EzYmIwZGUtNmNlZi00YjA3LThlZTUtMjdhYWY1NWRhZDUyIiwidHlwZSI6ImFwaV90b2tlbiJ9.-vcKMaUNglqDquZx36OuK3il5B9aNCO1KWnJ8lbFwd8"; // Utilisez une variable d'environnement pour sécuriser la clé API
 
     @FXML
     public void initialize() {

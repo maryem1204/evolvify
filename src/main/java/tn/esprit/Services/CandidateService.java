@@ -21,8 +21,8 @@ public class CandidateService implements CRUD<Utilisateur> {
     private PreparedStatement ps ;
     @Override
     public int add(Utilisateur user) throws SQLException {
-        String req = "INSERT INTO `users`(`firstname`, `lastname`, `email`, `password`, `profilePhoto`, `birthdayDate`, `joiningDate`,  `tt_restants`, `conge_restant`, `uploaded_cv`, `num_tel`, `role`) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?,?)";
+        String req = "INSERT INTO `users`(`firstname`, `lastname`, `email`, `password`, `birthdayDate`, `joiningDate`,  `tt_restants`, `conge_restant`, `uploaded_cv`, `num_tel`, `role`) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?,?, ?,?)";
 
         ps = cnx.prepareStatement(req, PreparedStatement.RETURN_GENERATED_KEYS);
 
@@ -31,13 +31,13 @@ public class CandidateService implements CRUD<Utilisateur> {
         ps.setString(3, user.getEmail());
         ps.setString(4, user.getPassword());
         //ps.setBytes(5, user.getProfilePhoto());
-        ps.setDate(6, new Date(user.getBirthdayDate().getTime()));  // Conversion de Date en SQL Date
-        ps.setDate(7, new Date(user.getJoiningDate().getTime()));
+        ps.setDate(5, new Date(user.getBirthdayDate().getTime()));  // Conversion de Date en SQL Date
+        ps.setDate(6, new Date(user.getJoiningDate().getTime()));
+        ps.setInt(7, 0);
         ps.setInt(8, 0);
-        ps.setInt(9, 0);
-        ps.setString(10, user.getUploadedCv());
-        ps.setString(11, user.getNum_tel());
-        ps.setString(12, "CONDIDAT");
+        ps.setString(9, user.getUploadedCv());
+        ps.setString(10, user.getNum_tel());
+        ps.setString(11, "CONDIDAT");
         // Afficher la requête pour débogage
         System.out.println("SQL Query: " + req);
 
