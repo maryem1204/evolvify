@@ -11,13 +11,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import tn.esprit.Entities.Utilisateur;
 import tn.esprit.Services.UtilisateurService;
 import tn.esprit.Utils.SessionManager;
@@ -165,39 +162,19 @@ public class EmployeeProfileController implements Initializable {
                 return;
             }
 
-            // Get the main stage
-            Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene primaryScene = primaryStage.getScene();
-
-            // Create a semi-transparent overlay
-            Rectangle overlay = new Rectangle();
-            overlay.setWidth(primaryScene.getWidth());
-            overlay.setHeight(primaryScene.getHeight());
-            overlay.setFill(javafx.scene.paint.Color.rgb(0, 0, 0, 0.4)); // Dark transparent gray
-
-            // Ensure overlay resizes with window
-            primaryScene.widthProperty().addListener((obs, oldVal, newVal) -> overlay.setWidth(newVal.doubleValue()));
-            primaryScene.heightProperty().addListener((obs, oldVal, newVal) -> overlay.setHeight(newVal.doubleValue()));
-
-            // Add overlay to the root container of the main stage
-            Pane rootPane = (Pane) primaryScene.getRoot();
-            rootPane.getChildren().add(overlay);
-
-            // Load popup
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EditProfile.fxml"));
             Parent root = loader.load();
             EditProfileController controller = loader.getController();
             controller.setUser(currentUser);
 
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initStyle(StageStyle.UNDECORATED); // Remove window decorations
-            stage.setScene(new Scene(root));
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Edit Profile");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(((Node) event.getSource()).getScene().getWindow());
+            dialogStage.setResizable(false);
+            dialogStage.setScene(new Scene(root));
 
-            // Remove overlay when popup is closed
-            stage.setOnHidden(e -> rootPane.getChildren().remove(overlay));
-
-            stage.showAndWait();
+            dialogStage.showAndWait();
 
             // Refresh data after closing the popup
             refreshUserProfile();

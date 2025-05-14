@@ -4,6 +4,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -14,9 +15,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import com.itextpdf.text.Document;
@@ -26,6 +25,7 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.BaseColor;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -49,44 +49,70 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ProjectListController {
-    @FXML private TableView<Projet> projectTable;
-    @FXML private TableColumn<Projet, String> colName;
-    @FXML private TableColumn<Projet, String> colAbbreviation;
-    @FXML private TableColumn<Projet, Projet.Status> colStatus;
-    @FXML private TableColumn<Projet, Date> colEndDate;
-    @FXML private TableColumn<Projet, Date> colStarterDate;
-    @FXML private TableColumn<Projet, List<Integer>> colEmployeId;
-    @FXML private TableColumn<Projet, Void> colActions;
-    @FXML private TextField recherche;
+    @FXML
+    private TableView<Projet> projectTable;
+    @FXML
+    private TableColumn<Projet, String> colName;
+    @FXML
+    private TableColumn<Projet, String> colAbbreviation;
+    @FXML
+    private TableColumn<Projet, Projet.Status> colStatus;
+    @FXML
+    private TableColumn<Projet, Date> colEndDate;
+    @FXML
+    private TableColumn<Projet, Date> colStarterDate;
+    @FXML
+    private TableColumn<Projet, List<Integer>> colEmployeId;
+    @FXML
+    private TableColumn<Projet, Void> colActions;
+    @FXML
+    private TextField recherche;
+    @FXML
+    private Pagination pagination;
+    @FXML
+    private BorderPane rootPane;
 
     private ObservableList<Projet> projets = FXCollections.observableArrayList();
+    private FilteredList<Projet> filteredProjet;
     private ProjetService projectService = new ProjetService();
     private Map<Integer, Utilisateur> userMap = new HashMap<>();
+
+    // Reference to main dashboard controller for content switching
+    private DashboardController dashboardController;
+
+    // Pagination control
+    private static final int ROWS_PER_PAGE = 8;
 
     public void initialize() throws SQLException {
         loadUsers();
         projectTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         setupTableColumns();
         loadProjects();
+
+        // Initialize filteredProjet BEFORE setupPagination
+        filteredProjet = new FilteredList<>(projets, p -> true);
+
+        setupPagination();
+        setupSearch();
         addActionsColumn();
-        // Appliquer des styles CSS personnalisés
-        applyCustomStyles();
-        recherche.textProperty().addListener((observable, oldValue, newValue) -> filterProjets(newValue));
+        projectTable.setFixedCellSize(-1);
+
+        // Explicitly set preferred width for the Assigné à column
+        colEmployeId.setPrefWidth(280);
     }
 
-    private void applyCustomStyles() {
-        projectTable.getStyleClass().add("table-view");
-
-        // Appliquer des styles aux boutons
-        recherche.getStyleClass().add("searchInput");
-        projectTable.getStyleClass().add("no-empty-rows");
+    // Set the dashboard controller reference
+    public void setDashboardController(DashboardController controller) {
+        this.dashboardController = controller;
     }
+
+    // Other methods remain the same...
 
     private void setupTableColumns() {
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colAbbreviation.setCellValueFactory(new PropertyValueFactory<>("abbreviation"));
 
-        // Configuration de la colonne de statut avec un badge visuel
+        // Configuration of status column with visual badge
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
         colStatus.setCellFactory(col -> new TableCell<Projet, Projet.Status>() {
             @Override
@@ -99,10 +125,10 @@ public class ProjectListController {
                     return;
                 }
 
-                Label statusLabel = new Label(status.toString());
-                statusLabel.getStyleClass().addAll("status-label"); // Base status label style
+                Label statusLabel = new Label(status.toString().replace("_", " "));
+                statusLabel.getStyleClass().addAll("status-label");
 
-                // Apply specific status styles based on the status
+                // Apply specific status styles
                 switch (status) {
                     case IN_PROGRESS:
                         statusLabel.getStyleClass().add("status-inprogress");
@@ -110,9 +136,7 @@ public class ProjectListController {
                     case COMPLETED:
                         statusLabel.getStyleClass().add("status-completed");
                         break;
-                    // Add more cases for other statuses if needed
                     default:
-                        // Default style if no specific style is defined
                         statusLabel.getStyleClass().add("status-default");
                 }
 
@@ -121,10 +145,11 @@ public class ProjectListController {
             }
         });
 
+        // Date column configurations
         colEndDate.setCellValueFactory(new PropertyValueFactory<>("end_date"));
         colStarterDate.setCellValueFactory(new PropertyValueFactory<>("starter_at"));
 
-        // Configuration de la colonne des employés pour afficher les utilisateurs l'un sous l'autre
+        // Enhanced configuration for employee column to show users more clearly
         colEmployeId.setCellValueFactory(new PropertyValueFactory<>("employes"));
         colEmployeId.setCellFactory(col -> new TableCell<Projet, List<Integer>>() {
             @Override
@@ -137,39 +162,50 @@ public class ProjectListController {
                     return;
                 }
 
+                // Create a container that expands horizontally
                 VBox userContainer = new VBox();
                 userContainer.getStyleClass().add("users-cell");
-                userContainer.setSpacing(5);
+                userContainer.setSpacing(8);
+                userContainer.setMinWidth(250); // Ensure container uses available width
+
+                // Create a flow pane for better layout when multiple users
+                FlowPane usersPane = new FlowPane();
+                usersPane.setHgap(10);
+                usersPane.setVgap(8);
+                usersPane.setPrefWrapLength(250); // Prefer wrapping after this width
 
                 for (Integer employeId : employes) {
                     Utilisateur user = userMap.get(employeId);
                     if (user != null) {
+                        // Create a more compact layout for each user
                         HBox userItem = new HBox();
                         userItem.getStyleClass().add("user-item");
                         userItem.setSpacing(5);
+                        userItem.setAlignment(Pos.CENTER_LEFT);
+                        userItem.setPrefHeight(20); // Fixed height for consistency
 
-                        // Créer l'avatar avec les initiales
-                        Circle avatar = new Circle(12.5);
+                        // Avatar with initials
+                        Circle avatar = new Circle(12);
                         avatar.getStyleClass().add("user-avatar");
                         avatar.setFill(getColorForId(employeId));
 
                         String initials = getInitials(user.getLastname(), user.getFirstname());
                         Text initialsText = new Text(initials);
                         initialsText.setFill(Color.WHITE);
-                        //initialsText.setFont(new Font("System", 10.0)); // Sans le FontWeight
 
                         StackPane avatarPane = new StackPane(avatar, initialsText);
                         avatarPane.setAlignment(Pos.CENTER);
 
-                        // Créer le label pour le nom d'utilisateur
+                        // User name with some styling
                         Label userName = new Label(user.getFirstname() + " " + user.getLastname());
                         userName.getStyleClass().add("user-name");
 
                         userItem.getChildren().addAll(avatarPane, userName);
-                        userContainer.getChildren().add(userItem);
+                        usersPane.getChildren().add(userItem);
                     }
                 }
 
+                userContainer.getChildren().add(usersPane);
                 setGraphic(userContainer);
             }
 
@@ -186,37 +222,146 @@ public class ProjectListController {
                         (lastName.isEmpty() ? "" : lastName.substring(0, 1));
             }
         });
+
+        // Make sure the column takes proper space
+        colEmployeId.setMinWidth(250);
     }
 
-    private ObservableList<Projet> filteredProjet = FXCollections.observableArrayList();
+    private void setupPagination() {
+        // Initialize pagination
+        int pageCount = (projets.size() / ROWS_PER_PAGE) + ((projets.size() % ROWS_PER_PAGE > 0) ? 1 : 0);
+        pagination.setPageCount(Math.max(pageCount, 1));
+        pagination.setCurrentPageIndex(0);
+        pagination.setMaxPageIndicatorCount(5);
 
-    private void filterProjets(String keyword) {
-        if (keyword == null || keyword.trim().isEmpty()) {
-            projectTable.setItems(projets);
-            return;
+        pagination.currentPageIndexProperty().addListener((obs, oldIndex, newIndex) -> {
+            updateTableData();
+        });
+
+        updateTableData();
+    }
+
+    private void updateTableData() {
+        int pageIndex = pagination.getCurrentPageIndex();
+        int fromIndex = pageIndex * ROWS_PER_PAGE;
+        int toIndex = Math.min(fromIndex + ROWS_PER_PAGE, filteredProjet.size());
+
+        // Create a sublist view for the current page
+        ObservableList<Projet> pageItems = FXCollections.observableArrayList();
+        if (fromIndex < toIndex) {
+            pageItems.addAll(filteredProjet.subList(fromIndex, toIndex));
         }
 
-        String searchKeyword = keyword.toLowerCase();
+        projectTable.setItems(pageItems);
+        projectTable.refresh(); // Assure que la hauteur des lignes est recalculée
+    }
 
-        List<Projet> filteredList = projets.stream()
-                .filter(projet -> {
-                    String name = projet.getName() != null ? projet.getName().toLowerCase() : "";
-                    String abbreviation = projet.getAbbreviation() != null ? projet.getAbbreviation().toLowerCase() : "";
-                    String status = projet.getStatus() != null ? projet.getStatus().toString().toLowerCase() : "";
+    private void setupSearch() {
+        // Initialize filtered list
+        filteredProjet = new FilteredList<>(projets, p -> true);
 
-                    return name.contains(searchKeyword) ||
-                            abbreviation.contains(searchKeyword) ||
-                            status.contains(searchKeyword);
-                })
-                .collect(Collectors.toList());
+        // Add listener for search text changes
+        recherche.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredProjet.setPredicate(projet -> {
+                // If filter text is empty, display all projects
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
 
-        filteredProjet.setAll(filteredList);
-        projectTable.setItems(filteredProjet);
+                String searchKeyword = newValue.toLowerCase();
+
+                // Compare fields we want to search through
+                String name = projet.getName() != null ? projet.getName().toLowerCase() : "";
+                String abbreviation = projet.getAbbreviation() != null ? projet.getAbbreviation().toLowerCase() : "";
+                String status = projet.getStatus() != null ? projet.getStatus().toString().toLowerCase() : "";
+
+                return name.contains(searchKeyword) ||
+                        abbreviation.contains(searchKeyword) ||
+                        status.contains(searchKeyword);
+            });
+
+            // After filtering, update pagination
+            int pageCount = (filteredProjet.size() / ROWS_PER_PAGE) + ((filteredProjet.size() % ROWS_PER_PAGE > 0) ? 1 : 0);
+            pagination.setPageCount(Math.max(pageCount, 1));
+            pagination.setCurrentPageIndex(0);
+
+            // Update table data
+            updateTableData();
+        });
     }
 
     private void addActionsColumn() {
         colActions.setCellFactory(param -> new TableCell<Projet, Void>() {
-            // Create a safer way to load images
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty) {
+                    setGraphic(null);
+                    return;
+                }
+
+                // Create a container for action icons
+                HBox actionsContainer = new HBox(15);
+                actionsContainer.setAlignment(Pos.CENTER);
+
+                // Create action icons with enhanced styling
+                ImageView editIcon = createSafeImageView("/images/editIcon.png");
+                ImageView deleteIcon = createSafeImageView("/images/deleteIconn.png");
+                ImageView tasksIcon = createSafeImageView("/images/tasks.png");
+
+                // Configure action icons with proper styling
+                if (editIcon != null) {
+                    configureActionIcon(editIcon, "action-icon action-icon-edit");
+                    editIcon.setOnMouseClicked(event -> {
+                        Projet projet = getTableView().getItems().get(getIndex());
+                        showEditPopup(projet);
+                    });
+
+                    Tooltip editTooltip = new Tooltip("Modifier");
+                    Tooltip.install(editIcon, editTooltip);
+                }
+
+                if (deleteIcon != null) {
+                    configureActionIcon(deleteIcon, "action-icon action-icon-delete");
+                    deleteIcon.setOnMouseClicked(event -> {
+                        Projet projet = getTableView().getItems().get(getIndex());
+                        deleteProjet(projet);
+                    });
+
+                    Tooltip deleteTooltip = new Tooltip("Supprimer");
+                    Tooltip.install(deleteIcon, deleteTooltip);
+                }
+
+                if (tasksIcon != null) {
+                    configureActionIcon(tasksIcon, "action-icon action-icon-tasks");
+                    tasksIcon.setOnMouseClicked(event -> {
+                        Projet projet = getTableView().getItems().get(getIndex());
+                        showTasksPopup(projet);  // Added method call to show tasks popup
+                    });
+
+                    Tooltip tasksTooltip = new Tooltip("Gérer les tâches");
+                    Tooltip.install(tasksIcon, tasksTooltip);
+                } else {
+                    // Fallback button if image can't be loaded
+                    Button tasksBtn = new Button("Tâches");
+                    tasksBtn.getStyleClass().addAll("gradient-button", "small-button");
+                    tasksBtn.setOnAction(event -> {
+                        Projet projet = getTableView().getItems().get(getIndex());
+                        showTasksPopup(projet);  // Added method call to show tasks popup
+                    });
+                    actionsContainer.getChildren().add(tasksBtn);
+                }
+
+                actionsContainer.getChildren().addAll(
+                        editIcon != null ? editIcon : new Label(),
+                        deleteIcon != null ? deleteIcon : new Label(),
+                        tasksIcon != null && actionsContainer.getChildren().isEmpty() ? tasksIcon : new Label()
+                );
+
+                setGraphic(actionsContainer);
+            }
+
             private ImageView createSafeImageView(String path) {
                 try {
                     InputStream stream = getClass().getResourceAsStream(path);
@@ -232,155 +377,145 @@ public class ProjectListController {
                 }
             }
 
-            private final ImageView editIcon = createSafeImageView("/images/editIcon.png");
-            private final ImageView deleteIcon = createSafeImageView("/images/deleteIconn.png");
-            private final ImageView tasksIcon = createSafeImageView("/images/tasks.png");
-            private final HBox hbox = new HBox(10);
-
-            {
-                // Configure icons with proper null checks
-                configureIcon(editIcon, 20, 20);
-                configureIcon(deleteIcon, 20, 20);
-
-                // If tasks image fails to load, create a button as fallback
-                if (tasksIcon != null) {
-                    configureIcon(tasksIcon, 20, 20);
-                    hbox.getChildren().add(tasksIcon);
-                } else {
-                    Button tasksBtn = new Button("Tasks");
-                    tasksBtn.getStyleClass().add("task-button");
-                    tasksBtn.setStyle("-fx-background-color: #0052cc; -fx-text-fill: white; -fx-cursor: hand;");
-                    hbox.getChildren().add(tasksBtn);
-                }
-
-                hbox.setAlignment(Pos.CENTER);
-            }
-
-            private void configureIcon(ImageView icon, double width, double height) {
-                if (icon != null) {
-                    icon.setFitWidth(width);
-                    icon.setFitHeight(height);
-                    icon.setStyle("-fx-cursor: hand;");
-                    hbox.getChildren().add(icon);
-                }
-            }
-
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    // Configure click handlers
-                    if (editIcon != null) {
-                        editIcon.setOnMouseClicked(event -> {
-                            Projet projet = getTableView().getItems().get(getIndex());
-                            showEditPopup(projet);
-                        });
-                    }
-
-                    if (deleteIcon != null) {
-                        deleteIcon.setOnMouseClicked(event -> {
-                            Projet projet = getTableView().getItems().get(getIndex());
-                            deleteProjet(projet);
-                        });
-                    }
-
-                    // Gérer le clic sur l'icône ou le bouton des tâches
-                    Node tasksNode = hbox.getChildren().get(hbox.getChildren().size() - 1);
-                    if (tasksNode instanceof ImageView) {
-                        ((ImageView) tasksNode).setOnMouseClicked(event -> {
-                            Projet projetSelectionne = getTableView().getItems().get(getIndex());
-                            openTasksList(projetSelectionne);
-                        });
-                    } else if (tasksNode instanceof Button) {
-                        ((Button) tasksNode).setOnAction(event -> {
-                            Projet projetSelectionne = getTableView().getItems().get(getIndex());
-                            openTasksList(projetSelectionne);
-                        });
-                    }
-
-                    setGraphic(hbox);
-                }
+            private void configureActionIcon(ImageView icon, String styleClass) {
+                icon.setFitWidth(24);
+                icon.setFitHeight(24);
+                icon.getStyleClass().addAll(styleClass.split(" "));
             }
         });
     }
 
-    private void openTasksList(Projet projetSelectionne) {
+    // New method to show tasks popup
+    private void showTasksPopup(Projet projet) {
         try {
-            System.out.println("Opening tasks for project: " + projetSelectionne.getName()
-                    + " (ID: " + projetSelectionne.getId_projet() + ")");
+            // Get main stage
+            Stage primaryStage = (Stage) projectTable.getScene().getWindow();
+            Scene primaryScene = primaryStage.getScene();
 
+            // Create semi-transparent overlay
+            Rectangle overlay = new Rectangle();
+            overlay.setWidth(primaryScene.getWidth());
+            overlay.setHeight(primaryScene.getHeight());
+            overlay.setFill(Color.rgb(0, 0, 0, 0.4));
+
+            // Ensure overlay resizes with window
+            primaryScene.widthProperty().addListener((obs, oldVal, newVal) -> overlay.setWidth(newVal.doubleValue()));
+            primaryScene.heightProperty().addListener((obs, oldVal, newVal) -> overlay.setHeight(newVal.doubleValue()));
+
+            // Add overlay to the root container
+            Pane rootContainer = (Pane) primaryScene.getRoot();
+            rootContainer.getChildren().add(overlay);
+
+            // Load ListeTacheRH.fxml
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ListTacheRH.fxml"));
             Parent root = loader.load();
 
-            // Obtenir le contrôleur
-            tacheListController controller = loader.getController();
+            // If there's a controller for ListeTacheRH.fxml that needs the project data
+            try {
+                tacheListController controller = loader.getController();
+                controller.setProjet(projet);
+            } catch (Exception e) {
+                System.err.println("Warning: Could not set project data on ListeTacheRHController: " + e.getMessage());
+                // Continue without setting project data if controller doesn't have the method
+            }
 
-            // Créer et configurer la scène
+            // Create undecorated stage for popup
             Stage stage = new Stage();
-            stage.setTitle("Liste des tâches pour " + projetSelectionne.getName()); // Titre initial
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initStyle(StageStyle.UNDECORATED);
             Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource("/Styles/styles.css").toExternalForm());
             stage.setScene(scene);
 
-            // Définir le projet après avoir créé la scène mais avant l'affichage
-            controller.setProjet(projetSelectionne);
+            // Remove overlay when popup is closed
+            stage.setOnHidden(e -> rootContainer.getChildren().remove(overlay));
 
-            // Afficher la fenêtre
-            stage.show();
+            stage.showAndWait();
 
-            // Maintenant que la fenêtre est affichée, mettre à jour le titre
-            controller.updateWindowTitle();
-
-        } catch (IOException | SQLException e) {
+            // Optionally refresh data after task management
+            // refreshProjetList();
+        } catch (IOException e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'ouvrir la liste des tâches");
+            showAlert(Alert.AlertType.ERROR, "Erreur",
+                    "Impossible d'ouvrir la fenêtre de gestion des tâches: " + e.getMessage());
         }
     }
 
     private void deleteProjet(Projet projet) {
         try {
-            // Charger le fichier FXML
+            // Load FXML for delete confirmation
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/DeleteProjet.fxml"));
             Parent root = loader.load();
 
-            // Obtenir le contrôleur et passer le projet sélectionné
+            // Get controller and pass project data
             DeleteProjetController controller = loader.getController();
             controller.setProjet(projet);
-            controller.setProjectListController(this); // Référence au contrôleur parent
+            controller.setProjectListController(this);
 
-            // Créer une nouvelle fenêtre pour la confirmation
+            // Create modal dialog
             Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL); // Bloquer l'interaction avec la fenêtre principale
+            stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("Confirmation de suppression");
-            stage.setScene(new Scene(root));
-            stage.showAndWait(); // Attendre la fermeture de la fenêtre avant de continuer
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource("/Styles/styles.css").toExternalForm());
+            stage.setScene(scene);
+            stage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'ouvrir la boîte de dialogue de suppression.");
         }
     }
 
-
     private void showAlert(Alert.AlertType type, String title, String content) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(content);
+
+        // Apply dialog styling
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.getStylesheets().add(getClass().getResource("/Styles/styles.css").toExternalForm());
+
         alert.showAndWait();
     }
 
     private void showEditPopup(Projet projet) {
         try {
+            // Get main stage
+            Stage primaryStage = (Stage) projectTable.getScene().getWindow();
+            Scene primaryScene = primaryStage.getScene();
+
+            // Create semi-transparent overlay
+            Rectangle overlay = new Rectangle();
+            overlay.setWidth(primaryScene.getWidth());
+            overlay.setHeight(primaryScene.getHeight());
+            overlay.setFill(Color.rgb(0, 0, 0, 0.4));
+
+            // Ensure overlay resizes with window
+            primaryScene.widthProperty().addListener((obs, oldVal, newVal) -> overlay.setWidth(newVal.doubleValue()));
+            primaryScene.heightProperty().addListener((obs, oldVal, newVal) -> overlay.setHeight(newVal.doubleValue()));
+
+            // Add overlay to the root container
+            Pane rootContainer = (Pane) primaryScene.getRoot();
+            rootContainer.getChildren().add(overlay);
+
+            // Load popup
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ModifierProjet.fxml"));
             Parent root = loader.load();
             ModifierProjetController controller = loader.getController();
             controller.setUserData(projet);
 
+            // Create undecorated stage for popup
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.initStyle(StageStyle.UNDECORATED);
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource("/Styles/styles.css").toExternalForm());
+            stage.setScene(scene);
+
+            // Remove overlay when popup is closed
+            stage.setOnHidden(e -> rootContainer.getChildren().remove(overlay));
+
             stage.showAndWait();
             refreshProjetList();
         } catch (IOException e) {
@@ -402,13 +537,40 @@ public class ProjectListController {
     @FXML
     private void openAjoutProjetPopup() {
         try {
+            // Get main stage
+            Stage primaryStage = (Stage) projectTable.getScene().getWindow();
+            Scene primaryScene = primaryStage.getScene();
+
+            // Create semi-transparent overlay
+            Rectangle overlay = new Rectangle();
+            overlay.setWidth(primaryScene.getWidth());
+            overlay.setHeight(primaryScene.getHeight());
+            overlay.setFill(Color.rgb(0, 0, 0, 0.4));
+
+            // Ensure overlay resizes with window
+            primaryScene.widthProperty().addListener((obs, oldVal, newVal) -> overlay.setWidth(newVal.doubleValue()));
+            primaryScene.heightProperty().addListener((obs, oldVal, newVal) -> overlay.setHeight(newVal.doubleValue()));
+
+            // Add overlay to the root container
+            Pane rootContainer = (Pane) primaryScene.getRoot();
+            rootContainer.getChildren().add(overlay);
+
+            // Load popup
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AjoutProjet.fxml"));
             Parent root = loader.load();
+
+            // Create undecorated modal stage
             Stage popupStage = new Stage();
             popupStage.initModality(Modality.APPLICATION_MODAL);
             popupStage.initStyle(StageStyle.UNDECORATED);
             popupStage.setTitle("Ajouter un projet");
-            popupStage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource("/Styles/styles.css").toExternalForm());
+            popupStage.setScene(scene);
+
+            // Remove overlay when popup is closed
+            popupStage.setOnHidden(e -> rootContainer.getChildren().remove(overlay));
+
             popupStage.showAndWait();
             refreshProjetList();
         } catch (IOException e) {
@@ -420,12 +582,25 @@ public class ProjectListController {
 
     public void refreshProjetList() {
         try {
+            // Load all projects
             projets.setAll(projectService.showAll());
-            projectTable.setItems(projets);
 
-            // Réappliquer la configuration des colonnes et des actions
-            setupTableColumns();
-            addActionsColumn();
+            // Update filtered list
+            if (filteredProjet != null) {
+                // This will cause the predicate to be re-evaluated
+                filteredProjet.setPredicate(filteredProjet.getPredicate());
+
+                // Update pagination
+                int pageCount = (filteredProjet.size() / ROWS_PER_PAGE) + ((filteredProjet.size() % ROWS_PER_PAGE > 0) ? 1 : 0);
+                pagination.setPageCount(Math.max(pageCount, 1));
+
+                // Update table data for current page
+                updateTableData();
+            } else {
+                // First time setup
+                filteredProjet = new FilteredList<>(projets, p -> true);
+                setupPagination();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Erreur de chargement",
@@ -560,6 +735,7 @@ public class ProjectListController {
                     "Une erreur est survenue lors de la création du PDF: " + e.getMessage());
         }
     }
+
     private void loadProjects() throws SQLException {
         // Clear existing projects
         projets.clear();

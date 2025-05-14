@@ -75,13 +75,12 @@
                         <TableColumn fx:id="colFirstName" text="Nom" prefWidth="90"/>
                         <TableColumn fx:id="colLastName" text="Prénom" prefWidth="90"/>
                         <TableColumn fx:id="colEmail" text="Email" prefWidth="130"/>
-                        <TableColumn fx:id="colBirthday" text="Date de Naissance" prefWidth="110"/>
-                        <TableColumn fx:id="colJoiningDate" text="Date d'embauche" prefWidth="110"/>
+                        <TableColumn fx:id="colBirthday" text="Date de Naissance" prefWidth="130"/>
+                        <TableColumn fx:id="colJoiningDate" text="Date d'embauche" prefWidth="130"/>
                         <TableColumn fx:id="colRole" text="Rôle" prefWidth="120"/>
                         <TableColumn fx:id="colNumTel" text="Téléphone" prefWidth="90"/>
-                        <TableColumn fx:id="colCongeRestant" text="Congés Restants" prefWidth="90" style="-fx-alignment: CENTER;"/>
-                        <TableColumn fx:id="colTtRestants" text="TT Restants" prefWidth="80" style="-fx-alignment: CENTER;"/>
-                        <TableColumn fx:id="colActions" text="Actions" prefWidth="80" style="-fx-alignment: CENTER;"/>
+                        <TableColumn fx:id="colCongeRestant" text="Congés Restants" prefWidth="120" style="-fx-alignment: CENTER;"/>
+                        <TableColumn fx:id="colActions" text="Actions" prefWidth="120" style="-fx-alignment: CENTER;"/>
                     </columns>
                     <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>

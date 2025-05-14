@@ -55,6 +55,9 @@ public class tacheListController {
 
     private Projet projetActuel;
 
+    @FXML
+    private Button closeButton;
+
     private ObservableList<Tache> taches = FXCollections.observableArrayList();
     private ObservableList<Tache> filteredTache = FXCollections.observableArrayList();
     private final TacheService tacheService = new TacheService();
@@ -307,10 +310,10 @@ public class tacheListController {
 
             {
                 // Set icon size and cursor
-                editIcon.setFitHeight(20);
-                editIcon.setFitWidth(20);
-                deleteIcon.setFitHeight(20);
-                deleteIcon.setFitWidth(20);
+                editIcon.setFitHeight(50);
+                editIcon.setFitWidth(50);
+                deleteIcon.setFitHeight(50);
+                deleteIcon.setFitWidth(50);
                 editIcon.setStyle("-fx-cursor: hand;");
                 deleteIcon.setStyle("-fx-cursor: hand;");
 
@@ -403,6 +406,10 @@ public class tacheListController {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    @FXML
+    private void handleClose() {
+        ((Stage) closeButton.getScene().getWindow()).close();
     }
 
 }

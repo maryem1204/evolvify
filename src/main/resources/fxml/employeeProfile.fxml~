@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 
-<BorderPane prefHeight="750.0" prefWidth="1200.0" stylesheets="@../Styles/profileStyles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.EmployeeProfileController">
+<BorderPane prefHeight="650.0" prefWidth="1200.0" stylesheets="@../Styles/profileStyles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.Controllers.EmployeeProfileController">
     <center>
         <AnchorPane styleClass="main-content" BorderPane.alignment="CENTER">
             <children>

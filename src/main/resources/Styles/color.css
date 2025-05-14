@@ -53,3 +53,12 @@
 #gests {
     -fx-background-color: linear-gradient(to bottom, #0F82E6, #0047AB);
 }
+
+#closeButton {
+    -fx-background-color: transparent;
+    -fx-text-fill: red;
+}
+
+#closeButton:hover {
+    -fx-text-fill: darkred;
+}

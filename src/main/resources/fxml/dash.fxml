@@ -140,7 +140,7 @@
             </VBox>
 
             <!-- Gestion Projets -->
-            <Button fx:id="btnProjets" onAction="#toggleSubMenuProjets" styleClass="sidebar-button" >
+            <Button fx:id="btnTaches" onAction="#toggleSubMenuProjets" styleClass="sidebar-button" >
                 <graphic>
                     <HBox alignment="CENTER_LEFT" spacing="10">
                         <ImageView fitHeight="30.0" fitWidth="30.0">
@@ -151,16 +151,12 @@
                         <Label style="-fx-text-fill: white;" text="Gestion Projets" />
                         <Region HBox.hgrow="ALWAYS" /> <!-- Ajout d'un espace flexible -->
 
-                        <ImageView fx:id="arrowIconProjets" fitHeight="20.0" fitWidth="20.0">
-                            <image>
-                                <Image url="@/images/fleche.png" />
-                            </image>
-                        </ImageView>
+
                     </HBox>
                 </graphic>
             </Button>
             <VBox fx:id="subMenuProjets" managed="false" visible="false">
-                <Button fx:id="btnTaches" styleClass="sidebar-sub-button" text="Projets" />
+                <!--<Button fx:id="btnTaches" styleClass="sidebar-sub-button" text="Projets" />-->
                 <!-- <Button fx:id="btnEquipe" styleClass="sidebar-sub-button" text="Taches" /> -->
             </VBox>
 

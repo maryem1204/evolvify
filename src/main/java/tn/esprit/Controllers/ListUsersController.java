@@ -51,8 +51,8 @@ public class ListUsersController {
     private TableColumn<Utilisateur, String> colNumTel;
     @FXML
     private TableColumn<Utilisateur, Integer> colCongeRestant;
-    @FXML
-    private TableColumn<Utilisateur, Integer> colTtRestants;
+    //@FXML
+    //private TableColumn<Utilisateur, Integer> colTtRestants;
     @FXML
     private TableColumn<Utilisateur, Void> colActions;
     @FXML
@@ -215,7 +215,7 @@ public class ListUsersController {
         colRole.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(formatRole(cellData.getValue().getRole())));
         colNumTel.setCellValueFactory(new PropertyValueFactory<>("num_tel"));
         colCongeRestant.setCellValueFactory(new PropertyValueFactory<>("congeRestant"));
-        colTtRestants.setCellValueFactory(new PropertyValueFactory<>("ttRestants"));
+        //colTtRestants.setCellValueFactory(new PropertyValueFactory<>("ttRestants"));
 
         addActionsColumn();
     }
@@ -365,6 +365,7 @@ public class ListUsersController {
 
     public void refreshUserList() {
         loadUsers();
+        applyFilters();
         pagination.setPageCount((int) Math.ceil((double) users.size() / ROWS_PER_PAGE));
         updateTable(pagination.getCurrentPageIndex());
         addActionsColumn(); // Recharger les icônes d'actions

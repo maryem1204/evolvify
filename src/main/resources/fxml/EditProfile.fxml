@@ -60,9 +60,9 @@
                         <TextField fx:id="emailField" styleClass="non-editable-field" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <TextField fx:id="roleField" styleClass="non-editable-field" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                         <TextField fx:id="joiningDateField" styleClass="non-editable-field" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                        <ComboBox fx:id="genderComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <ComboBox fx:id="genderComboBox" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                         <TextField fx:id="phoneNumberField" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                        <DatePicker fx:id="birthdayDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                        <DatePicker fx:id="birthdayDatePicker" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                     </children>
                 </GridPane>
             </children>
