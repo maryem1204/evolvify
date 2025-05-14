@@ -67,7 +67,7 @@ public class ListCandidateController {
 
     private static final Logger logger = Logger.getLogger(Dashboard.class.getName());
     private final CandidateService candidateService = new CandidateService();
-    private static final String API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMjI2ZDk2ZTItNTE5Yy00NGNiLTk5MDktODk4ZDFhNmI4YjVkIiwidHlwZSI6ImFwaV90b2tlbiJ9.LF_cOmX4DsGe4JNRibkmARi92rf_-c4CJRWqH6uhpDs"; // Utilisez une variable d'environnement pour sécuriser la clé API
+    private static final String API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiY2EzYmIwZGUtNmNlZi00YjA3LThlZTUtMjdhYWY1NWRhZDUyIiwidHlwZSI6ImFwaV90b2tlbiJ9.-vcKMaUNglqDquZx36OuK3il5B9aNCO1KWnJ8lbFwd8"; // Utilisez une variable d'environnement pour sécuriser la clé API
 
     @FXML
     public void initialize() {
@@ -106,36 +106,31 @@ public class ListCandidateController {
     }
 
     private void addDownloadButtonToTable() {
-        CVcolum.setCellFactory(param -> new TableCell<Utilisateur, Void>() {
+        CVcolum.setCellFactory(param -> new TableCell<>() {
             private final Button downloadButton = new Button("Télécharger");
-
             {
                 downloadButton.setOnAction(event -> {
                     Utilisateur utilisateur = getTableView().getItems().get(getIndex());
-
-                    if (utilisateur == null) {
-                        afficherAlerte("Alerte", "Aucun candidat sélectionné !");
+                    if (utilisateur == null || utilisateur.getUploadedCv() == null || utilisateur.getUploadedCv().isEmpty()) {
+                        afficherAlerte("Alerte", "Aucun CV disponible pour ce candidat !");
                         return;
                     }
 
-                    int userId = utilisateur.getId_employe();
-                    try (Connection cnx = MyDataBase.getInstance().getCnx()) {
-                        File cvFile = candidateService.retrieveCVFromDatabase(userId, cnx);
-                        if (cvFile != null) {
-                            FileChooser fileChooser = new FileChooser();
-                            fileChooser.setTitle("Enregistrer le CV");
-                            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichiers PDF", "*.pdf"));
-                            File fileToSave = fileChooser.showSaveDialog(downloadButton.getScene().getWindow());
+                    File cvFile = getFileFromPath(utilisateur.getUploadedCv());
+                    if (cvFile != null) {
+                        FileChooser fileChooser = new FileChooser();
+                        fileChooser.setTitle("Enregistrer le CV");
+                        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichiers PDF", "*.pdf"));
+                        File fileToSave = fileChooser.showSaveDialog(downloadButton.getScene().getWindow());
 
-                            if (fileToSave != null) {
+                        if (fileToSave != null) {
+                            try {
                                 Files.copy(cvFile.toPath(), fileToSave.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                                // Analyser le CV avec EdenAI après téléchargement
                                 analyzeCVWithEdenAI(cvFile);
+                            } catch (IOException e) {
+                                afficherAlerte("Erreur", "Erreur lors de l'enregistrement du CV.");
                             }
-                            cvFile.delete(); // Supprimer le fichier temporaire après utilisation
                         }
-                    } catch (SQLException | IOException e) {
-                        afficherAlerte("Erreur", "Erreur lors de la récupération du CV.");
                     }
                 });
             }
@@ -148,6 +143,15 @@ public class ListCandidateController {
         });
     }
 
+    private File getFileFromPath(String cvPath) {
+        File file = new File(cvPath);
+        if (file.exists()) return file;
+        afficherAlerte("Erreur", "Le fichier CV n'existe pas : " + cvPath);
+        return null;
+    }
+
+
+
     // Analyse du CV avec EdenAI
     private void analyzeCVWithEdenAI(File cvFile) {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
@@ -157,35 +161,25 @@ public class ListCandidateController {
 
             MultipartEntityBuilder builder = MultipartEntityBuilder.create();
             builder.addBinaryBody("file", cvFile, ContentType.APPLICATION_OCTET_STREAM, cvFile.getName());
-            builder.addTextBody("language", "fr", ContentType.TEXT_PLAIN); // Langue du CV
-            builder.addTextBody("providers", "affinda", ContentType.TEXT_PLAIN);// Fournisseur d'analyse
+            builder.addTextBody("language", "fr", ContentType.TEXT_PLAIN);
+            builder.addTextBody("providers", "affinda", ContentType.TEXT_PLAIN);
 
-            HttpEntity multipart = builder.build();
-            postRequest.setEntity(multipart);
+            postRequest.setEntity(builder.build());
 
             CloseableHttpResponse response = client.execute(postRequest);
-            int statusCode = response.getStatusLine().getStatusCode();
             String responseString = EntityUtils.toString(response.getEntity());
 
-            if (statusCode == 200) {
+            if (response.getStatusLine().getStatusCode() == 200) {
                 afficherResultatsIA(responseString);
             } else {
-                afficherAlerte("Erreur API", "Erreur de l'API EdenAI : " + statusCode + "\nRéponse : " + responseString);
+                afficherAlerte("Erreur API", "Réponse : " + responseString);
             }
 
         } catch (Exception e) {
-            afficherAlerte("Erreur", "Erreur lors de l'analyse avec EdenAI : " + e.getMessage());
-            logger.log(Level.SEVERE, "Erreur lors de l'analyse avec EdenAI", e);
+            afficherAlerte("Erreur", "Erreur lors de l'analyse du CV.");
         }
     }
 
-
-
-    // Méthode pour encoder un fichier en base64
-    private String encodeFileToBase64(File file) throws IOException {
-        byte[] fileBytes = Files.readAllBytes(file.toPath());
-        return java.util.Base64.getEncoder().encodeToString(fileBytes);
-    }
 
     // Extraire le texte du fichier PDF
     private String extractTextFromPDF(File cvFile) throws IOException {
@@ -218,7 +212,6 @@ public class ListCandidateController {
                     JSONObject personalInfos = extractedData.getJSONObject("personal_infos");
                     JSONArray skillsArray = extractedData.getJSONArray("skills");
 
-                    StringBuilder extractedText = new StringBuilder();
                     // Extraction des informations personnelles
                     String firstName = personalInfos.optJSONObject("name").optString("first_name", "Non disponible");
                     String lastName = personalInfos.optJSONObject("name").optString("last_name", "Non disponible");
@@ -226,22 +219,59 @@ public class ListCandidateController {
                     String email = personalInfos.optJSONArray("mails").optString(0, "Non disponible");
                     String phone = personalInfos.optJSONArray("phones").optString(0, "Non disponible");
 
-                    extractedText.append("Nom: ").append(fullName).append("\n");
-                    extractedText.append("Email: ").append(email).append("\n");
-                    extractedText.append("Téléphone: ").append(phone).append("\n");
+                    // Organisation des compétences par catégories
+                    StringBuilder languages = new StringBuilder();
+                    StringBuilder frameworks = new StringBuilder();
+                    StringBuilder databases = new StringBuilder();
+                    StringBuilder tools = new StringBuilder();
 
-                    // Extraction des compétences
-                    extractedText.append("Compétences: \n");
                     for (int i = 0; i < skillsArray.length(); i++) {
-                        extractedText.append("- ").append(skillsArray.getJSONObject(i).optString("name", "Non disponible")).append("\n");
+                        String skill = skillsArray.getJSONObject(i).optString("name", "Non disponible");
+
+                        // Catégorisation des compétences (à adapter selon ton besoin)
+                        if (skill.matches("(?i).*java.*|.*python.*|.*javascript.*|.*c\\+\\+.*")) {
+                            languages.append(skill).append(", ");
+                        } else if (skill.matches("(?i).*spring.*|.*angular.*|.*javafx.*|.*django.*")) {
+                            frameworks.append(skill).append(", ");
+                        } else if (skill.matches("(?i).*mysql.*|.*postgresql.*|.*mongodb.*|.*oracle.*")) {
+                            databases.append(skill).append(", ");
+                        } else if (skill.matches("(?i).*git.*|.*docker.*|.*kubernetes.*|.*jenkins.*")) {
+                            tools.append(skill).append(", ");
+                        }
                     }
 
-                    // Affichage des résultats dans un pop-up
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Résultats de l'Analyse IA");
-                    alert.setHeaderText(null);
-                    alert.setContentText(extractedText.toString());
-                    alert.showAndWait();
+                    // Suppression de la dernière virgule
+                    String langList = languages.length() > 0 ? languages.substring(0, languages.length() - 2) : "Aucune";
+                    String frameList = frameworks.length() > 0 ? frameworks.substring(0, frameworks.length() - 2) : "Aucune";
+                    String dbList = databases.length() > 0 ? databases.substring(0, databases.length() - 2) : "Aucune";
+                    String toolList = tools.length() > 0 ? tools.substring(0, tools.length() - 2) : "Aucune";
+
+                    // Création d'un dialogue personnalisé
+                    Dialog<ButtonType> dialog = new Dialog<>();
+                    dialog.setTitle("Analyse du CV");
+                    dialog.setHeaderText("Résultats de l'Analyse IA");
+
+                    // Contenu de la boîte de dialogue
+                    DialogPane dialogPane = dialog.getDialogPane();
+                    dialogPane.getButtonTypes().add(ButtonType.OK);
+
+                    // Création du contenu structuré
+                    StringBuilder extractedText = new StringBuilder();
+                    extractedText.append("📌 **Nom:** ").append(fullName).append("\n");
+                    extractedText.append("📧 **Email:** ").append(email).append("\n");
+                    extractedText.append("📞 **Téléphone:** ").append(phone).append("\n\n");
+
+                    extractedText.append("💼 **Compétences :**\n");
+                    extractedText.append("● **Langages** : ").append(langList).append("\n");
+                    extractedText.append("● **Frameworks** : ").append(frameList).append("\n");
+                    extractedText.append("● **Bases de données** : ").append(dbList).append("\n");
+                    extractedText.append("● **Outils** : ").append(toolList).append("\n");
+
+                    Label label = new Label(extractedText.toString());
+                    label.setWrapText(true);
+
+                    dialogPane.setContent(label);
+                    dialog.showAndWait();
                     return;
                 }
             }

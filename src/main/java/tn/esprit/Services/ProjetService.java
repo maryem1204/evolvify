@@ -30,7 +30,7 @@ public class ProjetService {
             pst.setDate(4, projet.getEnd_date() != null ? Date.valueOf(projet.getEnd_date()) : null);
             pst.setDate(5, projet.getStarter_at() != null ? Date.valueOf(projet.getStarter_at()) : null);
             pst.setString(6, projet.getAbbreviation());
-            pst.setBytes(7, projet.getUploaded_files());
+            pst.setString(7, projet.getUploaded_files()); // Changé de setBytes à setString
 
             int affectedRows = pst.executeUpdate();
             if (affectedRows > 0) {
@@ -57,7 +57,7 @@ public class ProjetService {
             pst.setDate(4, projet.getEnd_date() != null ? Date.valueOf(projet.getEnd_date()) : null);
             pst.setDate(5, projet.getStarter_at() != null ? Date.valueOf(projet.getStarter_at()) : null);
             pst.setString(6, projet.getAbbreviation());
-            pst.setBytes(7, projet.getUploaded_files());
+            pst.setString(7, projet.getUploaded_files()); // Changé de setBytes à setString
             pst.setInt(8, projet.getId_projet());
 
             int rowsUpdated = pst.executeUpdate();
@@ -99,7 +99,7 @@ public class ProjetService {
                         rs.getDate("end_date") != null ? rs.getDate("end_date").toLocalDate() : null,
                         rs.getDate("starter_at") != null ? rs.getDate("starter_at").toLocalDate() : null,
                         rs.getString("abbreviation"),
-                        rs.getBytes("uploaded_files"),
+                        rs.getString("uploaded_files"), // Changé de getBytes à getString
                         new ArrayList<>() // On ajoute les employés après
                 );
                 projets.add(projet);
@@ -133,7 +133,7 @@ public class ProjetService {
                             rs.getDate("end_date") != null ? rs.getDate("end_date").toLocalDate() : null,
                             rs.getDate("starter_at") != null ? rs.getDate("starter_at").toLocalDate() : null,
                             rs.getString("abbreviation"),
-                            rs.getBytes("uploaded_files"),
+                            rs.getString("uploaded_files"), // Changé de getBytes à getString
                             employes
                     );
                 }
@@ -214,11 +214,8 @@ public class ProjetService {
                 rs.getDate("end_date") != null ? rs.getDate("end_date").toLocalDate() : null,
                 rs.getDate("starter_at") != null ? rs.getDate("starter_at").toLocalDate() : null,
                 rs.getString("abbreviation"),
-                rs.getBytes("uploaded_files"),
+                rs.getString("uploaded_files"), // Changé de getBytes à getString
                 getEmployeesByProjetId(projetId) // Récupérer la liste des employés associés
         );
     }
-
-
-
 }

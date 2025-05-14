@@ -107,7 +107,7 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
                     Role.valueOf(rs.getString("role")), // Correction ici
                     rs.getInt("tt_restants"),  // Ajout de la virgule ici
                     rs.getInt("conge_restant"),
-                    rs.getBytes("uploaded_cv"),
+                    rs.getString("uploaded_cv"),
                     rs.getString("num_tel"),
                     Gender.valueOf(rs.getString("gender")) // Ajout du genre
 
@@ -209,7 +209,7 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
                         Role.valueOf(rs.getString("role")), // ✅ Correction ici
                         rs.getInt("tt_restants"),
                         rs.getInt("conge_restant"),
-                        rs.getBytes("uploaded_cv"),
+                        rs.getString("uploaded_cv"),
                         rs.getString("num_tel"),
                         Gender.valueOf(rs.getString("gender")) // Ajout du genre
 
@@ -252,7 +252,7 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
                         Role.valueOf(rs.getString("role")),
                         rs.getInt("tt_restants"),
                         rs.getInt("conge_restant"),
-                        rs.getBytes("uploaded_cv"),
+                        rs.getString("uploaded_cv"),
                         rs.getString("num_tel"),
                         Gender.valueOf(rs.getString("gender"))
                 );
@@ -327,7 +327,7 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
                     Role.valueOf(rs.getString("role")),
                     rs.getInt("tt_restants"),
                     rs.getInt("conge_restant"),
-                    rs.getBytes("uploaded_cv"),
+                    rs.getString("uploaded_cv"),
                     rs.getString("num_tel"),
                     Gender.valueOf(rs.getString("gender"))
 

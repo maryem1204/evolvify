@@ -71,13 +71,14 @@
         <Label fx:id="lblAbbreviation" style="-fx-font-size: 16px; -fx-text-fill: #222;" />
     </HBox>
 
-    <HBox spacing="10">
-        <Label style="-fx-font-weight: bold; -fx-text-fill: #555;" text="Employé Assigné :">
-         <font>
-            <Font size="16.0" />
-         </font></Label>
-        <Label fx:id="lblIdEmploye" style="-fx-font-size: 16px; -fx-text-fill: #222;" />
-    </HBox>
+    <VBox spacing="5" alignment="TOP_LEFT" maxWidth="Infinity">
+        <Label fx:id="lblIdEmployeTitle" style="-fx-font-weight: bold; -fx-text-fill: #555;" text="Employés Assignés :">
+            <font>
+                <Font size="16.0" />
+            </font>
+        </Label>
+        <Label fx:id="lblIdEmploye" style="-fx-font-size: 16px; -fx-text-fill: #222; -fx-padding: 0 0 0 15; -fx-text-overflow: visible;" wrapText="true" maxWidth="Infinity" />
+    </VBox>
 
     <!--<HBox spacing="10">
         <Label text="Fichier Uploadé :" style="-fx-font-weight: bold; -fx-text-fill: #555;" />

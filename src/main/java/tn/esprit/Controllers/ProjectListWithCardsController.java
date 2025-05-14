@@ -53,6 +53,7 @@ public class ProjectListWithCardsController {
         loadProjects();
         loadNotificationIcon();
 
+
         if (btnAjouterProjet != null) {
             Utilisateur utilisateur = SessionManager.getUtilisateurConnecte();
             if (utilisateur != null && utilisateur.getRole() == Role.EMPLOYEE) {
@@ -60,6 +61,8 @@ public class ProjectListWithCardsController {
                 btnAjouterProjet.setOpacity(0.5);
             }
         }
+
+
         // Vérifier si les composants existent avant d'agir dessus
         if (notificationBadge != null) {
             notificationBadge.setText("");
@@ -184,10 +187,12 @@ public class ProjectListWithCardsController {
         VBox content = new VBox(10);
         content.setAlignment(Pos.CENTER);
 
-        Text nameText = new Text(projet.getName());
+        // Appliquer stripHtmlTags au nom du projet
+        Text nameText = new Text(stripHtmlTags(projet.getName()));
         nameText.getStyleClass().add("project-title");
 
-        Text descText = new Text(projet.getDescription());
+        // Appliquer stripHtmlTags à la description du projet
+        Text descText = new Text(stripHtmlTags(projet.getDescription()));
         descText.getStyleClass().add("project-description");
 
         Text statusText = new Text(projet.getStatus().toString());
@@ -208,6 +213,7 @@ public class ProjectListWithCardsController {
         deleteIcon.setFitWidth(40);
         eyeIcon.setFitHeight(40);
         eyeIcon.setFitWidth(40);
+
 
         // Vérifier le rôle de l'utilisateur connecté
         Utilisateur utilisateur = SessionManager.getUtilisateurConnecte();
@@ -233,6 +239,13 @@ public class ProjectListWithCardsController {
             editIcon.setOnMouseClicked(event -> showEditPopup(projet));
             deleteIcon.setOnMouseClicked(event -> showDeleteConfirmation(projet));
         }
+
+
+        // Instead, enable all buttons regardless of role
+        editIcon.setStyle("-fx-cursor: hand;");
+        deleteIcon.setStyle("-fx-cursor: hand;");
+        editIcon.setOnMouseClicked(event -> showEditPopup(projet));
+        deleteIcon.setOnMouseClicked(event -> showDeleteConfirmation(projet));
 
         // L'icône pour voir les détails reste toujours active
         eyeIcon.setStyle("-fx-cursor: hand;");
@@ -363,5 +376,8 @@ public class ProjectListWithCardsController {
             }
         });
     }
-
+    public static String stripHtmlTags(String html) {
+        if (html == null) return "";
+        return html.replaceAll("<[^>]*>", "");
+    }
 }

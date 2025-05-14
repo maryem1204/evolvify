@@ -13,7 +13,7 @@ public class Projet {
     private LocalDate end_date;
     private LocalDate starter_at;
     private String abbreviation;
-    private byte[] uploaded_files;
+    private String uploaded_files;
     private List<Integer> employes; // Liste des IDs des employés associés
 
     public enum Status {
@@ -26,20 +26,20 @@ public class Projet {
 
     // Constructeur sans ID (pour l'ajout d'un projet)
     public Projet(String name, String description, Status status, LocalDate end_date, LocalDate starter_at,
-                  String abbreviation, byte[] uploaded_files, List<Integer> employes) {
+                  String abbreviation, String uploaded_files, List<Integer> employes) {
         this.name = name;
         this.description = description;
         this.status = status;
         this.end_date = end_date;
         this.starter_at = starter_at;
         this.abbreviation = abbreviation;
-        this.uploaded_files = (uploaded_files != null) ? uploaded_files : new byte[0];
+        this.uploaded_files = (uploaded_files != null) ? uploaded_files : "";
         this.employes = employes;
     }
 
     // Constructeur avec ID (pour la récupération d'un projet existant)
     public Projet(int id_projet, String name, String description, Status status, LocalDate end_date,
-                  LocalDate starter_at, String abbreviation, byte[] uploaded_files, List<Integer> employes) {
+                  LocalDate starter_at, String abbreviation, String uploaded_files, List<Integer> employes) {
         this.id_projet = id_projet;
         this.name = name;
         this.description = description;
@@ -47,9 +47,10 @@ public class Projet {
         this.end_date = end_date;
         this.starter_at = starter_at;
         this.abbreviation = abbreviation;
-        this.uploaded_files = (uploaded_files != null) ? uploaded_files : new byte[0];
+        this.uploaded_files = (uploaded_files != null) ? uploaded_files : "";
         this.employes = employes;
     }
+
 
     // Getters et Setters
     public int getId_projet() {
@@ -108,12 +109,12 @@ public class Projet {
         this.abbreviation = abbreviation;
     }
 
-    public byte[] getUploaded_files() {
+    public String getUploaded_files() {
         return uploaded_files;
     }
 
-    public void setUploaded_files(byte[] uploaded_files) {
-        this.uploaded_files = (uploaded_files != null) ? uploaded_files : new byte[0];
+    public void setUploaded_files(String uploaded_files) {
+        this.uploaded_files = (uploaded_files != null) ? uploaded_files : "";
     }
 
     public List<Integer> getEmployes() {

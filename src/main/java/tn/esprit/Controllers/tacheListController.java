@@ -175,9 +175,19 @@ public class tacheListController {
 
     public void setProjet(Projet projet) throws SQLException {
         this.projetActuel = projet;
-        loadTaches(); // Charger les tâches associées à ce projet
+        loadTaches(); // Charger les tâches avec le filtre du projet
+
+        // Ne pas essayer d'accéder à la scène ici car elle pourrait être null
+        // Créez plutôt une méthode pour mettre à jour le titre qui sera appelée après l'affichage
     }
 
+    // Ajoutez cette méthode pour mettre à jour le titre après que la fenêtre soit affichée
+    public void updateWindowTitle() {
+        if (tacheTable.getScene() != null && tacheTable.getScene().getWindow() != null && projetActuel != null) {
+            Stage stage = (Stage) tacheTable.getScene().getWindow();
+            stage.setTitle("Tâches du projet: " + projetActuel.getName());
+        }
+    }
     private void setupStatusColumn() {
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
         colStatus.setCellFactory(column -> new TableCell<Tache, Tache.Status>() {
@@ -274,9 +284,19 @@ public class tacheListController {
     }
 
     private void loadTaches() throws SQLException {
-        List<Tache> tachesList = tacheService.showAll();
+        List<Tache> tachesList;
+        if (projetActuel != null) {
+            System.out.println("Loading tasks for project ID: " + projetActuel.getId_projet());
+            tachesList = tacheService.getTachesByProjetId(projetActuel.getId_projet());
+        } else {
+            System.out.println("Loading all tasks (no project filter)");
+            tachesList = tacheService.showAll();
+        }
         taches.setAll(tachesList);
         tacheTable.setItems(taches);
+
+        // For troubleshooting
+        System.out.println("Loaded " + tachesList.size() + " tasks");
     }
 
     private void addActionsColumn() {
@@ -372,11 +392,17 @@ public class tacheListController {
 
     public void refreshTacheList() {
         try {
-            List<Tache> tacheList = tacheService.showAll();
+            List<Tache> tacheList;
+            if (projetActuel != null) {
+                tacheList = tacheService.getTachesByProjetId(projetActuel.getId_projet());
+            } else {
+                tacheList = tacheService.showAll();
+            }
             taches.setAll(tacheList);
             tacheTable.setItems(taches);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 }

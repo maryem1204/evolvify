@@ -127,10 +127,7 @@ public class DashController {
             setActiveButton(btnProjets);
             loadView("/fxml/ListProjet.fxml");
         });
-        btnEquipe.setOnAction(event -> {
-            setActiveButton(btnProjets);
-            loadView("/fxml/ListTacheRH.fxml");
-        });
+
 
         // Rest of your initialization remains the same
         hideAllSubMenus();
@@ -244,8 +241,8 @@ public class DashController {
             case "btnAbsences" -> "/fxml/absences.fxml";
             case "btnTaches" -> "/fxml/ListProjet.fxml";
             case "btnEquipe" -> "/fxml/ListTacheRH.fxml";
-            case "btnCandidats" -> "/fxml/conges.fxml";
-            case "btnEntretiens" -> "/fxml/absences.fxml";
+            case "btnCandidats" -> "/fxml/ListCondidate.fxml";
+            case "btnEntretiens" -> "/fxml/ListOffreCandidates.fxml";
             case "btnTransport", "btnTrajet", "btnAb" -> "/fxml/ListTacheRH.fxml";
             default -> null;
         };

@@ -13,7 +13,7 @@ public class MainFXDash extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/logo1.png")));
+            primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/logo.png")));
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/dash.fxml"));
             Parent root = loader.load();
