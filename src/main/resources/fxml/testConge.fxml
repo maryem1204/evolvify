@@ -21,7 +21,7 @@
                 </padding>
 
                 <!-- Dashboard Header -->
-                <Label styleClass="page-title" text="Dashboard" />
+                <Label styleClass="page-title" text="Mes Congésa" />
 
                 <!-- Stats Cards -->
                 <HBox spacing="20">
@@ -39,7 +39,7 @@
                     </VBox>
 
                     <VBox styleClass="stat-card, stat-used">
-                        <Label styleClass="stat-title" text="TT Days Used" />
+                        <Label styleClass="stat-title" text="Congés Days Used" />
                         <HBox alignment="BASELINE_LEFT" spacing="5">
                             <Label fx:id="ttDaysUsedCount" styleClass="stat-number" text="12" />
                             <Label styleClass="stat-unit" text="days" />

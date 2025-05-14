@@ -1,159 +1,74 @@
-/* Modern Ergonomic Styles for Employee Request Forms */
+/* Requests.css */
 
-/* ScrollPane Styling */
-.scroll-pane {
+/* Main container styling */
+.content-pane {
     -fx-background-color: transparent;
+    -fx-padding: 15px;
 }
 
-.scroll-pane .viewport {
-    -fx-background-color: transparent;
-}
-
-/* Global Styling */
-.root {
-    -fx-font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-}
-
-/* BorderPane Styling */
-.border-pane {
-    -fx-background-color: #f4f6f7;
-}
-
-/* Page Title */
-.page-title {
-    -fx-font-size: 24px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #3498db;
-    -fx-padding: 0 0 15 0;
-}
-
-/* Form Container */
-.form-content {
+/* Form styling */
+.form-container {
     -fx-background-color: white;
-    -fx-background-radius: 10px;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);
-    -fx-padding: 30px;
+    -fx-background-radius: 8px;
+    -fx-padding: 20px;
+    -fx-spacing: 15px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);
 }
 
-/* Labels */
-.form-label {
-    -fx-font-size: 14px;
-    -fx-text-fill: #2c3e50;
-    -fx-font-weight: bold;
+/* Request type selector styling */
+.request-type-selector {
+    -fx-padding: 10px 0;
+    -fx-border-color: transparent transparent #E5E5E5 transparent;
+    -fx-border-width: 0 0 1px 0;
 }
 
-/* Radio Buttons */
 .radio-button {
     -fx-font-size: 14px;
+    -fx-font-weight: bold;
 }
 
 .radio-button .radio {
     -fx-background-color: white;
-    -fx-border-color: #bdc3c7;
-    -fx-border-radius: 20px;
+    -fx-border-color: #2374E1;
+    -fx-border-radius: 15px;
+    -fx-background-radius: 15px;
+    -fx-border-width: 2px;
 }
 
 .radio-button:selected .radio {
-    -fx-background-color: #3498db;
-}
-
-/* DatePicker Styling */
-.date-picker {
     -fx-background-color: white;
-    -fx-border-color: #bdc3c7;
-    -fx-border-radius: 5px;
+    -fx-border-color: #2374E1;
 }
 
-.date-picker .arrow-button {
-    -fx-background-color: #3498db;
-}
-
-.date-picker .text-field {
-    -fx-background-color: transparent;
-}
-
-/* ComboBox Styling */
-.combo-box {
-    -fx-background-color: white;
-    -fx-border-color: #bdc3c7;
-    -fx-border-radius: 5px;
-}
-
-.combo-box .list-cell {
-    -fx-background-color: white;
-}
-
-.combo-box .arrow {
-    -fx-background-color: #3498db;
-}
-
-/* TextField Styling */
-.text-field {
-    -fx-background-color: white;
-    -fx-border-color: #bdc3c7;
-    -fx-border-radius: 5px;
+.radio-button .dot {
+    -fx-background-radius: 10px;
     -fx-padding: 5px;
 }
 
-.text-field:focused {
-    -fx-border-color: #3498db;
+.radio-button:selected .dot {
+    -fx-background-color: #2374E1;
 }
 
-/* TextArea Styling */
-.text-area {
-    -fx-background-color: white;
-    -fx-border-color: #bdc3c7;
-    -fx-border-radius: 5px;
-    -fx-padding: 5px;
-}
-
-.text-area:focused {
-    -fx-border-color: #3498db;
-}
-
-/* Request Type Selector */
-.request-type-selector {
-    -fx-background-color: #f8f9fa;
-    -fx-padding: 10px;
-    -fx-background-radius: 5px;
-}
-
-/* Button Styling */
+/* Button styling */
 .button {
-    -fx-background-color: #3498db;
-    -fx-text-fill: white;
-    -fx-background-radius: 5px;
+    -fx-cursor: hand;
 }
 
+/* Make read-only fields appear visually different */
+.text-field:readonly {
+    -fx-opacity: 0.7;
+    -fx-background-color: #F0F0F0;
+}
+
+/* Optional Animation on hover */
 .button:hover {
-    -fx-background-color: #2980b9;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-scale-z: 1.05;
 }
 
-/* Monthly Navigation Buttons */
-.month-nav-button {
-    -fx-background-color: #3498db;
-    -fx-text-fill: white;
-    -fx-background-radius: 5px;
-}
-
-.month-nav-button:hover {
-    -fx-background-color: #2980b9;
-}
-
-/* Calendar Grid Styling */
-.calendar-grid {
-    -fx-background-color: white;
-    -fx-border-color: #bdc3c7;
-    -fx-border-radius: 5px;
-}
-
-.calendar-button {
-    -fx-background-color: transparent;
-    -fx-border-color: #bdc3c7;
-    -fx-border-radius: 5px;
-}
-
-.calendar-button:hover {
-    -fx-background-color: #3498db;
-    -fx-text-fill: white;
+/* Required field indicator styling */
+.form-label .required {
+    -fx-text-fill: red;
+    -fx-font-weight: bold;
 }

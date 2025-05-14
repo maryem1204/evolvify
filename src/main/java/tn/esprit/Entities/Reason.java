@@ -6,5 +6,6 @@ public enum Reason {
     MALADIE,
     MATERNITE,
     FORMATION,
-    AMMENAGEMENT
+    AMMENAGEMENT,
+    AUTRES
 }

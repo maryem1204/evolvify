@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -199,7 +200,17 @@ public class EmployeeDashController {
 
     private void loadView(String fxmlFile) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
+            // Debug: Print out the exact resource path being used
+            URL resourceUrl = getClass().getResource(fxmlFile);
+            System.out.println("Attempting to load FXML from: " + resourceUrl);
+
+            if (resourceUrl == null) {
+                System.err.println("❌ FXML Resource not found: " + fxmlFile);
+                showErrorAlert("FXML Resource not found: " + fxmlFile);
+                return;
+            }
+
+            FXMLLoader loader = new FXMLLoader(resourceUrl);
             Parent root = loader.load();
             contentArea.getChildren().setAll(root);
 
@@ -210,8 +221,18 @@ public class EmployeeDashController {
             AnchorPane.setLeftAnchor(root, 0.0);
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("⚠ Error loading: " + fxmlFile);
+            System.err.println("⚠ Error loading: " + fxmlFile);
+            showErrorAlert("Error loading view: " + e.getMessage());
         }
+    }
+
+    // Helper method to show error alerts
+    private void showErrorAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Loading Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     private void setActiveButton(Button button) {
@@ -226,7 +247,7 @@ public class EmployeeDashController {
         button.getStyleClass().add("active-sidebar-button");
     }
     @FXML
-    public void handleConge(ActionEvent actionEvent) {
+    private void handleConge(ActionEvent event) {
         setActiveButton(btnConge);
         loadView("/fxml/testConge.fxml");
     }
