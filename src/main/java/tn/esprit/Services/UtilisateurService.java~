@@ -40,7 +40,7 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
 
     private static final String ACCOUNT_SID = "ACd0e81bfa9483af3ecad56e9cdee55f70";
     private static final String AUTH_TOKEN = "fd2f6e6c2332948dd33fef293c394515";
-    private static final String TWILIO_PHONE_NUMBER = "+19515842263";
+    private static final String TWILIO_PHONE_NUMBER = "+15078000957";
     private static final String FROM_EMAIL = "maryemsassi.dev@gmail.com";
     private static final String EMAIL_PASSWORD = "jlej mknk aukk iqlx";
 
@@ -107,7 +107,7 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
                     Role.valueOf(rs.getString("role")), // Correction ici
                     rs.getInt("tt_restants"),  // Ajout de la virgule ici
                     rs.getInt("conge_restant"),
-                    rs.getString("uploaded_cv"),
+                    rs.getBytes("uploaded_cv"),
                     rs.getString("num_tel"),
                     Gender.valueOf(rs.getString("gender")) // Ajout du genre
 
@@ -209,7 +209,7 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
                         Role.valueOf(rs.getString("role")), // ✅ Correction ici
                         rs.getInt("tt_restants"),
                         rs.getInt("conge_restant"),
-                        rs.getString("uploaded_cv"),
+                        rs.getBytes("uploaded_cv"),
                         rs.getString("num_tel"),
                         Gender.valueOf(rs.getString("gender")) // Ajout du genre
 
@@ -252,7 +252,7 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
                         Role.valueOf(rs.getString("role")),
                         rs.getInt("tt_restants"),
                         rs.getInt("conge_restant"),
-                        rs.getString("uploaded_cv"),
+                        rs.getBytes("uploaded_cv"),
                         rs.getString("num_tel"),
                         Gender.valueOf(rs.getString("gender"))
                 );
@@ -327,7 +327,7 @@ public class UtilisateurService implements CRUD<Utilisateur>, CRUD_User<Utilisat
                     Role.valueOf(rs.getString("role")),
                     rs.getInt("tt_restants"),
                     rs.getInt("conge_restant"),
-                    rs.getString("uploaded_cv"),
+                    rs.getBytes("uploaded_cv"),
                     rs.getString("num_tel"),
                     Gender.valueOf(rs.getString("gender"))
 

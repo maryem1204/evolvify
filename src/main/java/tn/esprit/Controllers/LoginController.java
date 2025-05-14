@@ -99,21 +99,26 @@ public class LoginController {
         try {
             Utilisateur utilisateur = utilisateurService.getUserByEmail(email);
             if (utilisateur != null) {
-                // Verify the password using BCrypt
-                if (BCrypt.checkpw(password, utilisateur.getPassword())) {
-                    // Clear password from memory for security
-                    if (passwordField.isVisible()) {
-                        passwordField.clear();
+                try {
+                    // Try standard BCrypt verification first
+                    if (BCrypt.checkpw(password, utilisateur.getPassword())) {
+                        handleSuccessfulLogin(utilisateur, event);
                     } else {
-                        textPasswordField.clear();
+                        showAlert(Alert.AlertType.ERROR, "Erreur", "Mot de passe incorrect.");
                     }
-
-                    // Store user in session
-                    SessionManager.getInstance().setUtilisateurConnecte(utilisateur);
-                    redirectUser(utilisateur.getRole(), event);
-                } else {
-                    // Password is incorrect
-                    showAlert(Alert.AlertType.ERROR, "Erreur", "Mot de passe incorrect.");
+                } catch (IllegalArgumentException e) {
+                    if (e.getMessage().contains("Invalid salt revision")) {
+                        // Convert $2y$ to $2a$ and try again
+                        String convertedHash = utilisateur.getPassword().replace("$2y$", "$2a$");
+                        if (BCrypt.checkpw(password, convertedHash)) {
+                            handleSuccessfulLogin(utilisateur, event);
+                        } else {
+                            showAlert(Alert.AlertType.ERROR, "Erreur", "Mot de passe incorrect.");
+                        }
+                    } else {
+                        // If it's some other error, rethrow it
+                        throw e;
+                    }
                 }
             } else {
                 showAlert(Alert.AlertType.ERROR, "Erreur", "Aucun compte trouvé avec cet email.");
@@ -122,6 +127,20 @@ public class LoginController {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Erreur", "Problème de connexion à la base de données.");
         }
+    }
+
+    // Add this helper method to avoid code duplication
+    private void handleSuccessfulLogin(Utilisateur utilisateur, ActionEvent event) throws IOException {
+        // Clear password from memory for security
+        if (passwordField.isVisible()) {
+            passwordField.clear();
+        } else {
+            textPasswordField.clear();
+        }
+
+        // Store user in session
+        SessionManager.getInstance().setUtilisateurConnecte(utilisateur);
+        redirectUser(utilisateur.getRole(), event);
     }
 
     private void redirectUser(Role role, ActionEvent event) throws IOException {
@@ -194,6 +213,20 @@ public class LoginController {
         } catch (IOException e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page : " + fxmlFile);
+        }
+    }
+
+    private boolean checkPassword(String plainTextPassword, String storedHash) {
+        try {
+            // Try the normal check
+            return BCrypt.checkpw(plainTextPassword, storedHash);
+        } catch (IllegalArgumentException e) {
+            if (e.getMessage().contains("Invalid salt revision")) {
+                // Convert $2y$ to $2a$ and try again
+                String convertedHash = storedHash.replace("$2y$", "$2a$");
+                return BCrypt.checkpw(plainTextPassword, convertedHash);
+            }
+            throw e;
         }
     }
 
